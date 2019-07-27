@@ -36,7 +36,7 @@ func (s *Service) withRouter() *Service {
 		protected.Use(applePassMiddleware)
 		protected.HandleFunc(appleRegisterRoute, s.registerDevice).Methods("POST")
 		protected.HandleFunc(appleUnregisterRoute, s.unregisterDevice).Methods("DELETE")
-		protected.HandleFunc(appleLatestRoute, s.latestPass)
+		protected.HandleFunc(appleLatestRoute, s.latestPass).Methods("GET")
 	}
 
 	api := r.NewRoute().Subrouter()
