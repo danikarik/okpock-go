@@ -1,0 +1,32 @@
+language: go
+
+go:
+  - 1.12.x
+
+services:
+  - mysql
+
+before_install:
+  - mysql -e 'CREATE DATABASE IF NOT EXISTS test_okpock;'
+
+install: true
+
+script: go test -v -count=1 ./pkg/...
+
+deploy:
+  - provider: elasticbeanstalk
+    access_key_id: "$AWS_ACCESS_KEY_ID"
+    secret_access_key: "$AWS_SECRET_ACCESS_KEY"
+    region: "$AWS_REGION"
+    app: "$AWS_APPLICATION_NAME"
+    env: "$AWS_APPLICATION_ENV"
+    bucket_name: "$AWS_S3_BUCKET"
+    on: master
+
+env:
+  global:
+  - TEST_DATABASE_URL="root@tcp(127.0.0.1:3306)/test_okpock?charset=utf8mb4&parseTime=true&loc=Local"
+  - TEST_SERVER_SECRET="$TEST_SERVER_SECRET"
+  - TEST_PASSES_BUCKET="$TEST_PASSES_BUCKET"
+  matrix:
+  - GO111MODULE="on"

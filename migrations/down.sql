@@ -1,0 +1,7 @@
+DROP TABLE IF EXISTS `passes`;
+
+DROP TABLE IF EXISTS `registrations`;
+
+DROP TABLE IF EXISTS `logs`;
+
+DROP TABLE IF EXISTS `users`;
