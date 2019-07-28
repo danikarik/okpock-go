@@ -13,7 +13,7 @@ import (
 type Confirmation int
 
 const (
-	_ Confirmation = iota << 1
+	_ Confirmation = iota
 	// SignUpConfirmation is used when `sign up` flow is used.
 	SignUpConfirmation
 	// InviteConfirmation is used when `invite user` flow is used.
@@ -36,7 +36,7 @@ const (
 type UserField int
 
 const (
-	_ UserField = iota << 1
+	_ UserField = iota
 	// ConfirmationToken refers to `user.ConfirmationToken`.
 	ConfirmationToken
 	// RecoveryToken refers to `user.RecoveryToken`.
@@ -71,28 +71,28 @@ type User struct {
 	Username     string     `json:"username" db:"username"`
 	Email        string     `json:"email" db:"email"`
 	PasswordHash string     `json:"-" db:"password_hash"`
-	ConfirmedAt  *time.Time `json:"confirmed_at,omitempty" db:"confirmed_at"`
-	InvitedAt    *time.Time `json:"invited_at,omitempty" db:"invited_at"`
+	ConfirmedAt  *time.Time `json:"confirmedAt,omitempty" db:"confirmed_at"`
+	InvitedAt    *time.Time `json:"invitedAt,omitempty" db:"invited_at"`
 
 	ConfirmationToken  sql.NullString `json:"-" db:"confirmation_token"`
-	ConfirmationSentAt *time.Time     `json:"confirmation_sent_at,omitempty" db:"confirmation_sent_at"`
+	ConfirmationSentAt *time.Time     `json:"confirmationSentAt,omitempty" db:"confirmation_sent_at"`
 
 	RecoveryToken  sql.NullString `json:"-" db:"recovery_token"`
-	RecoverySentAt *time.Time     `json:"recovery_sent_at,omitempty" db:"recovery_sent_at"`
+	RecoverySentAt *time.Time     `json:"recoverySentAt,omitempty" db:"recovery_sent_at"`
 
 	EmailChangeToken  sql.NullString `json:"-" db:"email_change_token"`
-	EmailChange       sql.NullString `json:"new_email,omitempty" db:"email_change"`
-	EmailChangeSentAt *time.Time     `json:"email_change_sent_at,omitempty" db:"email_change_sent_at"`
+	EmailChange       sql.NullString `json:"-" db:"email_change"`
+	EmailChangeSentAt *time.Time     `json:"emailChangeSentAt,omitempty" db:"email_change_sent_at"`
 
-	LastSignInAt *time.Time `json:"last_sign_in_at,omitempty" db:"last_signin_at"`
+	LastSignInAt *time.Time `json:"lastSignInAt,omitempty" db:"last_signin_at"`
 
-	AppMetaData  JSONMap `json:"app_metadata" db:"raw_app_metadata"`
-	UserMetaData JSONMap `json:"user_metadata" db:"raw_user_metadata"`
+	AppMetaData  JSONMap `json:"appMetadata" db:"raw_app_metadata"`
+	UserMetaData JSONMap `json:"userMetadata" db:"raw_user_metadata"`
 
 	IsSuperAdmin bool `json:"-" db:"is_super_admin"`
 
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
+	CreatedAt time.Time `json:"createdAt" db:"created_at"`
+	UpdatedAt time.Time `json:"updatedAt" db:"updated_at"`
 }
 
 // IsValid checks whether input is valid or not.

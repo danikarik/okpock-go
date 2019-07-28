@@ -2,7 +2,10 @@ package service
 
 import (
 	"context"
+	"crypto/rand"
+	"encoding/base64"
 	"errors"
+	"io"
 	"net/http"
 	"regexp"
 	"runtime/debug"
@@ -36,7 +39,8 @@ const csrfHeader string = "X-CSRF-TOKEN"
 
 var safeMethods = []string{"GET", "HEAD", "OPTIONS", "TRACE"}
 
-var errMissingContext = errors.New("context: missing value")
+// ErrMissingContext returned when context value is missing.
+var ErrMissingContext = errors.New("context: missing value")
 
 func withApplePass(ctx context.Context, token string) context.Context {
 	return context.WithValue(ctx, applePassContextKey, token)
@@ -158,37 +162,40 @@ func userFromContext(ctx context.Context) (*api.User, error) {
 	if u, ok := ctx.Value(userContextKey).(*api.User); ok {
 		return u, nil
 	}
-	return nil, errMissingContext
+	return nil, ErrMissingContext
 }
 
 func (s *Service) authMiddleware(w http.ResponseWriter, r *http.Request) (context.Context, error) {
 	var (
-		ctx     = r.Context()
-		ucl     = NewClaims()
-		code    = http.StatusUnauthorized
-		httpErr = mux.NewHTTPError(code, http.StatusText(code))
+		ctx  = r.Context()
+		ucl  = NewClaims()
+		code = http.StatusUnauthorized
 	)
 
-	err := getClaims(r, ucl)
+	err := s.getClaims(r, ucl)
 	if err != nil {
-		return nil, httpErr.WithInternalMessage("GetClaims")
+		return nil, s.httpError(w, r, code, "GetClaims", err)
 	}
 
 	id, err := strconv.ParseInt(ucl.Subject, 10, 64)
 	if err != nil {
-		return nil, httpErr.WithInternalMessage("ParseInt")
+		return nil, s.httpError(w, r, code, "ParseInt", err)
 	}
 
 	user, err := s.env.Auth.LoadUser(ctx, id)
 	if err != nil {
-		return nil, httpErr.WithInternalMessage("LoadUser")
+		return nil, s.httpError(w, r, code, "LoadUser", err)
 	}
 
 	return withUser(ctx, user), nil
 }
 
 func newCSRFToken() string {
-	return uuid.NewV4().String()
+	b := make([]byte, 16)
+	if _, err := io.ReadFull(rand.Reader, b); err != nil {
+		return "" // rand should never fail
+	}
+	return strings.TrimRight(base64.URLEncoding.EncodeToString(b), "=")
 }
 
 func skipCSRFCheck(r *http.Request) bool {
@@ -206,21 +213,20 @@ func skipCSRFCheck(r *http.Request) bool {
 
 func (s *Service) csrfMiddleware(w http.ResponseWriter, r *http.Request) (context.Context, error) {
 	var (
-		ctx     = r.Context()
-		ucl     = NewClaims()
-		code    = http.StatusForbidden
-		httpErr = mux.NewHTTPError(code, http.StatusText(code))
+		ctx  = r.Context()
+		ucl  = NewClaims()
+		code = http.StatusForbidden
 	)
 
-	err := getClaims(r, ucl)
+	err := s.getClaims(r, ucl)
 	if err != nil {
-		return nil, httpErr
+		return nil, s.httpError(w, r, code, "GetClaims", err)
 	}
 
 	if !skipCSRFCheck(r) {
 		headerToken := r.Header.Get(csrfHeader)
 		if headerToken == "" || headerToken != ucl.CSRFToken {
-			return nil, httpErr
+			return nil, s.httpError(w, r, code, "CSRFHeader", nil)
 		}
 	}
 

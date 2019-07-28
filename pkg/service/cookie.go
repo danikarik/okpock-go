@@ -16,7 +16,7 @@ const (
 // ErrInvalidToken returns when cookie is missing or malformed.
 var ErrInvalidToken = errors.New("cookie: missing or malformed access token")
 
-func getClaims(r *http.Request, c Claims) error {
+func (s *Service) getClaims(r *http.Request, c Claims) error {
 	cookie, err := r.Cookie(TokenCookieName)
 	if err == http.ErrNoCookie {
 		return ErrInvalidToken
@@ -30,17 +30,17 @@ func getClaims(r *http.Request, c Claims) error {
 	return c.UnmarshalJWT(tokenString)
 }
 
-func setClaimsCookie(w http.ResponseWriter, c Claims) error {
+func (s *Service) setClaimsCookie(w http.ResponseWriter, c Claims) error {
 	tokenString, err := c.MarshalJWT()
 	if err != nil {
 		return err
 	}
-	http.SetCookie(w, tokenCookie(tokenString))
+	http.SetCookie(w, s.tokenCookie(tokenString))
 	return nil
 }
 
-func tokenCookie(tokenString string) *http.Cookie {
-	return &http.Cookie{
+func (s *Service) tokenCookie(tokenString string) *http.Cookie {
+	cookie := &http.Cookie{
 		Name:     TokenCookieName,
 		Domain:   CookieDomain,
 		Path:     "/",
@@ -49,10 +49,15 @@ func tokenCookie(tokenString string) *http.Cookie {
 		HttpOnly: true,
 		Value:    tokenString,
 	}
+	if s.env.Config.Debug {
+		cookie.Domain = ""
+		cookie.Secure = false
+	}
+	return cookie
 }
 
-func clearCookies(w http.ResponseWriter) error {
-	cookie := tokenCookie("")
+func (s *Service) clearCookies(w http.ResponseWriter) error {
+	cookie := s.tokenCookie("")
 	cookie.Expires = time.Unix(0, 0)
 	cookie.MaxAge = -1
 	cookie.Value = ""

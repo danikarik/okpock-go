@@ -40,7 +40,7 @@ func TestLoginHandler(t *testing.T) {
 
 	ucl := NewClaims().WithUser(user).WithCSRFToken(resp.Header.Get("X-CSRF-TOKEN"))
 	tokenString, _ := ucl.MarshalJWT()
-	tokenCookie := tokenCookie(tokenString)
+	tokenCookie := srv.tokenCookie(tokenString)
 
 	req = newRequest("DELETE", "/logout", nil, nil, nil)
 	req.AddCookie(tokenCookie)
@@ -52,7 +52,7 @@ func TestLoginHandler(t *testing.T) {
 
 	assert.Equal(http.StatusOK, resp.StatusCode)
 
-	req = newRequest("GET", "/me", nil, nil, nil)
+	req = newRequest("GET", "/account", nil, nil, nil)
 	rec = httptest.NewRecorder()
 
 	srv.ServeHTTP(rec, req)

@@ -30,7 +30,7 @@ func TestCSRFMiddleware(t *testing.T) {
 
 	ucl := NewClaims().WithUser(user).WithCSRFToken(newCSRFToken())
 	tokenString, _ := ucl.MarshalJWT()
-	tokenCookie := tokenCookie(tokenString)
+	tokenCookie := srv.tokenCookie(tokenString)
 
 	req := newRequest("DELETE", "/logout", nil, nil, nil)
 	req.AddCookie(tokenCookie)

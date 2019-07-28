@@ -46,11 +46,12 @@ func (s *Service) withRouter() *Service {
 		public := api.NewRoute().Subrouter()
 		public.HandleFunc("/", s.okHandler).Methods("GET")
 		public.HandleFunc("/login", s.loginHandler).Methods("POST")
+		public.HandleFunc("/register", s.registerHandler).Methods("POST")
 
 		protected := api.NewRoute().Subrouter()
 		protected.Use(s.authMiddleware, s.csrfMiddleware)
 		protected.HandleFunc("/logout", s.logoutHandler).Methods("DELETE")
-		protected.HandleFunc("/me", s.meHandler).Methods("GET")
+		protected.HandleFunc("/account", s.accountHandler).Methods("GET")
 	}
 
 	s.handler = s.corsMiddleware(r)

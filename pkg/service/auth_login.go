@@ -35,11 +35,9 @@ func (r *LoginRequest) String() string {
 	)
 }
 
-func withUserClaims(w http.ResponseWriter, u *api.User) error {
-	ucl := NewClaims().
-		WithUser(u).
-		WithCSRFToken(newCSRFToken())
-	err := setClaimsCookie(w, ucl)
+func (s *Service) withUserClaims(w http.ResponseWriter, u *api.User) error {
+	ucl := NewClaims().WithUser(u).WithCSRFToken(newCSRFToken())
+	err := s.setClaimsCookie(w, ucl)
 	if err != nil {
 		return err
 	}
@@ -69,14 +67,14 @@ func (s *Service) loginHandler(w http.ResponseWriter, r *http.Request) error {
 		return s.httpError(w, r, http.StatusInternalServerError, "Authenticate", err)
 	}
 
-	err = withUserClaims(w, user)
+	err = s.withUserClaims(w, user)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "WithUserClaims", err)
 	}
 
-	return nil
+	return sendJSON(w, http.StatusOK, M{"lastSignInAt": user.LastSignInAt})
 }
 
 func (s *Service) logoutHandler(w http.ResponseWriter, r *http.Request) error {
-	return clearCookies(w)
+	return s.clearCookies(w)
 }

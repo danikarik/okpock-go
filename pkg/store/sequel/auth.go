@@ -74,6 +74,8 @@ func (m *MySQL) SaveNewUser(ctx context.Context, user *api.User) error {
 	}
 
 	user.Role = api.ClientRole
+	user.CreatedAt = time.Now()
+	user.UpdatedAt = time.Now()
 
 	query := m.builder.Insert("users").
 		Columns(
@@ -93,8 +95,8 @@ func (m *MySQL) SaveNewUser(ctx context.Context, user *api.User) error {
 			user.PasswordHash,
 			user.AppMetaData,
 			user.UserMetaData,
-			time.Now(),
-			time.Now(),
+			user.CreatedAt,
+			user.UpdatedAt,
 		)
 
 	id, err := m.insertQuery(ctx, query)

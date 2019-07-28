@@ -4,6 +4,7 @@ import "github.com/kelseyhightower/envconfig"
 
 // Config holds environment paramenters.
 type Config struct {
+	Debug        bool   `envconfig:"debug" default:"false" desc:"Application Debug Mode"`
 	Stage        string `envconfig:"stage" default:"development" desc:"Application Stage Environment"`
 	Port         string `envconfig:"port" default:"5000" desc:"Application Port Number"`
 	DatabaseURL  string `envconfig:"database_url" required:"true" desc:"Database URL"`
