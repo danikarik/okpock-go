@@ -38,3 +38,6 @@ build: ## Build local binary
 
 secret: ## Generate secret string and copy to buffer
 	@openssl rand -hex 32 | tr -d '\n' | pbcopy
+
+loc: ## Calculate LOC
+	@find . -name '*.go' | xargs wc -l

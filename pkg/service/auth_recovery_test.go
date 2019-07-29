@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestRegisterHandler(t *testing.T) {
+func TestRecoverHandler(t *testing.T) {
 	type testUser struct {
 		Username string
 		Email    string
@@ -21,46 +21,36 @@ func TestRegisterHandler(t *testing.T) {
 	testCases := []struct {
 		Name     string
 		User     *testUser
-		Request  *RegisterRequest
+		Request  *RecoverRequest
 		Expected int
 	}{
 		{
-			Name: "NewUser",
+			Name: "ExistingUser",
+			User: &testUser{
+				Username: "testuser",
+				Email:    "testuser@example.com",
+				Password: "test",
+			},
+			Request: &RecoverRequest{
+				Email: "testuser@example.com",
+			},
+			Expected: http.StatusOK,
+		},
+		{
+			Name: "NotFound",
 			User: nil,
-			Request: &RegisterRequest{
-				Username: "testuser",
-				Email:    "testuser@example.com",
-				Password: "test",
+			Request: &RecoverRequest{
+				Email: "testuser@example.com",
 			},
-			Expected: http.StatusCreated,
+			Expected: http.StatusNotFound,
 		},
 		{
-			Name: "ExistedUsername",
-			User: &testUser{
-				Username: "testuser",
-				Email:    "testusernew@example.com",
-				Password: "test",
+			Name: "EmptyEmail",
+			User: nil,
+			Request: &RecoverRequest{
+				Email: "",
 			},
-			Request: &RegisterRequest{
-				Username: "testuser",
-				Email:    "testuser@example.com",
-				Password: "test",
-			},
-			Expected: http.StatusNotAcceptable,
-		},
-		{
-			Name: "ExistedEmail",
-			User: &testUser{
-				Username: "testusernew",
-				Email:    "testuser@example.com",
-				Password: "test",
-			},
-			Request: &RegisterRequest{
-				Username: "testuser",
-				Email:    "testuser@example.com",
-				Password: "test",
-			},
-			Expected: http.StatusNotAcceptable,
+			Expected: http.StatusBadRequest,
 		},
 	}
 
@@ -91,7 +81,7 @@ func TestRegisterHandler(t *testing.T) {
 				return
 			}
 
-			req := newRequest("POST", "/register", body, nil, nil)
+			req := newRequest("POST", "/recover", body, nil, nil)
 			rec := httptest.NewRecorder()
 
 			srv.ServeHTTP(rec, req)
@@ -101,18 +91,14 @@ func TestRegisterHandler(t *testing.T) {
 				return
 			}
 
-			if resp.StatusCode == http.StatusCreated {
-				loaded, err := srv.env.Auth.LoadUserByUsernameOrEmail(ctx, tc.Request.Username)
+			if resp.StatusCode == http.StatusOK {
+				loaded, err := srv.env.Auth.LoadUserByUsernameOrEmail(ctx, tc.Request.Email)
 				if !assert.NoError(err) {
 					return
 				}
 
-				assert.Equal(loaded.Username, tc.Request.Username)
-				assert.Equal(loaded.Email, tc.Request.Email)
-				assert.True(loaded.CheckPassword(tc.Request.Password))
-				assert.False(loaded.IsConfirmed())
-				assert.NotEmpty(loaded.GetConfirmationToken())
-				assert.NotNil(loaded.ConfirmationSentAt)
+				assert.NotEmpty(loaded.GetRecoveryToken())
+				assert.NotNil(loaded.RecoverySentAt)
 			}
 		})
 	}

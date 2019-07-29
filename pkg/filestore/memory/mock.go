@@ -32,7 +32,7 @@ func mockIndex(bucket, key string) string {
 	return bucket + "^" + key
 }
 
-func (m *mockHandler) File(ctx context.Context, bucket, key string) (*filestore.Object, error) {
+func (m *mockHandler) GetFile(ctx context.Context, bucket, key string) (*filestore.Object, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -52,7 +52,7 @@ func (m *mockHandler) File(ctx context.Context, bucket, key string) (*filestore.
 	return obj, nil
 }
 
-func (m *mockHandler) Bucket(ctx context.Context, bucket, prefix string) ([]*filestore.Object, error) {
+func (m *mockHandler) GetBucketFiles(ctx context.Context, bucket, prefix string) ([]*filestore.Object, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -74,7 +74,7 @@ func (m *mockHandler) Bucket(ctx context.Context, bucket, prefix string) ([]*fil
 	return objs, nil
 }
 
-func (m *mockHandler) Upload(ctx context.Context, bucket string, obj *filestore.Object) error {
+func (m *mockHandler) UploadFile(ctx context.Context, bucket string, obj *filestore.Object) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 

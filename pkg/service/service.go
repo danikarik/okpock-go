@@ -3,8 +3,8 @@ package service
 import (
 	"net/http"
 
-	"github.com/danikarik/okpock/pkg/env"
 	"github.com/danikarik/mux"
+	"github.com/danikarik/okpock/pkg/env"
 	"go.uber.org/zap"
 )
 

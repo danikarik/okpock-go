@@ -47,6 +47,12 @@ func (s *Service) withRouter() *Service {
 		public.HandleFunc("/", s.okHandler).Methods("GET")
 		public.HandleFunc("/login", s.loginHandler).Methods("POST")
 		public.HandleFunc("/register", s.registerHandler).Methods("POST")
+		public.HandleFunc("/recover", s.recoverHandler).Methods("POST")
+		public.HandleFunc("/verify", s.verifyHandler).Methods("GET").Queries(
+			"type", "{type}",
+			"token", "{token}",
+			"redirect_url", "{redirect_url:http.+}",
+		)
 
 		protected := api.NewRoute().Subrouter()
 		protected.Use(s.authMiddleware, s.csrfMiddleware)

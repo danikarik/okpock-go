@@ -57,12 +57,12 @@ func TestMockUploadFile(t *testing.T) {
 				bucket = env.Get("TEST_PASSES_BUCKET")
 			)
 
-			err = store.Upload(ctx, bucket, tc.Object)
+			err = store.UploadFile(ctx, bucket, tc.Object)
 			if !assert.NoError(err) {
 				return
 			}
 
-			obj, err := store.File(ctx, bucket, tc.Object.Key)
+			obj, err := store.GetFile(ctx, bucket, tc.Object.Key)
 			if !assert.NoError(err) {
 				return
 			}
@@ -72,7 +72,7 @@ func TestMockUploadFile(t *testing.T) {
 			assert.Equal(tc.Object.Body, obj.Body)
 			assert.Equal(tc.Object.ContentType, obj.ContentType)
 
-			objs, err := store.Bucket(ctx, bucket, tc.Object.Prefix)
+			objs, err := store.GetBucketFiles(ctx, bucket, tc.Object.Prefix)
 			if !assert.NoError(err) {
 				return
 			}

@@ -2,6 +2,8 @@ package awsstore_test
 
 import (
 	"context"
+	"os"
+	"strconv"
 	"testing"
 
 	"github.com/danikarik/okpock/pkg/env"
@@ -22,7 +24,18 @@ var requiredVars = []string{
 	"TEST_PROJECT",
 }
 
+func skipTest(t *testing.T) {
+	if v, ok := os.LookupEnv("SKIP_S3_TEST"); ok {
+		skip, err := strconv.ParseBool(v)
+		if err == nil && skip {
+			t.Skip(`skip test: SKIP_S3_TEST is present`)
+		}
+	}
+}
+
 func TestSingleFile(t *testing.T) {
+	skipTest(t)
+
 	env, err := env.NewLookup(requiredVars...)
 	if err != nil {
 		t.Skip(err)
@@ -36,7 +49,7 @@ func TestSingleFile(t *testing.T) {
 		assert.FailNow("could not init handler")
 	}
 
-	obj, err := store.File(ctx, env.Get("TEST_PASSES_BUCKET"), env.Get("TEST_FILE"))
+	obj, err := store.GetFile(ctx, env.Get("TEST_PASSES_BUCKET"), env.Get("TEST_FILE"))
 	if !assert.NoError(err) {
 		assert.FailNow("could not read file")
 	}
@@ -49,6 +62,8 @@ func TestSingleFile(t *testing.T) {
 }
 
 func TestFolderFile(t *testing.T) {
+	skipTest(t)
+
 	env, err := env.NewLookup(requiredVars...)
 	if err != nil {
 		t.Skip(err)
@@ -62,7 +77,7 @@ func TestFolderFile(t *testing.T) {
 		assert.FailNow("could not init handler")
 	}
 
-	obj, err := store.File(ctx, env.Get("TEST_TEMPLATES_BUCKET"), env.Get("TEST_FILE_IN_FOLDER"))
+	obj, err := store.GetFile(ctx, env.Get("TEST_TEMPLATES_BUCKET"), env.Get("TEST_FILE_IN_FOLDER"))
 	if !assert.NoError(err) {
 		assert.FailNow("could not read file")
 	}
@@ -75,6 +90,8 @@ func TestFolderFile(t *testing.T) {
 }
 
 func TestBucket(t *testing.T) {
+	skipTest(t)
+
 	env, err := env.NewLookup(requiredVars...)
 	if err != nil {
 		t.Skip(err)
@@ -88,7 +105,7 @@ func TestBucket(t *testing.T) {
 		assert.FailNow("could not init handler")
 	}
 
-	contents, err := store.Bucket(ctx, env.Get("TEST_TEMPLATES_BUCKET"), env.Get("TEST_PROJECT"))
+	contents, err := store.GetBucketFiles(ctx, env.Get("TEST_TEMPLATES_BUCKET"), env.Get("TEST_PROJECT"))
 	if !assert.NoError(err) {
 		assert.FailNow("could not read file")
 	}
@@ -103,6 +120,8 @@ func TestBucket(t *testing.T) {
 }
 
 func TestUploadSingleFile(t *testing.T) {
+	skipTest(t)
+
 	env, err := env.NewLookup(requiredVars...)
 	if err != nil {
 		t.Skip(err)
@@ -122,7 +141,7 @@ func TestUploadSingleFile(t *testing.T) {
 		ContentType: "text/plain",
 	}
 
-	err = store.Upload(ctx, env.Get("TEST_PASSES_BUCKET"), obj)
+	err = store.UploadFile(ctx, env.Get("TEST_PASSES_BUCKET"), obj)
 	if !assert.NoError(err) {
 		assert.FailNow("could not upload file")
 	}
@@ -137,6 +156,8 @@ func TestUploadSingleFile(t *testing.T) {
 }
 
 func TestUploadFolderFile(t *testing.T) {
+	skipTest(t)
+
 	env, err := env.NewLookup(requiredVars...)
 	if err != nil {
 		t.Skip(err)
@@ -156,7 +177,7 @@ func TestUploadFolderFile(t *testing.T) {
 		Body:        []byte("Hello World\n"),
 		ContentType: "text/plain",
 	}
-	err = store.Upload(ctx, env.Get("TEST_PASSES_BUCKET"), obj)
+	err = store.UploadFile(ctx, env.Get("TEST_PASSES_BUCKET"), obj)
 	if !assert.NoError(err) {
 		assert.FailNow("could not upload file")
 	}
