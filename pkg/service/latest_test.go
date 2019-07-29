@@ -53,7 +53,7 @@ func TestLatestPass(t *testing.T) {
 		Body:        body,
 		ContentType: filestore.ApplePkpass,
 	}
-	err = srv.env.Storage.Upload(ctx, srv.env.Config.PassesBucket, obj)
+	err = srv.env.Storage.UploadFile(ctx, srv.env.Config.PassesBucket, obj)
 	if !assert.NoError(err) {
 		return
 	}

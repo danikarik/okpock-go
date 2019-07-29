@@ -37,7 +37,15 @@ func (o *Object) Serve(w http.ResponseWriter) error {
 
 // Storage holds method for accessing remote buckets.
 type Storage interface {
-	File(ctx context.Context, bucket, key string) (*Object, error)
-	Bucket(ctx context.Context, bucket, prefix string) ([]*Object, error)
-	Upload(ctx context.Context, bucket string, obj *Object) error
+	// GetFile ...
+	// TODO: description
+	GetFile(ctx context.Context, bucket, key string) (*Object, error)
+
+	// GetBucketFiles ...
+	// TODO: description
+	GetBucketFiles(ctx context.Context, bucket, prefix string) ([]*Object, error)
+
+	// UploadFile ...
+	// TODO: description
+	UploadFile(ctx context.Context, bucket string, obj *Object) error
 }

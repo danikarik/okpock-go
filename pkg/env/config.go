@@ -10,6 +10,7 @@ type Config struct {
 	DatabaseURL  string `envconfig:"database_url" required:"true" desc:"Database URL"`
 	PassesBucket string `envconfig:"passes_bucket" required:"true" desc:"Passes Bucket Name"`
 	ServerSecret string `envconfig:"server_secret" required:"true" desc:"JWT Server Secret"`
+	MailerRegion string `envconfig:"mailer_region" required:"true" desc:"Mailer Region"`
 }
 
 // NewConfig parses and returns a new config.

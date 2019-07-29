@@ -8,6 +8,8 @@ import (
 	"github.com/danikarik/okpock/pkg/env"
 	"github.com/danikarik/okpock/pkg/filestore"
 	"github.com/danikarik/okpock/pkg/filestore/awsstore"
+	"github.com/danikarik/okpock/pkg/mail"
+	"github.com/danikarik/okpock/pkg/mail/awsmail"
 	"github.com/danikarik/okpock/pkg/service"
 	"github.com/danikarik/okpock/pkg/store/sequel"
 	_ "github.com/go-sql-driver/mysql"
@@ -62,10 +64,18 @@ func main() {
 		}
 	}
 
+	var mailer mail.Mailer
+	{
+		mailer, err = awsmail.New(cfg.MailerRegion)
+		if err != nil {
+			errorExit("aws mail: %v", err)
+		}
+	}
+
 	var srv *service.Service
 	{
 		db := sequel.New(conn)
-		env := env.New(cfg, db, db, s3)
+		env := env.New(cfg, db, db, s3, mailer)
 
 		srv = service.New(env, logger)
 	}

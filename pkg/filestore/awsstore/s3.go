@@ -32,7 +32,7 @@ type s3handler struct {
 	srv *s3.S3
 }
 
-func (s3h *s3handler) File(ctx context.Context, bucket, key string) (*filestore.Object, error) {
+func (s3h *s3handler) GetFile(ctx context.Context, bucket, key string) (*filestore.Object, error) {
 	input := &s3.GetObjectInput{
 		Bucket: aws.String(bucket),
 		Key:    aws.String(key),
@@ -52,7 +52,7 @@ func (s3h *s3handler) File(ctx context.Context, bucket, key string) (*filestore.
 	}, nil
 }
 
-func (s3h *s3handler) Bucket(ctx context.Context, bucket, prefix string) ([]*filestore.Object, error) {
+func (s3h *s3handler) GetBucketFiles(ctx context.Context, bucket, prefix string) ([]*filestore.Object, error) {
 	contents := make([]*filestore.Object, 0)
 	input := &s3.ListObjectsInput{
 		Bucket: aws.String(bucket),
@@ -71,7 +71,7 @@ func (s3h *s3handler) Bucket(ctx context.Context, bucket, prefix string) ([]*fil
 		return nil, fmt.Errorf("could not list objects %s: %v", bucket, err)
 	}
 	for _, obj := range output.Contents {
-		content, err := s3h.File(ctx, bucket, *obj.Key)
+		content, err := s3h.GetFile(ctx, bucket, *obj.Key)
 		if err != nil {
 			return nil, fmt.Errorf("could not read content %s: %v", bucket, err)
 		}
@@ -82,7 +82,7 @@ func (s3h *s3handler) Bucket(ctx context.Context, bucket, prefix string) ([]*fil
 	return contents, nil
 }
 
-func (s3h *s3handler) Upload(ctx context.Context, bucket string, obj *filestore.Object) error {
+func (s3h *s3handler) UploadFile(ctx context.Context, bucket string, obj *filestore.Object) error {
 	if obj == nil {
 		return errors.New("object cannot be empty")
 	}

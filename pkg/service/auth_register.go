@@ -74,5 +74,24 @@ func (s *Service) registerHandler(w http.ResponseWriter, r *http.Request) error 
 		return s.httpError(w, r, http.StatusInternalServerError, "SaveNewUser", err)
 	}
 
-	return sendJSON(w, http.StatusCreated, M{"id": user.ID})
+	err = s.env.Auth.SetConfirmationToken(ctx, api.SignUpConfirmation, user)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "SetConfirmationToken", err)
+	}
+
+	message, err := s.confirmMessage(user)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "ConfirmMessage", err)
+	}
+
+	sentAt, err := s.env.Mailer.SendMail(ctx, message)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "SendMail", err)
+	}
+
+	return sendJSON(w, http.StatusCreated, M{
+		"id":        user.ID,
+		"messageId": message.ID,
+		"sentAt":    sentAt,
+	})
 }

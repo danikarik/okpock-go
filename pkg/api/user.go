@@ -10,15 +10,19 @@ import (
 )
 
 // Confirmation is an alias for confirmation type.
-type Confirmation int
+type Confirmation string
 
-const (
-	_ Confirmation = iota
-	// SignUpConfirmation is used when `sign up` flow is used.
-	SignUpConfirmation
-	// InviteConfirmation is used when `invite user` flow is used.
-	InviteConfirmation
+var (
+	// SignUpConfirmation is used when `register` flow is used.
+	SignUpConfirmation = Confirmation("register")
+	// InviteConfirmation is used when `invite` flow is used.
+	InviteConfirmation = Confirmation("invite")
+	// RecoveryConfirmation is used when `recovery` flow is used.
+	RecoveryConfirmation = Confirmation("recovery")
 )
+
+// ErrUnknownConfirmation returned when no confirmation type is match.
+var ErrUnknownConfirmation = errors.New("confirmation: unknown type")
 
 // Role is an alias for role representation.
 type Role string
