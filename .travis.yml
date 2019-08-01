@@ -21,6 +21,7 @@ deploy:
     app: "$AWS_APPLICATION_NAME"
     env: "$AWS_APPLICATION_ENV"
     bucket_name: "$AWS_S3_BUCKET"
+    bucket_path: "okpock/"
     on:
       branch: master
 
