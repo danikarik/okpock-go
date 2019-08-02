@@ -77,3 +77,8 @@ func (s *Service) confirmationURL(u *api.User, c api.Confirmation) (string, erro
 	link.RawQuery = values.Encode()
 	return link.String(), nil
 }
+
+func (s *Service) redirect(w http.ResponseWriter, r *http.Request, url string) error {
+	http.Redirect(w, r, url, http.StatusMovedPermanently)
+	return nil
+}

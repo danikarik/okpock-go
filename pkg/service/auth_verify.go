@@ -45,8 +45,7 @@ func (s *Service) verifyByConfirmationToken(vars map[string]string, w http.Respo
 		return s.httpError(w, r, http.StatusInternalServerError, "ConfirmUser", err)
 	}
 
-	http.Redirect(w, r, redirectURL, http.StatusMovedPermanently)
-	return nil
+	return s.redirect(w, r, redirectURL)
 }
 
 func (s *Service) verifyByRecoveryToken(vars map[string]string, w http.ResponseWriter, r *http.Request) error {
@@ -63,6 +62,5 @@ func (s *Service) verifyByRecoveryToken(vars map[string]string, w http.ResponseW
 	v.Add("token", token)
 	url.RawQuery = v.Encode()
 
-	http.Redirect(w, r, url.String(), http.StatusMovedPermanently)
-	return nil
+	return s.redirect(w, r, url.String())
 }

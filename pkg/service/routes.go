@@ -48,6 +48,7 @@ func (s *Service) withRouter() *Service {
 		public.HandleFunc("/login", s.loginHandler).Methods("POST")
 		public.HandleFunc("/register", s.registerHandler).Methods("POST")
 		public.HandleFunc("/recover", s.recoverHandler).Methods("POST")
+		public.HandleFunc("/reset", s.resetHandler).Methods("POST")
 		public.HandleFunc("/verify", s.verifyHandler).Methods("GET").Queries(
 			"type", "{type}",
 			"token", "{token}",
