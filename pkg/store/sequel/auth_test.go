@@ -251,6 +251,9 @@ func TestLoadUser(t *testing.T) {
 		{
 			Name: "LoadUserByRecoveryToken",
 		},
+		{
+			Name: "LoadUserByEmailChangeToken",
+		},
 	}
 
 	for _, tc := range testCases {
@@ -316,6 +319,13 @@ func TestLoadUser(t *testing.T) {
 						return
 					}
 					loaded, err = db.LoadUserByRecoveryToken(ctx, u.GetRecoveryToken())
+					break
+				case "LoadUserByEmailChangeToken":
+					err = db.SetEmailChangeToken(ctx, fakeEmail(), u)
+					if !assert.NoError(err) {
+						return
+					}
+					loaded, err = db.LoadUserByEmailChangeToken(ctx, u.GetEmailChangeToken())
 					break
 				default:
 					err = store.ErrNotFound

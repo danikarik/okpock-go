@@ -396,6 +396,9 @@ func TestLoadUser(t *testing.T) {
 		{
 			Name: "LoadUserByRecoveryToken",
 		},
+		{
+			Name: "LoadUserByEmailChangeToken",
+		},
 	}
 
 	for i, tc := range testCases {
@@ -441,6 +444,13 @@ func TestLoadUser(t *testing.T) {
 						return
 					}
 					loaded, err = mock.LoadUserByRecoveryToken(ctx, u.GetRecoveryToken())
+					break
+				case "LoadUserByEmailChangeToken":
+					err = mock.SetEmailChangeToken(ctx, "newemail@example.com", u)
+					if !assert.NoError(err) {
+						return
+					}
+					loaded, err = mock.LoadUserByEmailChangeToken(ctx, u.GetEmailChangeToken())
 					break
 				default:
 					err = store.ErrNotFound

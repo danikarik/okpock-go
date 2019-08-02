@@ -247,6 +247,20 @@ func (m *Memory) LoadUserByRecoveryToken(ctx context.Context, token string) (*ap
 	return nil, store.ErrNotFound
 }
 
+// LoadUserByEmailChangeToken ...
+func (m *Memory) LoadUserByEmailChangeToken(ctx context.Context, token string) (*api.User, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	for _, u := range m.users {
+		if u.GetEmailChangeToken() == token {
+			return u, nil
+		}
+	}
+
+	return nil, store.ErrNotFound
+}
+
 // Authenticate ...
 func (m *Memory) Authenticate(ctx context.Context, password string, user *api.User) error {
 	m.mu.Lock()
@@ -274,6 +288,7 @@ func (m *Memory) ConfirmUser(ctx context.Context, user *api.User) error {
 
 	now := time.Now()
 	user.ConfirmedAt = &now
+	user.SetField(api.ConfirmationToken, "")
 	m.users[user.ID] = user
 
 	return nil

@@ -32,6 +32,10 @@ type Auth interface {
 	// TODO: description
 	LoadUserByRecoveryToken(ctx context.Context, token string) (*User, error)
 
+	// LoadUserByEmailChangeToken ...
+	// TODO: description
+	LoadUserByEmailChangeToken(ctx context.Context, token string) (*User, error)
+
 	// Authenticate ...
 	// TODO: description
 	Authenticate(ctx context.Context, password string, user *User) error

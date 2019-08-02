@@ -20,6 +20,8 @@ func (s *Service) verifyHandler(w http.ResponseWriter, r *http.Request) error {
 		return s.verifyByConfirmationToken(vars, w, r)
 	case api.RecoveryConfirmation:
 		return s.verifyByRecoveryToken(vars, w, r)
+	case api.EmailChangeConfirmation:
+		return s.verifyByEmailChangeToken(vars, w, r)
 	}
 
 	return s.httpError(w, r, http.StatusBadRequest, "Confirmation", api.ErrUnknownConfirmation)
@@ -63,4 +65,32 @@ func (s *Service) verifyByRecoveryToken(vars map[string]string, w http.ResponseW
 	url.RawQuery = v.Encode()
 
 	return s.redirect(w, r, url.String())
+}
+
+func (s *Service) verifyByEmailChangeToken(vars map[string]string, w http.ResponseWriter, r *http.Request) error {
+	var (
+		ctx         = r.Context()
+		token       = vars["token"]
+		redirectURL = vars["redirect_url"]
+	)
+
+	user, err := s.env.Auth.LoadUserByEmailChangeToken(ctx, token)
+	if err == store.ErrNotFound {
+		return s.httpError(w, r, http.StatusNotFound, "LoadUserByEmailChangeToken", err)
+	}
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "LoadUserByEmailChangeToken", err)
+	}
+
+	err = s.env.Auth.ConfirmEmailChange(ctx, user)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "ConfirmEmailChange", err)
+	}
+
+	err = s.clearCookies(w)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "ClearCookies", err)
+	}
+
+	return s.redirect(w, r, redirectURL)
 }

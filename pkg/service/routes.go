@@ -59,6 +59,7 @@ func (s *Service) withRouter() *Service {
 		protected.Use(s.authMiddleware, s.csrfMiddleware)
 		protected.HandleFunc("/logout", s.logoutHandler).Methods("DELETE")
 		protected.HandleFunc("/account", s.accountHandler).Methods("GET")
+		protected.HandleFunc("/account/email", s.emailChangeHandler).Methods("PUT")
 	}
 
 	s.handler = s.corsMiddleware(r)

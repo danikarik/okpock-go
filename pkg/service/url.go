@@ -72,6 +72,11 @@ func (s *Service) confirmationURL(u *api.User, c api.Confirmation) (string, erro
 		values.Add("token", u.GetRecoveryToken())
 		values.Add("redirect_url", s.appURL())
 		break
+	case api.EmailChangeConfirmation:
+		values.Add("type", string(c))
+		values.Add("token", u.GetEmailChangeToken())
+		values.Add("redirect_url", s.appURL())
+		break
 	}
 
 	link.RawQuery = values.Encode()

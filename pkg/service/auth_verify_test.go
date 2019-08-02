@@ -54,6 +54,16 @@ func TestVerifyHandler(t *testing.T) {
 			Confirm:  api.RecoveryConfirmation,
 			Expected: http.StatusMovedPermanently,
 		},
+		{
+			Name: "EmailChange",
+			User: &testUser{
+				Username: "emailchange",
+				Email:    "emailchange@example.com",
+				Password: "emailchange",
+			},
+			Confirm:  api.EmailChangeConfirmation,
+			Expected: http.StatusMovedPermanently,
+		},
 	}
 
 	for _, tc := range testCases {
@@ -98,6 +108,13 @@ func TestVerifyHandler(t *testing.T) {
 				}
 				token = user.GetRecoveryToken()
 				break
+			case api.EmailChangeConfirmation:
+				err = srv.env.Auth.SetEmailChangeToken(ctx, "new@example.com", user)
+				if !assert.NoError(err) {
+					return
+				}
+				token = user.GetEmailChangeToken()
+				break
 			}
 
 			url, err := url.Parse("/verify")
@@ -120,23 +137,39 @@ func TestVerifyHandler(t *testing.T) {
 			}
 
 			if resp.StatusCode == http.StatusMovedPermanently {
-				loaded, err := srv.env.Auth.LoadUserByUsernameOrEmail(ctx, tc.User.Email)
-				if !assert.NoError(err) {
-					return
+				var loaded *api.User
+				{
+					if tc.Confirm == api.EmailChangeConfirmation {
+						loaded, err = srv.env.Auth.LoadUserByUsernameOrEmail(ctx, "new@example.com")
+						if !assert.NoError(err) {
+							return
+						}
+					} else {
+						loaded, err = srv.env.Auth.LoadUserByUsernameOrEmail(ctx, tc.User.Email)
+						if !assert.NoError(err) {
+							return
+						}
+					}
 				}
 
 				switch tc.Confirm {
 				case api.SignUpConfirmation:
-					assert.NotEmpty(loaded.GetConfirmationToken())
+					assert.Empty(loaded.GetConfirmationToken())
 					assert.NotNil(loaded.ConfirmationSentAt)
 					break
 				case api.InviteConfirmation:
-					assert.NotEmpty(loaded.GetConfirmationToken())
+					assert.Empty(loaded.GetConfirmationToken())
 					assert.NotNil(loaded.InvitedAt)
 					break
 				case api.RecoveryConfirmation:
+					// should be empty after reset handler
 					assert.NotEmpty(loaded.GetRecoveryToken())
 					assert.NotNil(loaded.RecoverySentAt)
+					break
+				case api.EmailChangeConfirmation:
+					assert.Empty(loaded.GetEmailChangeToken())
+					assert.NotNil(loaded.EmailChangeSentAt)
+					assert.Equal("new@example.com", loaded.Email)
 					break
 				}
 			}

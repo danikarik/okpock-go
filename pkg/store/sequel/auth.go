@@ -182,6 +182,19 @@ func (m *MySQL) LoadUserByRecoveryToken(ctx context.Context, token string) (*api
 	return m.loadUser(ctx, query)
 }
 
+// LoadUserByEmailChangeToken ...
+func (m *MySQL) LoadUserByEmailChangeToken(ctx context.Context, token string) (*api.User, error) {
+	if token == "" {
+		return nil, store.ErrEmptyQueryParam
+	}
+
+	query := m.builder.Select("*").
+		From("users").
+		Where(sq.Eq{"email_change_token": token})
+
+	return m.loadUser(ctx, query)
+}
+
 // Authenticate ...
 func (m *MySQL) Authenticate(ctx context.Context, password string, user *api.User) error {
 	err := checkUser(user, checkNilStruct|checkZeroID)

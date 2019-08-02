@@ -13,12 +13,14 @@ import (
 type Confirmation string
 
 var (
-	// SignUpConfirmation is used when `register` flow is used.
+	// SignUpConfirmation is used when `register` flow is initiated.
 	SignUpConfirmation = Confirmation("register")
-	// InviteConfirmation is used when `invite` flow is used.
+	// InviteConfirmation is used when `invite` flow is initiated.
 	InviteConfirmation = Confirmation("invite")
-	// RecoveryConfirmation is used when `recovery` flow is used.
+	// RecoveryConfirmation is used when `recovery` flow is initiated.
 	RecoveryConfirmation = Confirmation("recovery")
+	// EmailChangeConfirmation is used when `email_change` flow is initiated.
+	EmailChangeConfirmation = Confirmation("email_change")
 )
 
 // ErrUnknownConfirmation returned when no confirmation type is match.
