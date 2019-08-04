@@ -391,6 +391,7 @@ func (m *MySQL) UpdatePassword(ctx context.Context, password string, user *api.U
 	}
 
 	user.PasswordHash = hash
+	user.UpdatedAt = time.Now()
 
 	query := m.builder.Update("users").
 		Set("password_hash", user.PasswordHash).
@@ -412,6 +413,7 @@ func (m *MySQL) UpdateUserMetaData(ctx context.Context, data map[string]interfac
 	}
 
 	user.UserMetaData = data
+	user.UpdatedAt = time.Now()
 
 	query := m.builder.Update("users").
 		Set("raw_user_metadata", user.UserMetaData).
@@ -433,6 +435,7 @@ func (m *MySQL) UpdateAppMetaData(ctx context.Context, data map[string]interface
 	}
 
 	user.AppMetaData = data
+	user.UpdatedAt = time.Now()
 
 	query := m.builder.Update("users").
 		Set("raw_app_metadata", user.AppMetaData).

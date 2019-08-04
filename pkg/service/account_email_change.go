@@ -14,7 +14,7 @@ type EmailChangeRequest struct {
 // IsValid checks whether input is valid or not.
 func (r *EmailChangeRequest) IsValid() error {
 	if r.Email == "" {
-		return errors.New("Email is empty")
+		return errors.New("email is empty")
 	}
 	return nil
 }

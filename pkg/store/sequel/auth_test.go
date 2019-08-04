@@ -836,6 +836,7 @@ func TestUpdatePassword(t *testing.T) {
 
 	ok := loaded.CheckPassword(user.NewPassword)
 	assert.True(ok)
+	assert.False(loaded.UpdatedAt.IsZero())
 }
 
 func TestUpdateMetaData(t *testing.T) {
@@ -893,6 +894,8 @@ func TestUpdateMetaData(t *testing.T) {
 	if !assert.NoError(err) {
 		return
 	}
+
+	assert.False(loaded.UpdatedAt.IsZero())
 
 	v, ok := loaded.UserMetaData[user.UserDataKey]
 	if !assert.True(ok) {
