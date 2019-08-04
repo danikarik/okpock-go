@@ -867,6 +867,7 @@ func TestUpdatePassword(t *testing.T) {
 
 	ok := u.CheckPassword(user.NewPassword)
 	assert.True(ok)
+	assert.False(u.UpdatedAt.IsZero())
 }
 
 func TestUpdateMetaData(t *testing.T) {
@@ -916,6 +917,7 @@ func TestUpdateMetaData(t *testing.T) {
 	if !assert.Equal(user.UserDataKey, v) {
 		return
 	}
+	assert.False(u.UpdatedAt.IsZero())
 
 	appData := map[string]interface{}{user.AppDataKey: user.AppDataKey}
 	err = mock.UpdateAppMetaData(ctx, appData, u)
@@ -930,4 +932,5 @@ func TestUpdateMetaData(t *testing.T) {
 	if !assert.Equal(user.AppDataKey, v) {
 		return
 	}
+	assert.False(u.UpdatedAt.IsZero())
 }

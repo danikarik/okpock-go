@@ -380,6 +380,7 @@ func (m *Memory) UpdatePassword(ctx context.Context, password string, user *api.
 	}
 
 	user.PasswordHash = hash
+	user.UpdatedAt = time.Now()
 	m.users[user.ID] = user
 
 	return nil
@@ -391,6 +392,7 @@ func (m *Memory) UpdateUserMetaData(ctx context.Context, data map[string]interfa
 	defer m.mu.Unlock()
 
 	user.UserMetaData = data
+	user.UpdatedAt = time.Now()
 	m.users[user.ID] = user
 
 	return nil
@@ -402,6 +404,7 @@ func (m *Memory) UpdateAppMetaData(ctx context.Context, data map[string]interfac
 	defer m.mu.Unlock()
 
 	user.AppMetaData = data
+	user.UpdatedAt = time.Now()
 	m.users[user.ID] = user
 
 	return nil

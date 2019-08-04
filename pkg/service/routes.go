@@ -61,6 +61,7 @@ func (s *Service) withRouter() *Service {
 		protected.HandleFunc("/account", s.accountHandler).Methods("GET")
 		protected.HandleFunc("/account/email", s.emailChangeHandler).Methods("PUT")
 		protected.HandleFunc("/account/password", s.passwordChangeHandler).Methods("PUT")
+		protected.HandleFunc("/account/metadata", s.metaDataChangeHandler).Methods("PUT")
 	}
 
 	s.handler = s.corsMiddleware(r)

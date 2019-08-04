@@ -92,7 +92,7 @@ type User struct {
 
 	LastSignInAt *time.Time `json:"lastSignInAt,omitempty" db:"last_signin_at"`
 
-	AppMetaData  JSONMap `json:"appMetadata" db:"raw_app_metadata"`
+	AppMetaData  JSONMap `json:"-" db:"raw_app_metadata"`
 	UserMetaData JSONMap `json:"userMetadata" db:"raw_user_metadata"`
 
 	IsSuperAdmin bool `json:"-" db:"is_super_admin"`

@@ -6,12 +6,13 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"time"
 
 	"github.com/danikarik/okpock/pkg/api"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestPasswordChangeHandler(t *testing.T) {
+func TestMetaDataChangeHandler(t *testing.T) {
 	type testUser struct {
 		Username string
 		Email    string
@@ -21,7 +22,7 @@ func TestPasswordChangeHandler(t *testing.T) {
 	testCases := []struct {
 		Name     string
 		User     *testUser
-		Request  *PasswordChangeRequest
+		Request  *MetaDataChangeRequest
 		Expected int
 	}{
 		{
@@ -31,32 +32,34 @@ func TestPasswordChangeHandler(t *testing.T) {
 				Email:    "testuser@example.com",
 				Password: "test",
 			},
-			Request: &PasswordChangeRequest{
-				Password: "newpass",
+			Request: &MetaDataChangeRequest{
+				Data: api.JSONMap{
+					"lastSeen": time.Now(),
+				},
 			},
 			Expected: http.StatusOK,
 		},
 		{
-			Name: "SamePassword",
+			Name: "EmptyData",
 			User: &testUser{
-				Username: "samepassword",
-				Email:    "samepassword@example.com",
+				Username: "emptyemail",
+				Email:    "emptyemail@example.com",
 				Password: "test",
 			},
-			Request: &PasswordChangeRequest{
-				Password: "test",
+			Request: &MetaDataChangeRequest{
+				Data: api.JSONMap{},
 			},
-			Expected: http.StatusNotAcceptable,
+			Expected: http.StatusBadRequest,
 		},
 		{
-			Name: "EmptyPassword",
+			Name: "NilData",
 			User: &testUser{
-				Username: "emptypassword",
-				Email:    "emptypassword@example.com",
+				Username: "nildata",
+				Email:    "nildata@example.com",
 				Password: "test",
 			},
-			Request: &PasswordChangeRequest{
-				Password: "",
+			Request: &MetaDataChangeRequest{
+				Data: nil,
 			},
 			Expected: http.StatusBadRequest,
 		},
@@ -91,7 +94,7 @@ func TestPasswordChangeHandler(t *testing.T) {
 			tokenString, _ := ucl.MarshalJWT()
 			tokenCookie := srv.tokenCookie(tokenString)
 
-			req := newRequest("PUT", "/account/password", body, nil, nil)
+			req := newRequest("PUT", "/account/metadata", body, nil, nil)
 			req.Header.Set(csrfHeader, ucl.CSRFToken)
 			req.AddCookie(tokenCookie)
 			rec := httptest.NewRecorder()
@@ -106,7 +109,14 @@ func TestPasswordChangeHandler(t *testing.T) {
 			if resp.StatusCode == http.StatusOK {
 				loaded, err := srv.env.Auth.LoadUserByUsernameOrEmail(ctx, tc.User.Email)
 				assert.NoError(err)
-				assert.True(loaded.CheckPassword(tc.Request.Password))
+
+				foundAll := true
+				for k := range tc.Request.Data {
+					if _, ok := loaded.UserMetaData[k]; !ok {
+						foundAll = false
+					}
+				}
+				assert.True(foundAll)
 			}
 		})
 	}
