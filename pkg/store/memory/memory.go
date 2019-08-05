@@ -8,8 +8,8 @@ import (
 	"time"
 
 	"github.com/danikarik/okpock/pkg/api"
+	"github.com/danikarik/okpock/pkg/secure"
 	"github.com/danikarik/okpock/pkg/store"
-	uuid "github.com/satori/go.uuid"
 )
 
 type pass struct {
@@ -300,7 +300,7 @@ func (m *Memory) SetConfirmationToken(ctx context.Context, confirm api.Confirmat
 	defer m.mu.Unlock()
 
 	now := time.Now()
-	token := uuid.NewV4().String()
+	token := secure.Token()
 
 	if confirm == api.SignUpConfirmation {
 		user.ConfirmationSentAt = &now
@@ -331,7 +331,7 @@ func (m *Memory) SetRecoveryToken(ctx context.Context, user *api.User) error {
 	defer m.mu.Unlock()
 
 	now := time.Now()
-	token := uuid.NewV4().String()
+	token := secure.Token()
 
 	user.RecoverySentAt = &now
 	user.SetField(api.RecoveryToken, token)
@@ -359,7 +359,7 @@ func (m *Memory) SetEmailChangeToken(ctx context.Context, email string, user *ap
 	defer m.mu.Unlock()
 
 	now := time.Now()
-	token := uuid.NewV4().String()
+	token := secure.Token()
 
 	user.EmailChangeSentAt = &now
 	user.SetField(api.EmailChange, email)

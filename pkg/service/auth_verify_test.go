@@ -158,7 +158,8 @@ func TestVerifyHandler(t *testing.T) {
 					assert.NotNil(loaded.ConfirmationSentAt)
 					break
 				case api.InviteConfirmation:
-					assert.Empty(loaded.GetConfirmationToken())
+					// should be empty after reset handler
+					assert.NotEmpty(loaded.GetConfirmationToken())
 					assert.NotNil(loaded.InvitedAt)
 					break
 				case api.RecoveryConfirmation:

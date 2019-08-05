@@ -7,8 +7,8 @@ import (
 
 	sq "github.com/Masterminds/squirrel"
 	"github.com/danikarik/okpock/pkg/api"
+	"github.com/danikarik/okpock/pkg/secure"
 	"github.com/danikarik/okpock/pkg/store"
-	uuid "github.com/satori/go.uuid"
 )
 
 const (
@@ -254,7 +254,7 @@ func (m *MySQL) SetConfirmationToken(ctx context.Context, confirm api.Confirmati
 	}
 
 	now := time.Now()
-	token := uuid.NewV4().String()
+	token := secure.Token()
 
 	user.SetField(api.ConfirmationToken, token)
 
@@ -307,7 +307,7 @@ func (m *MySQL) SetRecoveryToken(ctx context.Context, user *api.User) error {
 	}
 
 	now := time.Now()
-	token := uuid.NewV4().String()
+	token := secure.Token()
 
 	user.RecoverySentAt = &now
 	user.SetField(api.RecoveryToken, token)
@@ -358,7 +358,7 @@ func (m *MySQL) SetEmailChangeToken(ctx context.Context, email string, user *api
 	}
 
 	now := time.Now()
-	token := uuid.NewV4().String()
+	token := secure.Token()
 
 	user.EmailChangeSentAt = &now
 	user.SetField(api.EmailChange, email)

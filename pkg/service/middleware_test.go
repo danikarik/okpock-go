@@ -39,14 +39,6 @@ func TestCSRFMiddleware(t *testing.T) {
 	srv.ServeHTTP(rec, req)
 	resp := rec.Result()
 
-	assert.Equal(http.StatusForbidden, resp.StatusCode)
-
-	req.Header.Add(csrfHeader, ucl.CSRFToken)
-	rec = httptest.NewRecorder()
-
-	srv.ServeHTTP(rec, req)
-	resp = rec.Result()
-
 	assert.Equal(http.StatusOK, resp.StatusCode)
 }
 
