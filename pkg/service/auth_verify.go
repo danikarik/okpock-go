@@ -1,12 +1,26 @@
 package service
 
 import (
+	"errors"
 	"net/http"
 	"net/url"
+	"time"
 
 	"github.com/danikarik/okpock/pkg/api"
 	"github.com/danikarik/okpock/pkg/store"
 )
+
+const recoveryTokenTTL = 1 * time.Hour
+
+// ErrExpiredToken raises when token TTL exceeded.
+var ErrExpiredToken = errors.New("token: allowed time is expired")
+
+func tokenExpired(t time.Time) error {
+	if time.Since(t) > recoveryTokenTTL {
+		return ErrExpiredToken
+	}
+	return nil
+}
 
 func (s *Service) verifyHandler(w http.ResponseWriter, r *http.Request) error {
 	vars, err := checkQueryParams(r)
@@ -74,10 +88,21 @@ func (s *Service) verifyByInviteConfirmationToken(vars map[string]string, w http
 
 func (s *Service) verifyByRecoveryToken(vars map[string]string, w http.ResponseWriter, r *http.Request) error {
 	var (
+		ctx         = r.Context()
 		token       = vars["token"]
 		confirm     = vars["type"]
 		redirectURL = vars["redirect_url"]
 	)
+
+	user, err := s.env.Auth.LoadUserByRecoveryToken(ctx, token)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "LoadUserByRecoveryToken", err)
+	}
+
+	err = tokenExpired(*user.RecoverySentAt)
+	if err != nil {
+		return s.httpError(w, r, http.StatusBadRequest, "TokenExpired", err)
+	}
 
 	url, err := url.Parse(redirectURL)
 	if err != nil {
