@@ -2,10 +2,7 @@ package service
 
 import (
 	"context"
-	"crypto/rand"
-	"encoding/base64"
 	"errors"
-	"io"
 	"net/http"
 	"regexp"
 	"runtime/debug"
@@ -15,6 +12,7 @@ import (
 
 	"github.com/danikarik/mux"
 	"github.com/danikarik/okpock/pkg/api"
+	"github.com/danikarik/okpock/pkg/secure"
 	"github.com/rs/cors"
 	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
@@ -36,6 +34,11 @@ var (
 )
 
 const csrfHeader string = "X-CSRF-TOKEN"
+
+const (
+	metaReferer               string = "referer"
+	metaSuggestChangeUsername string = "suggestChangeUsername"
+)
 
 var safeMethods = []string{"GET", "HEAD", "OPTIONS", "TRACE"}
 
@@ -190,13 +193,7 @@ func (s *Service) authMiddleware(w http.ResponseWriter, r *http.Request) (contex
 	return withUser(ctx, user), nil
 }
 
-func newCSRFToken() string {
-	b := make([]byte, 16)
-	if _, err := io.ReadFull(rand.Reader, b); err != nil {
-		return "" // rand should never fail
-	}
-	return strings.TrimRight(base64.URLEncoding.EncodeToString(b), "=")
-}
+func newCSRFToken() string { return secure.Token() }
 
 func skipCSRFCheck(r *http.Request) bool {
 	origin := r.Header.Get("Origin")

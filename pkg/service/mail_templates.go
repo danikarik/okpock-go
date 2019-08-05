@@ -39,6 +39,22 @@ Follow this link to confirm your account:
 {{ .ConfirmationURL }}
 `
 
+const inviteHTML = `
+<h2>Accept invite</h2>
+
+<p>{{ .Referer }} has invited you to join {{ .AppURL }} workspace.</p>
+<p>Follow this link to confirm your account:</p>
+<p><a href="{{ .ConfirmationURL }}">Confirm your email</a></p>
+`
+
+const inviteText = `
+Accept invite
+
+{{ .Referer }} has invited you to join {{ .AppURL }} workspace.
+Follow this link to confirm your account:
+{{ .ConfirmationURL }}
+`
+
 const emailChangeHTML = `
 <h2>Confirm your email change</h2>
 
@@ -136,6 +152,39 @@ func (s *Service) confirmMessage(u *api.User) (*mail.Message, error) {
 		defaultSender,
 		u.Email,
 		"Confirm signup",
+		html,
+		text,
+		mail.DefaultCharset,
+	), nil
+}
+
+func (s *Service) inviteMessage(ref, u *api.User) (*mail.Message, error) {
+	url, err := s.confirmationURL(u, api.InviteConfirmation)
+	if err != nil {
+		return nil, err
+	}
+
+	data := M{
+		"ConfirmationURL": url,
+		"Referer":         ref.Email,
+		"AppURL":          s.appURL(),
+	}
+
+	html, text, err := s.mailBody(
+		"invite_html",
+		inviteHTML,
+		"invite_text",
+		inviteText,
+		data,
+	)
+	if err != nil {
+		return nil, err
+	}
+
+	return mail.NewMessage(
+		defaultSender,
+		u.Email,
+		"Accept invite",
 		html,
 		text,
 		mail.DefaultCharset,

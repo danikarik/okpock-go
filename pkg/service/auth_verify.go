@@ -16,8 +16,10 @@ func (s *Service) verifyHandler(w http.ResponseWriter, r *http.Request) error {
 
 	confirm := api.Confirmation(vars["type"])
 	switch confirm {
-	case api.SignUpConfirmation, api.InviteConfirmation:
-		return s.verifyByConfirmationToken(vars, w, r)
+	case api.SignUpConfirmation:
+		return s.verifyBySignUpConfirmationToken(vars, w, r)
+	case api.InviteConfirmation:
+		return s.verifyByInviteConfirmationToken(vars, w, r)
 	case api.RecoveryConfirmation:
 		return s.verifyByRecoveryToken(vars, w, r)
 	case api.EmailChangeConfirmation:
@@ -27,7 +29,7 @@ func (s *Service) verifyHandler(w http.ResponseWriter, r *http.Request) error {
 	return s.httpError(w, r, http.StatusBadRequest, "Confirmation", api.ErrUnknownConfirmation)
 }
 
-func (s *Service) verifyByConfirmationToken(vars map[string]string, w http.ResponseWriter, r *http.Request) error {
+func (s *Service) verifyBySignUpConfirmationToken(vars map[string]string, w http.ResponseWriter, r *http.Request) error {
 	var (
 		ctx         = r.Context()
 		token       = vars["token"]
@@ -50,9 +52,10 @@ func (s *Service) verifyByConfirmationToken(vars map[string]string, w http.Respo
 	return s.redirect(w, r, redirectURL)
 }
 
-func (s *Service) verifyByRecoveryToken(vars map[string]string, w http.ResponseWriter, r *http.Request) error {
+func (s *Service) verifyByInviteConfirmationToken(vars map[string]string, w http.ResponseWriter, r *http.Request) error {
 	var (
 		token       = vars["token"]
+		confirm     = vars["type"]
 		redirectURL = vars["redirect_url"]
 	)
 
@@ -60,7 +63,29 @@ func (s *Service) verifyByRecoveryToken(vars map[string]string, w http.ResponseW
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "Parse", err)
 	}
+
 	v := url.Query()
+	v.Add("type", confirm)
+	v.Add("token", token)
+	url.RawQuery = v.Encode()
+
+	return s.redirect(w, r, url.String())
+}
+
+func (s *Service) verifyByRecoveryToken(vars map[string]string, w http.ResponseWriter, r *http.Request) error {
+	var (
+		token       = vars["token"]
+		confirm     = vars["type"]
+		redirectURL = vars["redirect_url"]
+	)
+
+	url, err := url.Parse(redirectURL)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "Parse", err)
+	}
+
+	v := url.Query()
+	v.Add("type", confirm)
 	v.Add("token", token)
 	url.RawQuery = v.Encode()
 

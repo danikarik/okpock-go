@@ -49,6 +49,14 @@ func (s *Service) appURL() string {
 	return ""
 }
 
+func (s *Service) appResetURL() string {
+	return s.appURL() + "/reset"
+}
+
+func (s *Service) appErrorURL() string {
+	return s.appURL() + "/error"
+}
+
 func (s *Service) confirmationURL(u *api.User, c api.Confirmation) (string, error) {
 	link, err := url.Parse(s.hostURL() + "/verify")
 	if err != nil {
@@ -65,12 +73,12 @@ func (s *Service) confirmationURL(u *api.User, c api.Confirmation) (string, erro
 	case api.InviteConfirmation:
 		values.Add("type", string(c))
 		values.Add("token", u.GetConfirmationToken())
-		values.Add("redirect_url", s.appURL())
+		values.Add("redirect_url", s.appResetURL())
 		break
 	case api.RecoveryConfirmation:
 		values.Add("type", string(c))
 		values.Add("token", u.GetRecoveryToken())
-		values.Add("redirect_url", s.appURL())
+		values.Add("redirect_url", s.appResetURL())
 		break
 	case api.EmailChangeConfirmation:
 		values.Add("type", string(c))
@@ -84,6 +92,11 @@ func (s *Service) confirmationURL(u *api.User, c api.Confirmation) (string, erro
 }
 
 func (s *Service) redirect(w http.ResponseWriter, r *http.Request, url string) error {
+	http.Redirect(w, r, url, http.StatusMovedPermanently)
+	return nil
+}
+
+func (s *Service) redirectError(w http.ResponseWriter, r *http.Request, url, msg string, err error) error {
 	http.Redirect(w, r, url, http.StatusMovedPermanently)
 	return nil
 }

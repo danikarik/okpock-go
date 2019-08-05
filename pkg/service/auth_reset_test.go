@@ -19,12 +19,13 @@ func TestResetHandler(t *testing.T) {
 	}
 
 	testCases := []struct {
-		Name        string
-		User        *testUser
-		Recover     bool
-		NewPassword string
-		Token       string
-		Expected    int
+		Name         string
+		User         *testUser
+		Recover      bool
+		NewPassword  string
+		Token        string
+		Confirmation api.Confirmation
+		Expected     int
 	}{
 		{
 			Name: "RecoverFound",
@@ -33,9 +34,22 @@ func TestResetHandler(t *testing.T) {
 				Email:    "testuser@example.com",
 				Password: "test",
 			},
-			Recover:     true,
-			NewPassword: "test_new",
-			Expected:    http.StatusAccepted,
+			Recover:      true,
+			NewPassword:  "test_new",
+			Confirmation: api.RecoveryConfirmation,
+			Expected:     http.StatusAccepted,
+		},
+		{
+			Name: "InviteFound",
+			User: &testUser{
+				Username: "testinviteduser@example.com",
+				Email:    "testinviteduser@example.com",
+				Password: "test",
+			},
+			Recover:      false,
+			NewPassword:  "test_new",
+			Confirmation: api.InviteConfirmation,
+			Expected:     http.StatusAccepted,
 		},
 		{
 			Name: "BadRequest",
@@ -44,9 +58,10 @@ func TestResetHandler(t *testing.T) {
 				Email:    "badrequest@example.com",
 				Password: "test",
 			},
-			Recover:     false,
-			NewPassword: "",
-			Expected:    http.StatusBadRequest,
+			Recover:      false,
+			NewPassword:  "",
+			Confirmation: api.RecoveryConfirmation,
+			Expected:     http.StatusBadRequest,
 		},
 		{
 			Name: "NotFound",
@@ -55,10 +70,11 @@ func TestResetHandler(t *testing.T) {
 				Email:    "notfound@example.com",
 				Password: "test",
 			},
-			Recover:     true,
-			NewPassword: "test_new",
-			Token:       "qwerty123",
-			Expected:    http.StatusNotFound,
+			Recover:      true,
+			NewPassword:  "test_new",
+			Token:        "qwerty123",
+			Confirmation: api.RecoveryConfirmation,
+			Expected:     http.StatusNotFound,
 		},
 	}
 
@@ -82,19 +98,32 @@ func TestResetHandler(t *testing.T) {
 				return
 			}
 
-			if tc.Recover {
+			token := ""
+
+			if tc.Confirmation == api.RecoveryConfirmation && tc.Recover {
 				err = srv.env.Auth.SetRecoveryToken(ctx, user)
 				if !assert.NoError(err) {
 					return
 				}
-			}
 
-			token := user.GetRecoveryToken()
-			if tc.Token != "" {
-				token = tc.Token
+				token = user.GetRecoveryToken()
+				if tc.Token != "" {
+					token = tc.Token
+				}
+			} else if tc.Confirmation == api.InviteConfirmation {
+				err = srv.env.Auth.SetConfirmationToken(ctx, tc.Confirmation, user)
+				if !assert.NoError(err) {
+					return
+				}
+
+				token = user.GetConfirmationToken()
+				if tc.Token != "" {
+					token = tc.Token
+				}
 			}
 
 			resetRequest := &ResetRequest{
+				Type:     string(tc.Confirmation),
 				Token:    token,
 				Password: tc.NewPassword,
 			}
@@ -120,8 +149,14 @@ func TestResetHandler(t *testing.T) {
 					return
 				}
 
-				assert.Empty(loaded.GetRecoveryToken())
-				assert.True(loaded.CheckPassword(tc.NewPassword))
+				if tc.Confirmation == api.RecoveryConfirmation {
+					assert.Empty(loaded.GetRecoveryToken())
+					assert.True(loaded.CheckPassword(tc.NewPassword))
+				} else if tc.Confirmation == api.InviteConfirmation {
+					assert.Empty(loaded.GetConfirmationToken())
+					assert.NotNil(loaded.InvitedAt)
+					assert.True(loaded.CheckPassword(tc.NewPassword))
+				}
 			}
 		})
 	}

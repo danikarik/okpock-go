@@ -12,6 +12,12 @@ const (
 	appleLatestRoute     string = "/passes/{passTypeIdentifier}/{serialNumber}"
 )
 
+var verifyQueries = []string{
+	"type", "{type}",
+	"token", "{token}",
+	"redirect_url", "{redirect_url:http.+}",
+}
+
 func (s *Service) routerOptions(r *mux.Router) {
 	r.Wrapper = mux.NewDefaultWrapper(s.errorHandler)
 	r.NotFoundHandler = s.notFoundHandler
@@ -46,18 +52,15 @@ func (s *Service) withRouter() *Service {
 		public := api.NewRoute().Subrouter()
 		public.HandleFunc("/", s.okHandler).Methods("GET")
 		public.HandleFunc("/login", s.loginHandler).Methods("POST")
+		public.HandleFunc("/logout", s.logoutHandler).Methods("DELETE")
 		public.HandleFunc("/register", s.registerHandler).Methods("POST")
 		public.HandleFunc("/recover", s.recoverHandler).Methods("POST")
 		public.HandleFunc("/reset", s.resetHandler).Methods("POST")
-		public.HandleFunc("/verify", s.verifyHandler).Methods("GET").Queries(
-			"type", "{type}",
-			"token", "{token}",
-			"redirect_url", "{redirect_url:http.+}",
-		)
+		public.HandleFunc("/verify", s.verifyHandler).Methods("GET").Queries(verifyQueries...)
 
 		protected := api.NewRoute().Subrouter()
 		protected.Use(s.authMiddleware, s.csrfMiddleware)
-		protected.HandleFunc("/logout", s.logoutHandler).Methods("DELETE")
+		protected.HandleFunc("/invite", s.inviteHandler).Methods("POST")
 		protected.HandleFunc("/account", s.accountHandler).Methods("GET")
 		protected.HandleFunc("/account/email", s.emailChangeHandler).Methods("PUT")
 		protected.HandleFunc("/account/password", s.passwordChangeHandler).Methods("PUT")
