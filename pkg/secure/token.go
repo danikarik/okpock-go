@@ -1,7 +1,7 @@
 package secure
 
 import (
-	"crypto/md5"
+	"crypto/sha256"
 	"encoding/hex"
 
 	uuid "github.com/satori/go.uuid"
@@ -10,7 +10,7 @@ import (
 // Token generates a new secure token.
 func Token() string {
 	id := uuid.NewV4().String()
-	hasher := md5.New()
+	hasher := sha256.New()
 	hasher.Write([]byte(id))
 	return hex.EncodeToString(hasher.Sum(nil))
 }
