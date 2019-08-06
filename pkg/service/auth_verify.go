@@ -7,7 +7,6 @@ import (
 	"time"
 
 	"github.com/danikarik/okpock/pkg/api"
-	"github.com/danikarik/okpock/pkg/store"
 )
 
 const recoveryTokenTTL = 1 * time.Hour
@@ -25,7 +24,7 @@ func tokenExpired(t time.Time) error {
 func (s *Service) verifyHandler(w http.ResponseWriter, r *http.Request) error {
 	vars, err := checkQueryParams(r)
 	if err != nil {
-		return s.httpError(w, r, http.StatusBadRequest, "CheckQueryParams", err)
+		return s.redirectError(w, r, "CheckQueryParams", err)
 	}
 
 	confirm := api.Confirmation(vars["type"])
@@ -40,7 +39,7 @@ func (s *Service) verifyHandler(w http.ResponseWriter, r *http.Request) error {
 		return s.verifyByEmailChangeToken(vars, w, r)
 	}
 
-	return s.httpError(w, r, http.StatusBadRequest, "Confirmation", api.ErrUnknownConfirmation)
+	return s.redirectError(w, r, "Confirmation", api.ErrUnknownConfirmation)
 }
 
 func (s *Service) verifyBySignUpConfirmationToken(vars map[string]string, w http.ResponseWriter, r *http.Request) error {
@@ -51,16 +50,13 @@ func (s *Service) verifyBySignUpConfirmationToken(vars map[string]string, w http
 	)
 
 	user, err := s.env.Auth.LoadUserByConfirmationToken(ctx, token)
-	if err == store.ErrNotFound {
-		return s.httpError(w, r, http.StatusNotFound, "LoadUserByConfirmationToken", err)
-	}
 	if err != nil {
-		return s.httpError(w, r, http.StatusInternalServerError, "LoadUserByConfirmationToken", err)
+		return s.redirectError(w, r, "LoadUserByConfirmationToken", err)
 	}
 
 	err = s.env.Auth.ConfirmUser(ctx, user)
 	if err != nil {
-		return s.httpError(w, r, http.StatusInternalServerError, "ConfirmUser", err)
+		return s.redirectError(w, r, "ConfirmUser", err)
 	}
 
 	return s.redirect(w, r, redirectURL)
@@ -75,7 +71,7 @@ func (s *Service) verifyByInviteConfirmationToken(vars map[string]string, w http
 
 	url, err := url.Parse(redirectURL)
 	if err != nil {
-		return s.httpError(w, r, http.StatusInternalServerError, "Parse", err)
+		return s.redirectError(w, r, "Parse", err)
 	}
 
 	v := url.Query()
@@ -96,17 +92,17 @@ func (s *Service) verifyByRecoveryToken(vars map[string]string, w http.ResponseW
 
 	user, err := s.env.Auth.LoadUserByRecoveryToken(ctx, token)
 	if err != nil {
-		return s.httpError(w, r, http.StatusInternalServerError, "LoadUserByRecoveryToken", err)
+		return s.redirectError(w, r, "LoadUserByRecoveryToken", err)
 	}
 
 	err = tokenExpired(*user.RecoverySentAt)
 	if err != nil {
-		return s.httpError(w, r, http.StatusBadRequest, "TokenExpired", err)
+		return s.redirectError(w, r, "TokenExpired", err)
 	}
 
 	url, err := url.Parse(redirectURL)
 	if err != nil {
-		return s.httpError(w, r, http.StatusInternalServerError, "Parse", err)
+		return s.redirectError(w, r, "Parse", err)
 	}
 
 	v := url.Query()
@@ -125,21 +121,18 @@ func (s *Service) verifyByEmailChangeToken(vars map[string]string, w http.Respon
 	)
 
 	user, err := s.env.Auth.LoadUserByEmailChangeToken(ctx, token)
-	if err == store.ErrNotFound {
-		return s.httpError(w, r, http.StatusNotFound, "LoadUserByEmailChangeToken", err)
-	}
 	if err != nil {
-		return s.httpError(w, r, http.StatusInternalServerError, "LoadUserByEmailChangeToken", err)
+		return s.redirectError(w, r, "LoadUserByEmailChangeToken", err)
 	}
 
 	err = s.env.Auth.ConfirmEmailChange(ctx, user)
 	if err != nil {
-		return s.httpError(w, r, http.StatusInternalServerError, "ConfirmEmailChange", err)
+		return s.redirectError(w, r, "ConfirmEmailChange", err)
 	}
 
 	err = s.clearCookies(w)
 	if err != nil {
-		return s.httpError(w, r, http.StatusInternalServerError, "ClearCookies", err)
+		return s.redirectError(w, r, "ClearCookies", err)
 	}
 
 	return s.redirect(w, r, redirectURL)

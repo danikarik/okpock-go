@@ -6,7 +6,6 @@ import (
 	"net/url"
 
 	"github.com/danikarik/mux"
-
 	"github.com/danikarik/okpock/pkg/api"
 )
 
@@ -24,29 +23,23 @@ func checkQueryParams(r *http.Request, params ...string) (map[string]string, err
 }
 
 func (s *Service) hostURL() string {
-	if s.env.Config.Debug {
-		return "http://localhost:" + s.env.Config.Port
-	}
 	if s.env.Config.IsDevelopment() {
 		return "https://api-dev.okpock.com"
 	}
-	if s.env.Config.IsDevelopment() {
+	if s.env.Config.IsProduction() {
 		return "https://api.okpock.com"
 	}
-	return ""
+	return "http://localhost:" + s.env.Config.Port
 }
 
 func (s *Service) appURL() string {
-	if s.env.Config.Debug {
-		return "http://localhost:3000"
-	}
 	if s.env.Config.IsDevelopment() {
 		return "https://app-dev.okpock.com"
 	}
-	if s.env.Config.IsDevelopment() {
+	if s.env.Config.IsProduction() {
 		return "https://app.okpock.com"
 	}
-	return ""
+	return "http://localhost:3000"
 }
 
 func (s *Service) appResetURL() string {
@@ -96,7 +89,17 @@ func (s *Service) redirect(w http.ResponseWriter, r *http.Request, url string) e
 	return nil
 }
 
-func (s *Service) redirectError(w http.ResponseWriter, r *http.Request, url, msg string, err error) error {
-	http.Redirect(w, r, url, http.StatusMovedPermanently)
+func (s *Service) redirectError(w http.ResponseWriter, r *http.Request, msg string, err error) error {
+	url, uerr := url.Parse(s.appErrorURL())
+	if uerr != nil {
+		return uerr
+	}
+	v := url.Query()
+	v.Add("message", msg)
+	if err != nil && !s.env.Config.IsProduction() {
+		v.Add("error", err.Error())
+	}
+	url.RawQuery = v.Encode()
+	http.Redirect(w, r, url.String(), http.StatusMovedPermanently)
 	return nil
 }

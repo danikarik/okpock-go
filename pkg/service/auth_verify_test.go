@@ -64,6 +64,16 @@ func TestVerifyHandler(t *testing.T) {
 			Confirm:  api.EmailChangeConfirmation,
 			Expected: http.StatusMovedPermanently,
 		},
+		{
+			Name: "Errored",
+			User: &testUser{
+				Username: "errored",
+				Email:    "errored@example.com",
+				Password: "errored",
+			},
+			Confirm:  api.Confirmation("errored"),
+			Expected: http.StatusMovedPermanently,
+		},
 	}
 
 	for _, tc := range testCases {
@@ -76,10 +86,7 @@ func TestVerifyHandler(t *testing.T) {
 				return
 			}
 
-			app := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				token := r.URL.Query().Get("token")
-				assert.NotEmpty(token)
-			}))
+			app := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
 			defer app.Close()
 
 			user, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
@@ -171,6 +178,12 @@ func TestVerifyHandler(t *testing.T) {
 					assert.Empty(loaded.GetEmailChangeToken())
 					assert.NotNil(loaded.EmailChangeSentAt)
 					assert.Equal("new@example.com", loaded.Email)
+					break
+				default:
+					location := resp.Header.Get("Location")
+					url, err := url.Parse(location)
+					assert.NoError(err)
+					assert.NotEmpty(url.Query().Get("error"))
 					break
 				}
 			}
