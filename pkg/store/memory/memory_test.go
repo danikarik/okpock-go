@@ -828,6 +828,47 @@ func TestEmailChange(t *testing.T) {
 	}
 }
 
+func TestUpdateUsername(t *testing.T) {
+	var (
+		ctx    = context.Background()
+		assert = assert.New(t)
+		mock   = memory.New()
+	)
+
+	user := struct {
+		ID          int64
+		Username    string
+		Email       string
+		Password    string
+		NewUsername string
+	}{
+		ID:          1,
+		Username:    "usernamechange",
+		Email:       "usernamechange@example.com",
+		Password:    "test",
+		NewUsername: "newusername",
+	}
+
+	u, err := api.NewUser(user.Username, user.Email, user.Password, nil)
+	if !assert.NoError(err) {
+		return
+	}
+
+	err = mock.SaveNewUser(ctx, u)
+	if !assert.NoError(err) {
+		return
+	}
+	u.ID = user.ID
+
+	err = mock.UpdateUsername(ctx, user.NewUsername, u)
+	if !assert.NoError(err) {
+		return
+	}
+
+	assert.Equal(user.NewUsername, u.Username)
+	assert.False(u.UpdatedAt.IsZero())
+}
+
 func TestUpdatePassword(t *testing.T) {
 	var (
 		ctx    = context.Background()

@@ -11,7 +11,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEmailChangeHandler(t *testing.T) {
+func TestUsernameChangeHandler(t *testing.T) {
 	type testUser struct {
 		ID       int64
 		Username string
@@ -22,7 +22,7 @@ func TestEmailChangeHandler(t *testing.T) {
 	testCases := []struct {
 		Name     string
 		User     *testUser
-		Request  *EmailChangeRequest
+		Request  *UsernameChangeRequest
 		Expected int
 	}{
 		{
@@ -33,21 +33,21 @@ func TestEmailChangeHandler(t *testing.T) {
 				Email:    "testuser@example.com",
 				Password: "test",
 			},
-			Request: &EmailChangeRequest{
-				Email: "newtestuser@example.com",
+			Request: &UsernameChangeRequest{
+				Username: "newtestuser",
 			},
 			Expected: http.StatusOK,
 		},
 		{
-			Name: "SameEmail",
+			Name: "SameUsername",
 			User: &testUser{
 				ID:       11,
 				Username: "sameemail",
 				Email:    "sameemail@example.com",
 				Password: "test",
 			},
-			Request: &EmailChangeRequest{
-				Email: "sameemail@example.com",
+			Request: &UsernameChangeRequest{
+				Username: "sameemail",
 			},
 			Expected: http.StatusNotAcceptable,
 		},
@@ -59,8 +59,8 @@ func TestEmailChangeHandler(t *testing.T) {
 				Email:    "emptyemail@example.com",
 				Password: "test",
 			},
-			Request: &EmailChangeRequest{
-				Email: "",
+			Request: &UsernameChangeRequest{
+				Username: "",
 			},
 			Expected: http.StatusBadRequest,
 		},
@@ -72,8 +72,8 @@ func TestEmailChangeHandler(t *testing.T) {
 				Email:    "duplicated@example.com",
 				Password: "test",
 			},
-			Request: &EmailChangeRequest{
-				Email: "another@example.com",
+			Request: &UsernameChangeRequest{
+				Username: "another",
 			},
 			Expected: http.StatusNotAcceptable,
 		},
@@ -120,7 +120,7 @@ func TestEmailChangeHandler(t *testing.T) {
 			tokenString, _ := ucl.MarshalJWT()
 			tokenCookie := srv.tokenCookie(tokenString)
 
-			req := newRequest("PUT", "/account/email", body, nil, nil)
+			req := newRequest("PUT", "/account/username", body, nil, nil)
 			req.Header.Set(csrfHeader, ucl.CSRFToken)
 			req.AddCookie(tokenCookie)
 			rec := httptest.NewRecorder()
@@ -138,9 +138,7 @@ func TestEmailChangeHandler(t *testing.T) {
 					return
 				}
 
-				assert.Equal(tc.Request.Email, loaded.GetEmailChange())
-				assert.NotEmpty(loaded.GetEmailChangeToken())
-				assert.NotNil(loaded.EmailChangeSentAt)
+				assert.Equal(tc.Request.Username, loaded.Username)
 			}
 		})
 	}

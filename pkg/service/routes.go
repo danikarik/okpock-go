@@ -63,6 +63,7 @@ func (s *Service) withRouter() *Service {
 		protected.HandleFunc("/invite", s.inviteHandler).Methods("POST")
 		protected.HandleFunc("/account", s.accountHandler).Methods("GET")
 		protected.HandleFunc("/account/email", s.emailChangeHandler).Methods("PUT")
+		protected.HandleFunc("/account/username", s.usernameChangeHandler).Methods("PUT")
 		protected.HandleFunc("/account/password", s.passwordChangeHandler).Methods("PUT")
 		protected.HandleFunc("/account/metadata", s.metaDataChangeHandler).Methods("PUT")
 	}

@@ -18,6 +18,9 @@ create-test: ## Create test database
 drop: ## Drop database
 	@echo 'DROP DATABASE IF EXISTS' $(DB_NAME) | $(MYSQL)
 
+drop-test: ## Drop test database
+	@echo 'DROP DATABASE IF EXISTS' $(TEST_DB_NAME) | $(MYSQL)
+
 up: ## Create tables
 	@$(MYSQL) $(DB_NAME) < ./migrations/up.sql
 

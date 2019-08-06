@@ -787,6 +787,57 @@ func TestEmailChange(t *testing.T) {
 	}
 }
 
+func TestUpdateUsername(t *testing.T) {
+	ctx := context.Background()
+	assert := assert.New(t)
+
+	schema := []string{tempUsersTable}
+	data := []string{}
+
+	conn, err := executeTempScripts(ctx, t, schema, data)
+	if !assert.NoError(err) {
+		return
+	}
+	defer conn.Close()
+
+	db := sequel.New(conn)
+
+	user := struct {
+		Username    string
+		Email       string
+		Password    string
+		NewUsername string
+	}{
+		Username:    "usernamechange",
+		Email:       "usernamechange@example.com",
+		Password:    "test",
+		NewUsername: "newusername",
+	}
+
+	u, err := api.NewUser(user.Username, user.Email, user.Password, nil)
+	if !assert.NoError(err) {
+		return
+	}
+
+	err = db.SaveNewUser(ctx, u)
+	if !assert.NoError(err) {
+		return
+	}
+
+	err = db.UpdateUsername(ctx, user.NewUsername, u)
+	if !assert.NoError(err) {
+		return
+	}
+
+	loaded, err := db.LoadUser(ctx, u.ID)
+	if !assert.NoError(err) {
+		return
+	}
+
+	assert.Equal(user.NewUsername, loaded.Username)
+	assert.False(loaded.UpdatedAt.IsZero())
+}
+
 func TestUpdatePassword(t *testing.T) {
 	ctx := context.Background()
 	assert := assert.New(t)

@@ -43,6 +43,22 @@ func (s *Service) emailChangeHandler(w http.ResponseWriter, r *http.Request) err
 
 	// trigger change if emails not match
 	if user.Email != req.Email {
+		exists, err := s.env.Auth.IsUsernameExists(ctx, req.Email)
+		if err != nil {
+			return s.httpError(w, r, http.StatusInternalServerError, "IsUsernameExists", err)
+		}
+		if exists {
+			return sendJSON(w, http.StatusNotAcceptable, M{"username": req.Email})
+		}
+
+		exists, err = s.env.Auth.IsEmailExists(ctx, req.Email)
+		if err != nil {
+			return s.httpError(w, r, http.StatusInternalServerError, "IsEmailExists", err)
+		}
+		if exists {
+			return sendJSON(w, http.StatusNotAcceptable, M{"email": req.Email})
+		}
+
 		err = s.env.Auth.SetEmailChangeToken(ctx, req.Email, user)
 		if err != nil {
 			return s.httpError(w, r, http.StatusInternalServerError, "SetEmailChangeToken", err)

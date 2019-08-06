@@ -64,6 +64,10 @@ type Auth interface {
 	// TODO: description
 	SetEmailChangeToken(ctx context.Context, email string, user *User) error
 
+	// UpdateUsername ...
+	// TODO: description
+	UpdateUsername(ctx context.Context, username string, user *User) error
+
 	// UpdatePassword ...
 	// TODO: description
 	UpdatePassword(ctx context.Context, password string, user *User) error

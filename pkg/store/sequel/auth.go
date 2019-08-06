@@ -378,6 +378,28 @@ func (m *MySQL) SetEmailChangeToken(ctx context.Context, email string, user *api
 	return nil
 }
 
+// UpdateUsername ...
+func (m *MySQL) UpdateUsername(ctx context.Context, username string, user *api.User) error {
+	err := checkUser(user, checkNilStruct|checkZeroID)
+	if err != nil {
+		return err
+	}
+
+	user.Username = username
+	user.UpdatedAt = time.Now()
+
+	query := m.builder.Update("users").
+		Set("username", user.Username).
+		Where(sq.Eq{"id": user.ID})
+
+	_, err = m.updateQuery(ctx, query)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // UpdatePassword ...
 func (m *MySQL) UpdatePassword(ctx context.Context, password string, user *api.User) error {
 	err := checkUser(user, checkNilStruct|checkZeroID)

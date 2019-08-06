@@ -369,6 +369,18 @@ func (m *Memory) SetEmailChangeToken(ctx context.Context, email string, user *ap
 	return nil
 }
 
+// UpdateUsername ...
+func (m *Memory) UpdateUsername(ctx context.Context, username string, user *api.User) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	user.Username = username
+	user.UpdatedAt = time.Now()
+	m.users[user.ID] = user
+
+	return nil
+}
+
 // UpdatePassword ...
 func (m *Memory) UpdatePassword(ctx context.Context, password string, user *api.User) error {
 	m.mu.Lock()
