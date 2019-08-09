@@ -1,4 +1,4 @@
-VERSION := $(shell git describe --tags --long 2>/dev/null || git rev-parse --long HEAD)
+VERSION := $(shell git describe --tags --long 2>/dev/null || git rev-parse --short HEAD)
 
 DB_NAME ?= okpock
 TEST_DB_NAME ?= test_okpock
