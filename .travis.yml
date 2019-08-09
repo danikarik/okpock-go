@@ -11,7 +11,12 @@ before_install:
 
 install: true
 
-script: go test -v -count=1 ./pkg/...
+script:
+  - make test
+  - make release
+  - zip -r $TRAVIS_COMMIT . -x '.git/*'
+  - mkdir -p build
+  - mv $TRAVIS_COMMIT.zip build/travis-$TRAVIS_COMMIT.zip
 
 deploy:
   - provider: elasticbeanstalk
@@ -21,6 +26,8 @@ deploy:
     app: "$AWS_APPLICATION_NAME"
     env: "$AWS_APPLICATION_ENV"
     bucket_name: "$AWS_S3_BUCKET"
+    skip_cleanup: true
+    zip_file: "build/travis-$TRAVIS_COMMIT.zip"
     bucket_path: "okpock"
     on:
       branch: master
