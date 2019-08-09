@@ -65,7 +65,6 @@ func (s *Service) usernameChangeHandler(w http.ResponseWriter, r *http.Request) 
 		}
 
 		return sendJSON(w, http.StatusOK, M{
-			"id":        user.ID,
 			"username":  user.Username,
 			"updatedAt": user.UpdatedAt,
 		})

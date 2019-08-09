@@ -285,10 +285,12 @@ func (m *MySQL) RecoverUser(ctx context.Context, user *api.User) error {
 		return err
 	}
 
+	user.UpdatedAt = time.Now()
 	user.SetField(api.RecoveryToken, "")
 
 	query := m.builder.Update("users").
 		Set("recovery_token", user.GetRecoveryToken()).
+		Set("updated_at", user.UpdatedAt).
 		Where(sq.Eq{"id": user.ID})
 
 	_, err = m.updateQuery(ctx, query)
@@ -390,6 +392,7 @@ func (m *MySQL) UpdateUsername(ctx context.Context, username string, user *api.U
 
 	query := m.builder.Update("users").
 		Set("username", user.Username).
+		Set("updated_at", user.UpdatedAt).
 		Where(sq.Eq{"id": user.ID})
 
 	_, err = m.updateQuery(ctx, query)
@@ -417,6 +420,7 @@ func (m *MySQL) UpdatePassword(ctx context.Context, password string, user *api.U
 
 	query := m.builder.Update("users").
 		Set("password_hash", user.PasswordHash).
+		Set("updated_at", user.UpdatedAt).
 		Where(sq.Eq{"id": user.ID})
 
 	_, err = m.updateQuery(ctx, query)
@@ -439,6 +443,7 @@ func (m *MySQL) UpdateUserMetaData(ctx context.Context, data map[string]interfac
 
 	query := m.builder.Update("users").
 		Set("raw_user_metadata", user.UserMetaData).
+		Set("updated_at", user.UpdatedAt).
 		Where(sq.Eq{"id": user.ID})
 
 	_, err = m.updateQuery(ctx, query)
@@ -461,6 +466,7 @@ func (m *MySQL) UpdateAppMetaData(ctx context.Context, data map[string]interface
 
 	query := m.builder.Update("users").
 		Set("raw_app_metadata", user.AppMetaData).
+		Set("updated_at", user.UpdatedAt).
 		Where(sq.Eq{"id": user.ID})
 
 	_, err = m.updateQuery(ctx, query)

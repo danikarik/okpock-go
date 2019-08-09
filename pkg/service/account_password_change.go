@@ -49,7 +49,6 @@ func (s *Service) passwordChangeHandler(w http.ResponseWriter, r *http.Request) 
 		}
 
 		return sendJSON(w, http.StatusOK, M{
-			"id":        user.ID,
 			"updatedAt": user.UpdatedAt,
 		})
 	}

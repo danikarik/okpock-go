@@ -80,7 +80,7 @@ func (s *Service) resetByConfirmationToken(req ResetRequest, w http.ResponseWrit
 		return s.httpError(w, r, http.StatusInternalServerError, "ConfirmUser", err)
 	}
 
-	return sendJSON(w, http.StatusAccepted, M{"id": user.ID})
+	return sendJSON(w, http.StatusAccepted, M{"confirmedAt": user.ConfirmedAt})
 }
 
 func (s *Service) resetByRecoveryToken(req ResetRequest, w http.ResponseWriter, r *http.Request) error {
@@ -104,5 +104,5 @@ func (s *Service) resetByRecoveryToken(req ResetRequest, w http.ResponseWriter, 
 		return s.httpError(w, r, http.StatusInternalServerError, "RecoverUser", err)
 	}
 
-	return sendJSON(w, http.StatusAccepted, M{"id": user.ID})
+	return sendJSON(w, http.StatusAccepted, M{"updatedAt": user.UpdatedAt})
 }

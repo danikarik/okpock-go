@@ -58,5 +58,9 @@ func (s *Service) recoverHandler(w http.ResponseWriter, r *http.Request) error {
 		return s.httpError(w, r, http.StatusInternalServerError, "SendMail", err)
 	}
 
-	return sendJSON(w, http.StatusOK, M{"messageId": message.ID, "sentAt": sentAt})
+	return sendJSON(w, http.StatusOK, M{
+		"email":     req.Email,
+		"messageId": message.ID,
+		"sentAt":    sentAt,
+	})
 }

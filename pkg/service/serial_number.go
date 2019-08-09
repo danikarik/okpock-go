@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/danikarik/okpock/pkg/store/sequel"
 	"github.com/danikarik/mux"
+	"github.com/danikarik/okpock/pkg/store/sequel"
 )
 
 // Passes represents list of serial numbers

@@ -30,7 +30,7 @@ func (j JSONMap) Scan(src interface{}) error {
 	case sql.NullString:
 		source = []byte("")
 	default:
-		return errors.New("Invalid data type for JSONMap")
+		return errors.New("invalid data type for JSONMap")
 	}
 
 	if len(source) == 0 {

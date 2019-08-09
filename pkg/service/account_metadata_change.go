@@ -50,8 +50,7 @@ func (s *Service) metaDataChangeHandler(w http.ResponseWriter, r *http.Request) 
 	}
 
 	return sendJSON(w, http.StatusOK, M{
-		"id":           user.ID,
-		"userMetadata": user.UserMetaData,
+		"userMetaData": user.UserMetaData,
 		"updatedAt":    user.UpdatedAt,
 	})
 }

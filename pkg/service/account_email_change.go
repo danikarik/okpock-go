@@ -75,7 +75,6 @@ func (s *Service) emailChangeHandler(w http.ResponseWriter, r *http.Request) err
 		}
 
 		return sendJSON(w, http.StatusOK, M{
-			"id":        user.ID,
 			"email":     user.Email,
 			"messageId": message.ID,
 			"sentAt":    sentAt,

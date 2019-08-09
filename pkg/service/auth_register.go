@@ -90,7 +90,6 @@ func (s *Service) registerHandler(w http.ResponseWriter, r *http.Request) error 
 	}
 
 	return sendJSON(w, http.StatusCreated, M{
-		"id":        user.ID,
 		"email":     user.Email,
 		"messageId": message.ID,
 		"sentAt":    sentAt,
