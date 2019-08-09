@@ -167,7 +167,7 @@ func (s *Service) inviteMessage(ref, u *api.User) (*mail.Message, error) {
 	data := M{
 		"ConfirmationURL": url,
 		"Referer":         ref.Email,
-		"AppURL":          s.appURL(),
+		"AppURL":          s.appURL(""),
 	}
 
 	html, text, err := s.mailBody(

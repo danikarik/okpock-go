@@ -32,22 +32,14 @@ func (s *Service) hostURL() string {
 	return "http://localhost:" + s.env.Config.Port
 }
 
-func (s *Service) appURL() string {
+func (s *Service) appURL(path string) string {
 	if s.env.Config.IsDevelopment() {
-		return "https://app-dev.okpock.com"
+		return "https://app-dev.okpock.com" + path
 	}
 	if s.env.Config.IsProduction() {
-		return "https://app.okpock.com"
+		return "https://app.okpock.com" + path
 	}
-	return "http://localhost:3000"
-}
-
-func (s *Service) appResetURL() string {
-	return s.appURL() + "/reset"
-}
-
-func (s *Service) appErrorURL() string {
-	return s.appURL() + "/error"
+	return "http://localhost:3000" + path
 }
 
 func (s *Service) confirmationURL(u *api.User, c api.Confirmation) (string, error) {
@@ -61,22 +53,22 @@ func (s *Service) confirmationURL(u *api.User, c api.Confirmation) (string, erro
 	case api.SignUpConfirmation:
 		values.Add("type", string(c))
 		values.Add("token", u.GetConfirmationToken())
-		values.Add("redirect_url", s.appURL())
+		values.Add("redirect_url", s.appURL(""))
 		break
 	case api.InviteConfirmation:
 		values.Add("type", string(c))
 		values.Add("token", u.GetConfirmationToken())
-		values.Add("redirect_url", s.appResetURL())
+		values.Add("redirect_url", s.appURL("/reset"))
 		break
 	case api.RecoveryConfirmation:
 		values.Add("type", string(c))
 		values.Add("token", u.GetRecoveryToken())
-		values.Add("redirect_url", s.appResetURL())
+		values.Add("redirect_url", s.appURL("/reset"))
 		break
 	case api.EmailChangeConfirmation:
 		values.Add("type", string(c))
 		values.Add("token", u.GetEmailChangeToken())
-		values.Add("redirect_url", s.appURL())
+		values.Add("redirect_url", s.appURL(""))
 		break
 	}
 
@@ -90,7 +82,7 @@ func (s *Service) redirect(w http.ResponseWriter, r *http.Request, url string) e
 }
 
 func (s *Service) redirectError(w http.ResponseWriter, r *http.Request, msg string, err error) error {
-	url, uerr := url.Parse(s.appErrorURL())
+	url, uerr := url.Parse(s.appURL("/error"))
 	if uerr != nil {
 		return uerr
 	}
