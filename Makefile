@@ -1,4 +1,4 @@
-VERSION := $(shell git describe --tags --long 2>/dev/null || git rev-parse --short HEAD)
+VERSION := $(shell git describe --tags --long 2>/dev/null || git rev-parse --long HEAD)
 
 DB_NAME ?= okpock
 TEST_DB_NAME ?= test_okpock
@@ -31,6 +31,9 @@ down: ## Drop tables
 
 fresh: down up ## Rebuild database
 	@echo 'Done.'
+
+download: ## Download dependencies
+	@go mod download
 
 test: ## Run go tests
 	@go test -v -count=1 ./pkg/...

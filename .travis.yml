@@ -12,9 +12,10 @@ before_install:
 install: true
 
 script:
+  - make download
   - make test
   - make release
-  - zip -r $TRAVIS_COMMIT . -x '.git/*'
+  - zip -r $TRAVIS_COMMIT ./bin -x '.git/*'
   - mkdir -p build
   - mv $TRAVIS_COMMIT.zip build/travis-$TRAVIS_COMMIT.zip
 
