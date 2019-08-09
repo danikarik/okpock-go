@@ -33,6 +33,7 @@ func (s *Service) withRouter() *Service {
 	r.Use(recovererMiddleware(s.logger))
 
 	r.HandleFunc("/health", s.healthHandler).Methods("GET")
+	r.HandleFunc("/version", s.versionHandler).Methods("GET")
 
 	apple := r.PathPrefix("/v1").Subrouter()
 	{

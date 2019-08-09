@@ -1,3 +1,5 @@
+VERSION := $(shell git describe --tags --long 2>/dev/null || git rev-parse --short HEAD)
+
 DB_NAME ?= okpock
 TEST_DB_NAME ?= test_okpock
 MYSQL := MYSQL_PWD=$(DB_PASS) mysql -u $(DB_USER)
@@ -34,10 +36,10 @@ test: ## Run go tests
 	@go test -count=1 ./pkg/...
 
 release: ## Build release binary
-	@CGO_ENABLED=0 GOARCH=amd64 GOOS=linux sudo go build -ldflags "-s -w" -o ./bin/application ./cmd/applicationd/...
+	@CGO_ENABLED=0 GOARCH=amd64 GOOS=linux go build -ldflags "-s -w -X main.Version=$(VERSION)" -o ./bin/application ./cmd/applicationd/...
 
 build: ## Build local binary
-	@go build -o ./bin/application ./cmd/applicationd/...
+	@go build -ldflags "-X main.Version=$(VERSION)" -o ./bin/application ./cmd/applicationd/...
 
 secret: ## Generate secret string and copy to buffer
 	@openssl rand -hex 32 | tr -d '\n' | pbcopy

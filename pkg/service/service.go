@@ -10,18 +10,20 @@ import (
 
 // Service holds env and routes.
 type Service struct {
+	version string
 	env     *env.Env
 	logger  *zap.Logger
 	handler http.Handler
 }
 
 // New returns a new instance of `Service`.
-func New(env *env.Env, logger *zap.Logger) *Service {
+func New(version string, env *env.Env, logger *zap.Logger) *Service {
 	serverSigningSecret = []byte(env.Config.ServerSecret)
 
 	srv := &Service{
-		env:    env,
-		logger: logger,
+		version: version,
+		env:     env,
+		logger:  logger,
 	}
 
 	return srv.withRouter()

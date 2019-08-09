@@ -51,7 +51,7 @@ func initService(t *testing.T) (*Service, error) {
 		return nil, err
 	}
 
-	return New(e, logger), nil
+	return New("test-version", e, logger), nil
 }
 
 func newRequest(method, url string, body []byte, headers map[string]string, values url.Values) *http.Request {

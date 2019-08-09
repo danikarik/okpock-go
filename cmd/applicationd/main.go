@@ -17,6 +17,9 @@ import (
 	"go.uber.org/zap"
 )
 
+// Version holds build version.
+var Version string
+
 func main() {
 	var err error
 
@@ -77,7 +80,7 @@ func main() {
 		db := sequel.New(conn)
 		env := env.New(cfg, db, db, s3, mailer)
 
-		srv = service.New(env, logger)
+		srv = service.New(Version, env, logger)
 	}
 
 	logger.Info("server", zap.String("http_address", cfg.Addr()))
