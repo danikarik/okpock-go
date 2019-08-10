@@ -33,7 +33,7 @@ var (
 	applePassRegexp = regexp.MustCompile(`^(?:A|a)pplePass (\S+$)`)
 )
 
-const csrfHeader string = "X-CSRF-TOKEN"
+const csrfHeader string = "X-XSRF-TOKEN"
 
 const (
 	metaReferer               string = "referer"

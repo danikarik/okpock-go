@@ -38,13 +38,13 @@ func TestLoginHandler(t *testing.T) {
 
 	assert.Equal(http.StatusOK, resp.StatusCode)
 
-	ucl := NewClaims().WithUser(user).WithCSRFToken(resp.Header.Get("X-CSRF-TOKEN"))
+	ucl := NewClaims().WithUser(user).WithCSRFToken(resp.Header.Get("X-XSRF-TOKEN"))
 	tokenString, _ := ucl.MarshalJWT()
 	tokenCookie := srv.tokenCookie(tokenString)
 
 	req = newRequest("DELETE", "/logout", nil, nil, nil)
 	req.AddCookie(tokenCookie)
-	req.Header.Set("X-CSRF-TOKEN", ucl.CSRFToken)
+	req.Header.Set("X-XSRF-TOKEN", ucl.CSRFToken)
 	rec = httptest.NewRecorder()
 
 	srv.ServeHTTP(rec, req)

@@ -123,7 +123,7 @@ Response Codes
 Response Headers
 
 - `Content-Type - application/json`
-- `X-CSRF-Token - <token>`
+- `X-XSRF-Token - <token>`
 
 Response Body
 
@@ -269,7 +269,7 @@ Response Codes
 Requirements
 
 - `Cookie`
-- `X-CSRF-Token`
+- `X-XSRF-Token`
 
 ### POST `/invite`
 
