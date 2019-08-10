@@ -64,7 +64,7 @@ func (s *Service) loginHandler(w http.ResponseWriter, r *http.Request) error {
 
 	err = s.env.Auth.Authenticate(ctx, req.Password, user)
 	if err != nil {
-		return s.httpError(w, r, http.StatusInternalServerError, "Authenticate", err)
+		return s.httpError(w, r, http.StatusForbidden, "Authenticate", err)
 	}
 
 	err = s.withUserClaims(w, user)
