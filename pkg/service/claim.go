@@ -13,7 +13,7 @@ const (
 	// ServerIssuer is a JWT issuer name.
 	ServerIssuer string = "OKPOCK"
 	// ServerClaimsTTL is a default TTL for JWT token.
-	ServerClaimsTTL time.Duration = 30 * 24 * time.Hour
+	ServerClaimsTTL time.Duration = 7 * 24 * time.Hour
 )
 
 var (
