@@ -23,23 +23,29 @@ func checkQueryParams(r *http.Request, params ...string) (map[string]string, err
 }
 
 func (s *Service) hostURL() string {
+	if s.env.Config.Debug {
+		return "http://localhost:" + s.env.Config.Port
+	}
 	if s.env.Config.IsDevelopment() {
 		return "https://api-dev.okpock.com"
 	}
 	if s.env.Config.IsProduction() {
 		return "https://api.okpock.com"
 	}
-	return "http://localhost:" + s.env.Config.Port
+	return ""
 }
 
 func (s *Service) appURL(path string) string {
+	if s.env.Config.Debug {
+		return "http://localhost:3000" + path
+	}
 	if s.env.Config.IsDevelopment() {
 		return "https://app-dev.okpock.com" + path
 	}
 	if s.env.Config.IsProduction() {
 		return "https://app.okpock.com" + path
 	}
-	return "http://localhost:3000" + path
+	return ""
 }
 
 func (s *Service) confirmationURL(u *api.User, c api.Confirmation) (string, error) {
