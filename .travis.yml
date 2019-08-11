@@ -29,7 +29,7 @@ deploy:
     bucket_name: "$AWS_S3_BUCKET"
     skip_cleanup: true
     zip_file: "build/travis-$TRAVIS_COMMIT.zip"
-    bucket_path: "okpock"
+    bucket_path: "api.okpock.com"
     on:
       branch: master
 
