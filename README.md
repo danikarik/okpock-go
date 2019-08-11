@@ -118,6 +118,7 @@ Response Codes
 - `400`
 - `403`
 - `404`
+- `423`
 - `500`
 
 Response Headers

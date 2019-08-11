@@ -62,6 +62,10 @@ func (s *Service) loginHandler(w http.ResponseWriter, r *http.Request) error {
 		return s.httpError(w, r, http.StatusInternalServerError, "LoadUserByUsernameOrEmail", err)
 	}
 
+	if !user.IsConfirmed() {
+		return s.httpError(w, r, http.StatusLocked, "IsConfirmed", err)
+	}
+
 	err = s.env.Auth.Authenticate(ctx, req.Password, user)
 	if err != nil {
 		return s.httpError(w, r, http.StatusForbidden, "Authenticate", err)
