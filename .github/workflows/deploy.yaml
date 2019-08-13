@@ -7,26 +7,30 @@ jobs:
     name: Elastic Beanstalk
     runs-on: ubuntu-latest
     steps:
-      - name: Set up Go 1.12
-        uses: actions/setup-go@v1
-        with:
-          version: 1.12
-        id: go
+    
+    - name: Set up database scheme
+      run: mysql -uroot -proot -e 'CREATE DATABASE IF NOT EXISTS test_okpock;'
+    
+    - name: Set up Go 1.12
+      uses: actions/setup-go@v1
+      with:
+        version: 1.12
+      id: go
 
-      - name: Check out code into the Go module directory
-        working-directory: ${{ go.module-path }}
-        uses: actions/checkout@master
+    - name: Check out code into the Go module directory
+      working-directory: ${{ go.module-path }}
+      uses: actions/checkout@master
 
-      - name: Get dependencies
-        working-directory: ${{ go.module-path }}
-        run: make download
+    - name: Get dependencies
+      working-directory: ${{ go.module-path }}
+      run: make download
 
-      - name: Test
-        working-directory: ${{ go.module-path }}
-        run: make test
+    - name: Test
+      working-directory: ${{ go.module-path }}
+      run: make test
 
-      - name: Build
-        working-directory: ${{ go.module-path }}
-        run: make release
+    - name: Build
+      working-directory: ${{ go.module-path }}
+      run: make release
 
 
