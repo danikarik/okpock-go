@@ -1,16 +1,12 @@
-name: Build and Test
-
-on: pull_request
-
+name: Go
+on: [pull_request]
 jobs:
-  test:
-    name: Unit Test
+
+  build:
+    name: Build
     runs-on: ubuntu-latest
     steps:
-    
-    - name: Set up database scheme
-      run: mysql -uroot -proot -e 'CREATE DATABASE IF NOT EXISTS test_okpock;'
-    
+
     - name: Set up Go 1.12
       uses: actions/setup-go@v1
       with:
@@ -18,18 +14,18 @@ jobs:
       id: go
 
     - name: Check out code into the Go module directory
-      working-directory: ${{ go.module-path }}
       uses: actions/checkout@master
+      path: ${{ go.module-path }}
 
     - name: Get dependencies
       working-directory: ${{ go.module-path }}
-      run: make download
-
-    - name: Test
-      working-directory: ${{ go.module-path }}
-      run: make test
+      run: |
+        go get -v -t -d ./...
+        if [ -f Gopkg.toml ]; then
+            curl https://raw.githubusercontent.com/golang/dep/master/install.sh | sh
+            dep ensure
+        fi
 
     - name: Build
       working-directory: ${{ go.module-path }}
-      run: make release
-
+      run: go build -v .
