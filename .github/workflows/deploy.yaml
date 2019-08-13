@@ -29,12 +29,4 @@ jobs:
         working-directory: ${{ go.module-path }}
         run: make release
 
-      - name: Zip
-        working-directory: ${{ go.module-path }}
-        run: |
-          zip -r ${GITHUB_SHA} ./bin -x '.git/*'
-          mkdir -p build
-          mv ${GITHUB_SHA}.zip build/actions-${GITHUB_SHA}.zip
-          ls -a build
-
 
