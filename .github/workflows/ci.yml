@@ -8,7 +8,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Set up database scheme
-        run: - mysql -uroot -proot -e 'CREATE DATABASE IF NOT EXISTS test_okpock;'
+        run: mysql -uroot -proot -e 'CREATE DATABASE IF NOT EXISTS test_okpock;'
       
       - name: Set up Go 1.12
         uses: actions/setup-go@v1
