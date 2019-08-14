@@ -51,11 +51,16 @@ jobs:
         run: |
           zip -r ${GITHUB_SHA} ./bin -x '.git/*'
           mkdir -p build
-          mv ${GITHUB_SHA}.zip build/gh-actions-${GITHUB_SHA}.zip
+          mv ${GITHUB_SHA}.zip build/${GITHUB_SHA}.zip
 
-      - name: Publish
+      - name: Publish source bundle
         env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_APPLICATION_ENV: ${{ secrets.AWS_APPLICATION_ENV }}
           AWS_APPLICATION_NAME: ${{ secrets.AWS_APPLICATION_NAME }}
-        uses: actions/aws@master
-        run: eb --version
+        uses: actions/aws/cli@master
+        with:
+          args: aws s3 cp build/${GITHUB_SHA}.zip s3://github-actions-builds/api.okpock.com/
