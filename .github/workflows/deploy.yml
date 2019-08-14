@@ -67,7 +67,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_APPLICATION_ENV: ${{ secrets.AWS_APPLICATION_ENV }}
           AWS_APPLICATION_NAME: ${{ secrets.AWS_APPLICATION_NAME }}
@@ -78,13 +78,13 @@ jobs:
               --application-name ${AWS_APPLICATION_NAME} \
               --version-label ${GITHUB_SHA} \
               --source-bundle \
-              S3Bucket="${AWS_S3_BUCKET}/api.okpock.com",S3Key="${GITHUB_SHA}.zip"
+              S3Bucket="${AWS_S3_BUCKET}",S3Key="api.okpock.com/${GITHUB_SHA}.zip"
       
       - name: Update application environment
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
           AWS_APPLICATION_ENV: ${{ secrets.AWS_APPLICATION_ENV }}
           AWS_APPLICATION_NAME: ${{ secrets.AWS_APPLICATION_NAME }}
         uses: actions/aws/cli@master
