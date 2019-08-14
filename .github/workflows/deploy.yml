@@ -73,7 +73,12 @@ jobs:
           AWS_APPLICATION_NAME: ${{ secrets.AWS_APPLICATION_NAME }}
         uses: actions/aws/cli@master
         with:
-          args: elasticbeanstalk create-application-version --application-name ${AWS_APPLICATION_NAME} --version-label ${GITHUB_SHA} --source-bundle S3Bucket="${AWS_S3_BUCKET}",S3Key="api.okpock.com/${GITHUB_SHA}"
+          args: >
+            elasticbeanstalk create-application-version
+              --application-name ${AWS_APPLICATION_NAME}
+              --version-label ${GITHUB_SHA}
+              --source-bundle
+              S3Bucket="${AWS_S3_BUCKET}",S3Key="api.okpock.com/${GITHUB_SHA}.zip"
       
       - name: Update application environment
         env:
@@ -84,4 +89,8 @@ jobs:
           AWS_APPLICATION_NAME: ${{ secrets.AWS_APPLICATION_NAME }}
         uses: actions/aws/cli@master
         with:
-          args: elasticbeanstalk update-environment --application-name ${AWS_APPLICATION_NAME} --environment-name ${AWS_APPLICATION_ENV} --version-label ${GITHUB_SHA}
+          args: > 
+            elasticbeanstalk update-environment
+              --application-name ${AWS_APPLICATION_NAME}
+              --environment-name ${AWS_APPLICATION_ENV}
+              --version-label ${GITHUB_SHA}
