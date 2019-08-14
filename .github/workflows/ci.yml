@@ -9,4 +9,4 @@ jobs:
       - uses: actions/setup-go@v1
         with:
           version: '1.12'
-      - run: make test
+      - run: mysql -uroot -proot -e 'CREATE DATABASE IF NOT EXISTS test_okpock;' && make test
