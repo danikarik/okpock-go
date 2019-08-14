@@ -9,7 +9,4 @@ jobs:
       - uses: actions/setup-go@v1
         with:
           version: '1.12'
-      - run: |
-        make download
-        make test
-        make release
+      - run: make test
