@@ -1,7 +1,5 @@
 # OKPOCK
 
-[![Build Status](https://travis-ci.org/danikarik/okpock.svg?branch=master)](https://travis-ci.org/danikarik/okpock)
-
 ## PassKit Endpoints
 
 ### GET `/v1/devices/{deviceLibraryIdentifier}/registrations/{passTypeIdentifier}`
