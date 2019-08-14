@@ -20,6 +20,9 @@ jobs:
         uses: actions/checkout@master
 
       - name: Get dependencies
+        env:
+          GOPROXY: https://proxy.golang.org
+          GO111MODULE: on
         run: make download
 
       - name: Run tests
