@@ -54,8 +54,8 @@ jobs:
           mv ${GITHUB_SHA}.zip build/gh-actions-${GITHUB_SHA}.zip
 
       - name: Publish
-        uses: actions/aws@master
         env:
           AWS_APPLICATION_ENV: ${{ secrets.AWS_APPLICATION_ENV }}
           AWS_APPLICATION_NAME: ${{ secrets.AWS_APPLICATION_NAME }}
+        uses: actions/aws@master
         run: eb --version
