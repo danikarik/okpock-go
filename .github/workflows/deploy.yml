@@ -59,8 +59,29 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_REGION: ${{ secrets.AWS_REGION }}
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
+        uses: actions/aws/cli@master
+        with:
+          args: s3 cp build/${GITHUB_SHA}.zip s3://${AWS_S3_BUCKET}/api.okpock.com/
+
+      - name: Create application version
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
           AWS_APPLICATION_ENV: ${{ secrets.AWS_APPLICATION_ENV }}
           AWS_APPLICATION_NAME: ${{ secrets.AWS_APPLICATION_NAME }}
         uses: actions/aws/cli@master
         with:
-          args: aws s3 cp build/${GITHUB_SHA}.zip s3://github-actions-builds/api.okpock.com/
+          args: elasticbeanstalk create-application-version --application-name ${AWS_APPLICATION_NAME} --version-label ${GITHUB_SHA} --source-bundle S3Bucket="${AWS_S3_BUCKET}",S3Key="api.okpock.com/${GITHUB_SHA}"
+      
+      - name: Update application environment
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_REGION: ${{ secrets.AWS_REGION }}
+          AWS_APPLICATION_ENV: ${{ secrets.AWS_APPLICATION_ENV }}
+          AWS_APPLICATION_NAME: ${{ secrets.AWS_APPLICATION_NAME }}
+        uses: actions/aws/cli@master
+        with:
+          args: elasticbeanstalk update-environment --application-name ${AWS_APPLICATION_NAME} --environment-name ${AWS_APPLICATION_ENV} --version-label ${GITHUB_SHA}
