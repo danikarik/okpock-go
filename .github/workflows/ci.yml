@@ -1,5 +1,5 @@
-name: Build and Test
-on: [push]
+name: Pull Request
+on: [pull_request]
 jobs:
   build:
     name: Build
@@ -9,4 +9,7 @@ jobs:
       - uses: actions/setup-go@v1
         with:
           version: '1.12'
-      - run: make release
+      - run: |
+        make download
+        make test
+        make release
