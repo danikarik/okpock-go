@@ -3,7 +3,7 @@ on: [pull_request]
 jobs:
 
   build:
-    name: Build
+    name: Build and Test
     runs-on: ubuntu-latest
     steps:
 
@@ -40,3 +40,6 @@ jobs:
           TEST_PROJECT: ${{ secrets.TEST_PROJECT }}
           TEST_TEMPLATES_BUCKET: ${{ secrets.TEST_TEMPLATES_BUCKET }}
         run: make test
+
+      - name: Build
+        run: make release
