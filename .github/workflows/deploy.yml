@@ -1,5 +1,7 @@
 name: Deploy Application
-on: [push]
+push:
+  branches:
+    - master
 jobs:
 
   build:
@@ -49,5 +51,3 @@ jobs:
           zip -r ${GITHUB_SHA} ./bin -x '.git/*'
           mkdir -p build
           mv ${GITHUB_SHA}.zip build/gh-actions-${GITHUB_SHA}.zip
-          ls -a
-          ls -a build
