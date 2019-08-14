@@ -55,7 +55,7 @@ jobs:
 
       - name: Publish
         uses: actions/aws@master
-        with:
+        env:
           AWS_APPLICATION_ENV: ${{ secrets.AWS_APPLICATION_ENV }}
           AWS_APPLICATION_NAME: ${{ secrets.AWS_APPLICATION_NAME }}
         run: eb --version
