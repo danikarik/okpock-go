@@ -52,3 +52,10 @@ jobs:
           zip -r ${GITHUB_SHA} ./bin -x '.git/*'
           mkdir -p build
           mv ${GITHUB_SHA}.zip build/gh-actions-${GITHUB_SHA}.zip
+
+      - name: Publish
+        uses: actions/aws@master
+        with:
+          AWS_APPLICATION_ENV: ${{ secrets.AWS_APPLICATION_ENV }}
+          AWS_APPLICATION_NAME: ${{ secrets.AWS_APPLICATION_NAME }}
+        run: eb --version
