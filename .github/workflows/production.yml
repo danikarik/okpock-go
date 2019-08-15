@@ -49,7 +49,7 @@ jobs:
 
       - name: Packing zip
         run: |
-          zip -r ${GITHUB_SHA} ./bin ./migrations -x '.git/*'
+          zip -r ${GITHUB_SHA} ./bin ./migrations ./.ebextensions -x '.git/*'
           mkdir -p build
           mv ${GITHUB_SHA}.zip build/${GITHUB_SHA}.zip
 
