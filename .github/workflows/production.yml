@@ -1,8 +1,8 @@
-name: Staging Deployment
+name: Production Deployment
 on:
   push:
-    branches:
-      - master
+    tags:
+      - v1
 jobs:
 
   build:
@@ -61,7 +61,7 @@ jobs:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
         uses: actions/aws/cli@master
         with:
-          args: s3 cp build/${GITHUB_SHA}.zip s3://${AWS_S3_BUCKET}/staging/api.okpock.com/
+          args: s3 cp build/${GITHUB_SHA}.zip s3://${AWS_S3_BUCKET}/production/api.okpock.com/
 
       - name: Create application version
         env:
@@ -69,8 +69,8 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
-          AWS_APPLICATION_ENV: ${{ secrets.AWS_STAGING_APPLICATION_ENV }}
-          AWS_APPLICATION_NAME: ${{ secrets.AWS_STAGING_APPLICATION_NAME }}
+          AWS_APPLICATION_ENV: ${{ secrets.AWS_PRODUCTION_APPLICATION_ENV }}
+          AWS_APPLICATION_NAME: ${{ secrets.AWS_PRODUCTION_APPLICATION_NAME }}
         uses: actions/aws/cli@master
         with:
           args: >
@@ -78,15 +78,15 @@ jobs:
               --application-name ${AWS_APPLICATION_NAME} \
               --version-label ${GITHUB_SHA} \
               --source-bundle \
-              S3Bucket="${AWS_S3_BUCKET}",S3Key="staging/api.okpock.com/${GITHUB_SHA}.zip"
+              S3Bucket="${AWS_S3_BUCKET}",S3Key="production/api.okpock.com/${GITHUB_SHA}.zip"
       
       - name: Update application environment
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: ${{ secrets.AWS_REGION }}
-          AWS_APPLICATION_ENV: ${{ secrets.AWS_STAGING_APPLICATION_ENV }}
-          AWS_APPLICATION_NAME: ${{ secrets.AWS_STAGING_APPLICATION_NAME }}
+          AWS_APPLICATION_ENV: ${{ secrets.AWS_PRODUCTION_APPLICATION_ENV }}
+          AWS_APPLICATION_NAME: ${{ secrets.AWS_PRODUCTION_APPLICATION_NAME }}
         uses: actions/aws/cli@master
         with:
           args: >

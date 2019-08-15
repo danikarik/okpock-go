@@ -40,10 +40,10 @@ func (s *Service) appURL(path string) string {
 		return "http://localhost:3000" + path
 	}
 	if s.env.Config.IsDevelopment() {
-		return "https://app-dev.okpock.com" + path
+		return "https://console-dev.okpock.com" + path
 	}
 	if s.env.Config.IsProduction() {
-		return "https://app.okpock.com" + path
+		return "https://console.okpock.com" + path
 	}
 	return ""
 }

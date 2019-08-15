@@ -232,13 +232,11 @@ func (s *Service) csrfMiddleware(w http.ResponseWriter, r *http.Request) (contex
 
 func (s *Service) allowedOrigins() []string {
 	origins := []string{
-		"https://okpock.com",
-		"https://app.okpock.com",
+		"https://console.okpock.com",
 	}
 	if s.env.Config.IsDevelopment() {
 		origins = []string{
-			"https://dev.okpock.com",
-			"https://app-dev.okpock.com",
+			"https://console-dev.okpock.com",
 		}
 	}
 	return origins
