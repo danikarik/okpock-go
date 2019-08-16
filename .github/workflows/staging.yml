@@ -61,7 +61,7 @@ jobs:
           AWS_S3_BUCKET: ${{ secrets.AWS_S3_BUCKET }}
         uses: actions/aws/cli@master
         with:
-          args: s3 cp build/${GITHUB_SHA}.zip s3://${AWS_S3_BUCKET}/staging/api.okpock.com/
+          args: s3 cp build/${GITHUB_SHA}.zip s3://${AWS_S3_BUCKET}/api-dev.okpock.com/
 
       - name: Create application version
         env:
@@ -78,7 +78,7 @@ jobs:
               --application-name ${AWS_APPLICATION_NAME} \
               --version-label ${GITHUB_SHA} \
               --source-bundle \
-              S3Bucket="${AWS_S3_BUCKET}",S3Key="staging/api.okpock.com/${GITHUB_SHA}.zip"
+              S3Bucket="${AWS_S3_BUCKET}",S3Key="api-dev.okpock.com/${GITHUB_SHA}.zip"
       
       - name: Update application environment
         env:
