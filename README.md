@@ -263,6 +263,62 @@ Response Codes
 
 - `301`
 
+### POST `/check/email`
+
+Request Body
+
+```json
+{
+  "email": "baitursynov92@gmail.com"
+}
+```
+
+Response Codes
+
+- `200`
+- `406`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "email": "baitursynov92@gmail.com"
+}
+```
+
+### POST `/check/username`
+
+Request Body
+
+```json
+{
+  "username": "danikarik"
+}
+```
+
+Response Codes
+
+- `200`
+- `406`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "username": "danikarik"
+}
+```
+
 ## Protected API Endpoints
 
 Requirements

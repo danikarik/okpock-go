@@ -58,6 +58,8 @@ func (s *Service) withRouter() *Service {
 		public.HandleFunc("/recover", s.recoverHandler).Methods("POST")
 		public.HandleFunc("/reset", s.resetHandler).Methods("POST")
 		public.HandleFunc("/verify", s.verifyHandler).Methods("GET").Queries(verifyQueries...)
+		public.HandleFunc("/check/email", s.checkEmailHandler).Methods("POST")
+		public.HandleFunc("/check/username", s.checkUsernameHandler).Methods("POST")
 
 		protected := api.NewRoute().Subrouter()
 		protected.Use(s.authMiddleware, s.csrfMiddleware)
