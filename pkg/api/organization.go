@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"encoding/json"
 	"errors"
 	"time"
@@ -46,4 +47,31 @@ func (o *Organization) String() string {
 		return ""
 	}
 	return string(data)
+}
+
+// OrganizationStore implements method for organization logic.
+type OrganizationStore interface {
+	// IsOrganizationExists ...
+	// TODO: description
+	IsOrganizationExists(ctx context.Context, title string, userID int64) (bool, error)
+
+	// SaveNewOrganization ...
+	// TODO: description
+	SaveNewOrganization(ctx context.Context, org *Organization) error
+
+	// LoadOrganization ...
+	// TODO: description
+	LoadOrganization(ctx context.Context, id int64) (*Organization, error)
+
+	// LoadOrganizations ...
+	// TODO: description
+	LoadOrganizations(ctx context.Context, userID int64) ([]*Organization, error)
+
+	// UpdateOrganizationDescription ...
+	// TODO: description
+	UpdateOrganizationDescription(ctx context.Context, desc string, org *Organization) error
+
+	// UpdateOrganizationMetaData ...
+	// TODO: description
+	UpdateOrganizationMetaData(ctx context.Context, data map[string]interface{}, org *Organization) error
 }

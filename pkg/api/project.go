@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
@@ -130,4 +131,43 @@ func (p *Project) GetField(field ProjectField, value string) string {
 		}
 	}
 	return ""
+}
+
+// ProjectStore implements method for project logic.
+type ProjectStore interface {
+	// IsProjectExists ...
+	// TODO: description
+	IsProjectExists(ctx context.Context, desc string, orgID int64, passType PassType) (bool, error)
+
+	// SaveNewProject ...
+	// TODO: description
+	SaveNewProject(ctx context.Context, proj *Project) error
+
+	// LoadProject ...
+	// TODO: description
+	LoadProject(ctx context.Context, id int64) (*Project, error)
+
+	// LoadProjects ...
+	// TODO: description
+	LoadProjects(ctx context.Context, userID int64) ([]*Project, error)
+
+	// UpdateProjectDescription ...
+	// TODO: description
+	UpdateProjectDescription(ctx context.Context, desc string, proj *Project) error
+
+	// SetBackgroundImage ...
+	// TODO: description
+	SetBackgroundImage(ctx context.Context, key string, proj *Project) error
+
+	// SetFooterImage ...
+	// TODO: description
+	SetFooterImage(ctx context.Context, key string, proj *Project) error
+
+	// SetIconImage ...
+	// TODO: description
+	SetIconImage(ctx context.Context, key string, proj *Project) error
+
+	// SetStripImage ...
+	// TODO: description
+	SetStripImage(ctx context.Context, key string, proj *Project) error
 }

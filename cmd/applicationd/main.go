@@ -78,7 +78,7 @@ func main() {
 	var srv *service.Service
 	{
 		db := sequel.New(conn)
-		env := env.New(cfg, db, db, s3, mailer)
+		env := env.New(cfg, db, db, db, db, s3, mailer)
 
 		srv = service.New(Version, env, logger)
 	}

@@ -421,3 +421,78 @@ func (m *Memory) UpdateAppMetaData(ctx context.Context, data map[string]interfac
 
 	return nil
 }
+
+// IsOrganizationExists ...
+func (m *Memory) IsOrganizationExists(ctx context.Context, title string, userID int64) (bool, error) {
+	return false, errors.New("not implemented")
+}
+
+// SaveNewOrganization ...
+func (m *Memory) SaveNewOrganization(ctx context.Context, org *api.Organization) error {
+	return errors.New("not implemented")
+}
+
+// LoadOrganization ...
+func (m *Memory) LoadOrganization(ctx context.Context, id int64) (*api.Organization, error) {
+	return nil, errors.New("not implemented")
+}
+
+// LoadOrganizations ...
+func (m *Memory) LoadOrganizations(ctx context.Context, userID int64) ([]*api.Organization, error) {
+	return nil, errors.New("not implemented")
+}
+
+// UpdateOrganizationDescription ...
+func (m *Memory) UpdateOrganizationDescription(ctx context.Context, desc string, org *api.Organization) error {
+	return errors.New("not implemented")
+}
+
+// UpdateOrganizationMetaData ...
+func (m *Memory) UpdateOrganizationMetaData(ctx context.Context, data map[string]interface{}, org *api.Organization) error {
+	return errors.New("not implemented")
+}
+
+// IsProjectExists ...
+func (m *Memory) IsProjectExists(ctx context.Context, desc string, orgID int64, passType api.PassType) (bool, error) {
+	return false, errors.New("not implemented")
+}
+
+// SaveNewProject ...
+func (m *Memory) SaveNewProject(ctx context.Context, proj *api.Project) error {
+	return errors.New("not implemented")
+}
+
+// LoadProject ...
+func (m *Memory) LoadProject(ctx context.Context, id int64) (*api.Project, error) {
+	return nil, errors.New("not implemented")
+}
+
+// LoadProjects ...
+func (m *Memory) LoadProjects(ctx context.Context, userID int64) ([]*api.Project, error) {
+	return nil, errors.New("not implemented")
+}
+
+// UpdateProjectDescription ...
+func (m *Memory) UpdateProjectDescription(ctx context.Context, desc string, proj *api.Project) error {
+	return errors.New("not implemented")
+}
+
+// SetBackgroundImage ...
+func (m *Memory) SetBackgroundImage(ctx context.Context, key string, proj *api.Project) error {
+	return errors.New("not implemented")
+}
+
+// SetFooterImage ...
+func (m *Memory) SetFooterImage(ctx context.Context, key string, proj *api.Project) error {
+	return errors.New("not implemented")
+}
+
+// SetIconImage ...
+func (m *Memory) SetIconImage(ctx context.Context, key string, proj *api.Project) error {
+	return errors.New("not implemented")
+}
+
+// SetStripImage ...
+func (m *Memory) SetStripImage(ctx context.Context, key string, proj *api.Project) error {
+	return errors.New("not implemented")
+}
