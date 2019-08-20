@@ -29,19 +29,23 @@ type reg struct {
 // New returns a new instance of memory mock.
 func New() *Memory {
 	mock := &Memory{
-		passes: make(map[string]*pass),
-		regs:   make(map[string]*reg),
-		users:  make(map[int64]*api.User),
+		passes:   make(map[string]*pass),
+		regs:     make(map[string]*reg),
+		users:    make(map[int64]*api.User),
+		orgs:     make(map[int64]*api.Organization),
+		projects: make(map[int64]*api.Project),
 	}
 	return mock
 }
 
 // Memory is mock implementor.
 type Memory struct {
-	mu     sync.Mutex
-	passes map[string]*pass
-	regs   map[string]*reg
-	users  map[int64]*api.User
+	mu       sync.Mutex
+	passes   map[string]*pass
+	regs     map[string]*reg
+	users    map[int64]*api.User
+	orgs     map[int64]*api.Organization
+	projects map[int64]*api.Project
 }
 
 // InsertPass ...
@@ -424,75 +428,201 @@ func (m *Memory) UpdateAppMetaData(ctx context.Context, data map[string]interfac
 
 // IsOrganizationExists ...
 func (m *Memory) IsOrganizationExists(ctx context.Context, title string, userID int64) (bool, error) {
-	return false, errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	for _, org := range m.orgs {
+		if org.Title == title && org.UserID == userID {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
 
 // SaveNewOrganization ...
 func (m *Memory) SaveNewOrganization(ctx context.Context, org *api.Organization) error {
-	return errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	if _, exists := m.orgs[org.ID]; exists {
+		return errors.New("organization exists")
+	}
+
+	m.orgs[org.ID] = org
+
+	return nil
 }
 
 // LoadOrganization ...
 func (m *Memory) LoadOrganization(ctx context.Context, id int64) (*api.Organization, error) {
-	return nil, errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	for _, o := range m.orgs {
+		if o.ID == id {
+			return o, nil
+		}
+	}
+
+	return nil, store.ErrNotFound
 }
 
 // LoadOrganizations ...
 func (m *Memory) LoadOrganizations(ctx context.Context, userID int64) ([]*api.Organization, error) {
-	return nil, errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	orgs := make([]*api.Organization, 0)
+	for _, o := range m.orgs {
+		if o.UserID == userID {
+			orgs = append(orgs, o)
+		}
+	}
+
+	return orgs, nil
 }
 
 // UpdateOrganizationDescription ...
 func (m *Memory) UpdateOrganizationDescription(ctx context.Context, desc string, org *api.Organization) error {
-	return errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	org.Description = desc
+	org.UpdatedAt = time.Now()
+	m.orgs[org.ID] = org
+
+	return nil
 }
 
 // UpdateOrganizationMetaData ...
 func (m *Memory) UpdateOrganizationMetaData(ctx context.Context, data map[string]interface{}, org *api.Organization) error {
-	return errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	org.MetaData = data
+	org.UpdatedAt = time.Now()
+	m.orgs[org.ID] = org
+
+	return nil
 }
 
 // IsProjectExists ...
 func (m *Memory) IsProjectExists(ctx context.Context, desc string, orgID int64, passType api.PassType) (bool, error) {
-	return false, errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	for _, p := range m.projects {
+		if p.Description == desc && p.OrganizationID == orgID && p.PassType == passType {
+			return true, nil
+		}
+	}
+
+	return false, nil
 }
 
 // SaveNewProject ...
 func (m *Memory) SaveNewProject(ctx context.Context, proj *api.Project) error {
-	return errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	if _, exists := m.projects[proj.ID]; exists {
+		return errors.New("project exists")
+	}
+
+	m.projects[proj.ID] = proj
+
+	return nil
 }
 
 // LoadProject ...
 func (m *Memory) LoadProject(ctx context.Context, id int64) (*api.Project, error) {
-	return nil, errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	for _, p := range m.projects {
+		if p.ID == id {
+			return p, nil
+		}
+	}
+
+	return nil, store.ErrNotFound
 }
 
 // LoadProjects ...
 func (m *Memory) LoadProjects(ctx context.Context, userID int64) ([]*api.Project, error) {
-	return nil, errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	projects := make([]*api.Project, 0)
+	for _, p := range m.projects {
+		for _, o := range m.orgs {
+			if o.UserID == userID {
+				projects = append(projects, p)
+			}
+		}
+
+	}
+
+	return projects, nil
 }
 
 // UpdateProjectDescription ...
 func (m *Memory) UpdateProjectDescription(ctx context.Context, desc string, proj *api.Project) error {
-	return errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	proj.Description = desc
+	proj.UpdatedAt = time.Now()
+	m.projects[proj.ID] = proj
+
+	return nil
 }
 
 // SetBackgroundImage ...
 func (m *Memory) SetBackgroundImage(ctx context.Context, key string, proj *api.Project) error {
-	return errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	proj.SetField(api.BackgroundImage, key)
+	proj.UpdatedAt = time.Now()
+	m.projects[proj.ID] = proj
+
+	return nil
 }
 
 // SetFooterImage ...
 func (m *Memory) SetFooterImage(ctx context.Context, key string, proj *api.Project) error {
-	return errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	proj.SetField(api.FooterImage, key)
+	proj.UpdatedAt = time.Now()
+	m.projects[proj.ID] = proj
+
+	return nil
 }
 
 // SetIconImage ...
 func (m *Memory) SetIconImage(ctx context.Context, key string, proj *api.Project) error {
-	return errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	proj.SetField(api.IconImage, key)
+	proj.UpdatedAt = time.Now()
+	m.projects[proj.ID] = proj
+
+	return nil
 }
 
 // SetStripImage ...
 func (m *Memory) SetStripImage(ctx context.Context, key string, proj *api.Project) error {
-	return errors.New("not implemented")
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	proj.SetField(api.StripImage, key)
+	proj.UpdatedAt = time.Now()
+	m.projects[proj.ID] = proj
+
+	return nil
 }

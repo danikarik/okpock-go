@@ -111,7 +111,7 @@ func (p *Project) SetField(field ProjectField, value string) {
 }
 
 // GetField gets string value of project field.
-func (p *Project) GetField(field ProjectField, value string) string {
+func (p *Project) GetField(field ProjectField) string {
 	switch field {
 	case BackgroundImage:
 		if p.BackgroundImage.Valid {

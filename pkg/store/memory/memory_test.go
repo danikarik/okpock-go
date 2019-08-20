@@ -3,6 +3,7 @@ package memory_test
 import (
 	"context"
 	"fmt"
+	"math/rand"
 	"strings"
 	"testing"
 	"time"
@@ -13,6 +14,8 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 )
+
+func randomID() int64 { return rand.Int63() }
 
 func TestInsertPass(t *testing.T) {
 	var (
@@ -974,4 +977,715 @@ func TestUpdateMetaData(t *testing.T) {
 		return
 	}
 	assert.False(u.UpdatedAt.IsZero())
+}
+
+func TestIsOrganizationExists(t *testing.T) {
+	type org struct {
+		ID     int64
+		Title  string
+		Desc   string
+		UserID int64
+	}
+
+	testCases := []struct {
+		Name      string
+		Existing  org
+		Requested org
+		Expected  bool
+	}{
+		{
+			Name: "NotTaken",
+			Existing: org{
+				ID:     1,
+				Title:  "GreatApp",
+				Desc:   "Sample Organization",
+				UserID: 1,
+			},
+			Requested: org{
+				Title:  "AnotherGreatApp",
+				UserID: 2,
+			},
+			Expected: false,
+		},
+		{
+			Name: "TakenTitle",
+			Existing: org{
+				ID:     2,
+				Title:  "GreatApp",
+				Desc:   "Sample Organization",
+				UserID: 3,
+			},
+			Requested: org{
+				Title:  "GreatApp",
+				UserID: 4,
+			},
+			Expected: false,
+		},
+		{
+			Name: "Exists",
+			Existing: org{
+				ID:     3,
+				Title:  "GreatApp",
+				Desc:   "Sample Organization",
+				UserID: 5,
+			},
+			Requested: org{
+				Title:  "GreatApp",
+				UserID: 5,
+			},
+			Expected: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			var (
+				ctx    = context.Background()
+				assert = assert.New(t)
+				mock   = memory.New()
+			)
+
+			org, err := api.NewOrganization(tc.Existing.Title, tc.Existing.Desc, nil)
+			if !assert.NoError(err) {
+				return
+			}
+			org.ID = tc.Existing.ID
+			org.UserID = tc.Existing.UserID
+
+			err = mock.SaveNewOrganization(ctx, org)
+			if !assert.NoError(err) {
+				return
+			}
+
+			exists, err := mock.IsOrganizationExists(ctx, tc.Requested.Title, tc.Requested.UserID)
+			assert.NoError(err)
+			assert.Equal(tc.Expected, exists)
+		})
+	}
+}
+
+func TestSaveNewOrganization(t *testing.T) {
+	type org struct {
+		ID     int64
+		Title  string
+		Desc   string
+		UserID int64
+	}
+
+	testCases := []struct {
+		Name      string
+		NewOrg    org
+		SavedOrgs []org
+	}{
+		{
+			Name: "NoExistingOrgs",
+			NewOrg: org{
+				ID:    randomID(),
+				Title: "GreatOrg",
+				Desc:  "Sample Org",
+			},
+			SavedOrgs: []org{},
+		},
+		{
+			Name: "WithExistingOrgs",
+			NewOrg: org{
+				ID:    randomID(),
+				Title: "AnotherGreatOrg",
+				Desc:  "Sample Org",
+			},
+			SavedOrgs: []org{
+				org{
+					ID:    randomID(),
+					Title: "GreatOrg2",
+					Desc:  "Sample Org",
+				},
+				org{
+					ID:    randomID(),
+					Title: "GreatOrg3",
+					Desc:  "Sample Org",
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			var (
+				ctx    = context.Background()
+				assert = assert.New(t)
+				mock   = memory.New()
+			)
+
+			var (
+				id       = randomID()
+				username = fmt.Sprintf("user%d", id)
+				email    = fmt.Sprintf("user%d@example.com", id)
+			)
+
+			u, err := api.NewUser(username, email, "test", nil)
+			if !assert.NoError(err) {
+				return
+			}
+			u.ID = id
+
+			err = mock.SaveNewUser(ctx, u)
+			if !assert.NoError(err) {
+				return
+			}
+
+			for _, org := range tc.SavedOrgs {
+				o, err := api.NewOrganization(org.Title, org.Desc, nil)
+				if !assert.NoError(err) {
+					return
+				}
+				o.ID = org.ID
+				o.UserID = u.ID
+
+				err = mock.SaveNewOrganization(ctx, o)
+				if !assert.NoError(err) {
+					return
+				}
+			}
+
+			o, err := api.NewOrganization(tc.NewOrg.Title, tc.NewOrg.Desc, nil)
+			if !assert.NoError(err) {
+				return
+			}
+			o.ID = tc.NewOrg.ID
+			o.UserID = u.ID
+
+			err = mock.SaveNewOrganization(ctx, o)
+			if !assert.NoError(err) {
+				return
+			}
+
+			loaded, err := mock.LoadOrganization(ctx, o.ID)
+			if !assert.NoError(err) {
+				return
+			}
+
+			assert.Equal(o.ID, loaded.ID)
+			assert.Equal(o.Title, loaded.Title)
+			assert.Equal(o.Description, loaded.Description)
+
+			loadedOrgs, err := mock.LoadOrganizations(ctx, u.ID)
+			if !assert.NoError(err) {
+				return
+			}
+
+			assert.Len(loadedOrgs, len(tc.SavedOrgs)+1)
+		})
+	}
+}
+
+func TestUpdateOrganization(t *testing.T) {
+	type org struct {
+		ID     int64
+		Title  string
+		Desc   string
+		UserID int64
+	}
+
+	testCases := []struct {
+		Name    string
+		Org     org
+		NewDesc string
+		NewData map[string]interface{}
+	}{
+		{
+			Name: "GreatOrg",
+			Org: org{
+				ID:    randomID(),
+				Title: "GreatOrg",
+				Desc:  "Sample Org",
+			},
+			NewDesc: "Updated Description",
+			NewData: map[string]interface{}{"quota": 100},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			var (
+				ctx    = context.Background()
+				assert = assert.New(t)
+				mock   = memory.New()
+			)
+
+			var (
+				id       = randomID()
+				username = fmt.Sprintf("user%d", id)
+				email    = fmt.Sprintf("user%d@example.com", id)
+			)
+
+			u, err := api.NewUser(username, email, "test", nil)
+			if !assert.NoError(err) {
+				return
+			}
+			u.ID = id
+
+			err = mock.SaveNewUser(ctx, u)
+			if !assert.NoError(err) {
+				return
+			}
+
+			o, err := api.NewOrganization(tc.Org.Title, tc.Org.Desc, nil)
+			if !assert.NoError(err) {
+				return
+			}
+			o.ID = tc.Org.ID
+			o.UserID = u.ID
+
+			err = mock.SaveNewOrganization(ctx, o)
+			if !assert.NoError(err) {
+				return
+			}
+
+			err = mock.UpdateOrganizationDescription(ctx, tc.NewDesc, o)
+			if !assert.NoError(err) {
+				return
+			}
+
+			err = mock.UpdateOrganizationMetaData(ctx, tc.NewData, o)
+			if !assert.NoError(err) {
+				return
+			}
+
+			loaded, err := mock.LoadOrganization(ctx, o.ID)
+			if !assert.NoError(err) {
+				return
+			}
+
+			assert.Equal(o.ID, loaded.ID)
+			assert.Equal(tc.NewDesc, loaded.Description)
+
+			ok := true
+			for k := range tc.NewData {
+				if _, has := loaded.MetaData[k]; !has {
+					ok = false
+				}
+			}
+			assert.True(ok)
+		})
+	}
+}
+
+func TestIsProjectExists(t *testing.T) {
+	type project struct {
+		ID    int64
+		OrgID int64
+		Desc  string
+		Type  api.PassType
+	}
+
+	testCases := []struct {
+		Name      string
+		Existing  project
+		Requested project
+		Expected  bool
+	}{
+		{
+			Name: "NotTaken",
+			Existing: project{
+				ID:    randomID(),
+				OrgID: randomID(),
+				Desc:  "Free Coupon",
+				Type:  api.Coupon,
+			},
+			Requested: project{
+				ID:    randomID(),
+				OrgID: randomID(),
+				Desc:  "Boarding Pass",
+				Type:  api.BoardingPass,
+			},
+			Expected: false,
+		},
+		{
+			Name: "TakenDescription",
+			Existing: project{
+				ID:    randomID(),
+				OrgID: randomID(),
+				Desc:  "Free Auction",
+				Type:  api.Coupon,
+			},
+			Requested: project{
+				ID:    randomID(),
+				OrgID: randomID(),
+				Desc:  "Free Auction",
+				Type:  api.EventTicket,
+			},
+			Expected: false,
+		},
+		{
+			Name: "Exists",
+			Existing: project{
+				ID:    randomID(),
+				OrgID: 11,
+				Desc:  "Free Auction",
+				Type:  api.Coupon,
+			},
+			Requested: project{
+				ID:    randomID(),
+				OrgID: 11,
+				Desc:  "Free Auction",
+				Type:  api.Coupon,
+			},
+			Expected: true,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			var (
+				ctx    = context.Background()
+				assert = assert.New(t)
+				mock   = memory.New()
+			)
+
+			project, err := api.NewProject(tc.Existing.Desc, tc.Existing.OrgID, tc.Existing.Type)
+			if !assert.NoError(err) {
+				return
+			}
+			project.ID = tc.Existing.ID
+
+			err = mock.SaveNewProject(ctx, project)
+			if !assert.NoError(err) {
+				return
+			}
+
+			exists, err := mock.IsProjectExists(ctx, tc.Requested.Desc, tc.Requested.OrgID, tc.Requested.Type)
+			assert.NoError(err)
+			assert.Equal(tc.Expected, exists)
+		})
+	}
+}
+
+func TestSaveNewProject(t *testing.T) {
+	type project struct {
+		ID    int64
+		OrgID int64
+		Desc  string
+		Type  api.PassType
+	}
+
+	testCases := []struct {
+		Name          string
+		NewProject    project
+		SavedProjects []project
+	}{
+		{
+			Name: "NoExistingProjects",
+			NewProject: project{
+				ID:    randomID(),
+				OrgID: randomID(),
+				Desc:  "Free Coupon",
+				Type:  api.Coupon,
+			},
+			SavedProjects: []project{},
+		},
+		{
+			Name: "WithExistingProjects",
+			NewProject: project{
+				ID:    randomID(),
+				OrgID: randomID(),
+				Desc:  "Boarding Pass",
+				Type:  api.BoardingPass,
+			},
+			SavedProjects: []project{
+				project{
+					ID:    randomID(),
+					OrgID: randomID(),
+					Desc:  "Generic",
+					Type:  api.Generic,
+				},
+				project{
+					ID:    randomID(),
+					OrgID: randomID(),
+					Desc:  "Event",
+					Type:  api.EventTicket,
+				},
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			var (
+				ctx    = context.Background()
+				assert = assert.New(t)
+				mock   = memory.New()
+			)
+
+			var (
+				id       = randomID()
+				username = fmt.Sprintf("user%d", id)
+				email    = fmt.Sprintf("user%d@example.com", id)
+				orgTitle = fmt.Sprintf("title%d", id)
+				orgDesc  = fmt.Sprintf("desc%d", id)
+			)
+
+			u, err := api.NewUser(username, email, "test", nil)
+			if !assert.NoError(err) {
+				return
+			}
+			u.ID = id
+
+			err = mock.SaveNewUser(ctx, u)
+			if !assert.NoError(err) {
+				return
+			}
+
+			o, err := api.NewOrganization(orgTitle, orgDesc, nil)
+			if !assert.NoError(err) {
+				return
+			}
+			o.ID = randomID()
+			o.UserID = u.ID
+
+			err = mock.SaveNewOrganization(ctx, o)
+			if !assert.NoError(err) {
+				return
+			}
+
+			for _, project := range tc.SavedProjects {
+				p, err := api.NewProject(project.Desc, o.ID, project.Type)
+				if !assert.NoError(err) {
+					return
+				}
+				p.ID = project.ID
+
+				err = mock.SaveNewProject(ctx, p)
+				if !assert.NoError(err) {
+					return
+				}
+			}
+
+			p, err := api.NewProject(tc.NewProject.Desc, o.ID, tc.NewProject.Type)
+			if !assert.NoError(err) {
+				return
+			}
+			p.ID = tc.NewProject.ID
+
+			err = mock.SaveNewProject(ctx, p)
+			if !assert.NoError(err) {
+				return
+			}
+
+			loaded, err := mock.LoadProject(ctx, p.ID)
+			if !assert.NoError(err) {
+				return
+			}
+
+			assert.Equal(p.ID, loaded.ID)
+			assert.Equal(p.Description, loaded.Description)
+			assert.Equal(p.PassType, loaded.PassType)
+
+			loadedProjects, err := mock.LoadProjects(ctx, u.ID)
+			if !assert.NoError(err) {
+				return
+			}
+
+			assert.Len(loadedProjects, len(tc.SavedProjects)+1)
+		})
+	}
+}
+
+func TestUpdateProject(t *testing.T) {
+	type project struct {
+		ID    int64
+		OrgID int64
+		Desc  string
+		Type  api.PassType
+	}
+
+	testCases := []struct {
+		Name    string
+		Project project
+		NewDesc string
+	}{
+		{
+			Name: "Coupon",
+			Project: project{
+				ID:    randomID(),
+				OrgID: randomID(),
+				Desc:  "Free Coupon",
+				Type:  api.Coupon,
+			},
+			NewDesc: "Free Auction",
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			var (
+				ctx    = context.Background()
+				assert = assert.New(t)
+				mock   = memory.New()
+			)
+
+			var (
+				id       = randomID()
+				username = fmt.Sprintf("user%d", id)
+				email    = fmt.Sprintf("user%d@example.com", id)
+				orgTitle = fmt.Sprintf("title%d", id)
+				orgDesc  = fmt.Sprintf("desc%d", id)
+			)
+
+			u, err := api.NewUser(username, email, "test", nil)
+			if !assert.NoError(err) {
+				return
+			}
+			u.ID = id
+
+			err = mock.SaveNewUser(ctx, u)
+			if !assert.NoError(err) {
+				return
+			}
+
+			o, err := api.NewOrganization(orgTitle, orgDesc, nil)
+			if !assert.NoError(err) {
+				return
+			}
+			o.ID = randomID()
+			o.UserID = u.ID
+
+			err = mock.SaveNewOrganization(ctx, o)
+			if !assert.NoError(err) {
+				return
+			}
+
+			p, err := api.NewProject(tc.Project.Desc, o.ID, tc.Project.Type)
+			if !assert.NoError(err) {
+				return
+			}
+			p.ID = tc.Project.ID
+
+			err = mock.SaveNewProject(ctx, p)
+			if !assert.NoError(err) {
+				return
+			}
+
+			err = mock.UpdateProjectDescription(ctx, tc.NewDesc, p)
+			if !assert.NoError(err) {
+				return
+			}
+
+			loaded, err := mock.LoadProject(ctx, p.ID)
+			if !assert.NoError(err) {
+				return
+			}
+
+			assert.Equal(p.ID, loaded.ID)
+			assert.Equal(p.Description, loaded.Description)
+		})
+	}
+}
+
+func TestSetImage(t *testing.T) {
+	type project struct {
+		ID    int64
+		OrgID int64
+		Desc  string
+		Type  api.PassType
+	}
+
+	testCases := []struct {
+		Name    string
+		Project project
+		NewKey  string
+	}{
+		{
+			Name: "Coupon",
+			Project: project{
+				ID:    randomID(),
+				OrgID: randomID(),
+				Desc:  "Free Coupon",
+				Type:  api.Coupon,
+			},
+			NewKey: uuid.NewV4().String(),
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			var (
+				ctx    = context.Background()
+				assert = assert.New(t)
+				mock   = memory.New()
+			)
+
+			var (
+				id       = randomID()
+				username = fmt.Sprintf("user%d", id)
+				email    = fmt.Sprintf("user%d@example.com", id)
+				orgTitle = fmt.Sprintf("title%d", id)
+				orgDesc  = fmt.Sprintf("desc%d", id)
+			)
+
+			u, err := api.NewUser(username, email, "test", nil)
+			if !assert.NoError(err) {
+				return
+			}
+			u.ID = id
+
+			err = mock.SaveNewUser(ctx, u)
+			if !assert.NoError(err) {
+				return
+			}
+
+			o, err := api.NewOrganization(orgTitle, orgDesc, nil)
+			if !assert.NoError(err) {
+				return
+			}
+			o.ID = randomID()
+			o.UserID = u.ID
+
+			err = mock.SaveNewOrganization(ctx, o)
+			if !assert.NoError(err) {
+				return
+			}
+
+			p, err := api.NewProject(tc.Project.Desc, o.ID, tc.Project.Type)
+			if !assert.NoError(err) {
+				return
+			}
+			p.ID = tc.Project.ID
+
+			err = mock.SaveNewProject(ctx, p)
+			if !assert.NoError(err) {
+				return
+			}
+
+			err = mock.SetBackgroundImage(ctx, tc.NewKey, p)
+			if !assert.NoError(err) {
+				return
+			}
+
+			err = mock.SetFooterImage(ctx, tc.NewKey, p)
+			if !assert.NoError(err) {
+				return
+			}
+
+			err = mock.SetIconImage(ctx, tc.NewKey, p)
+			if !assert.NoError(err) {
+				return
+			}
+
+			err = mock.SetStripImage(ctx, tc.NewKey, p)
+			if !assert.NoError(err) {
+				return
+			}
+
+			loaded, err := mock.LoadProject(ctx, p.ID)
+			if !assert.NoError(err) {
+				return
+			}
+
+			assert.Equal(p.ID, loaded.ID)
+			assert.Equal(tc.NewKey, loaded.GetField(api.BackgroundImage))
+			assert.Equal(tc.NewKey, loaded.GetField(api.FooterImage))
+			assert.Equal(tc.NewKey, loaded.GetField(api.IconImage))
+			assert.Equal(tc.NewKey, loaded.GetField(api.StripImage))
+		})
+	}
 }
