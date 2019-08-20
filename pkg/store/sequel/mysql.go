@@ -14,6 +14,13 @@ const (
 	TimeFormat = "2006-01-02 15:04:05"
 )
 
+const (
+	_ = 1 << iota
+	checkNilStruct
+	checkZeroID
+	checkForeignID
+)
+
 // New returns MySQL store implementation.
 func New(db *sqlx.DB) *MySQL {
 	return &MySQL{

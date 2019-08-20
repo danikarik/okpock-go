@@ -11,12 +11,6 @@ import (
 	"github.com/danikarik/okpock/pkg/store"
 )
 
-const (
-	_ = 1 << iota
-	checkNilStruct
-	checkZeroID
-)
-
 func checkUser(u *api.User, opts byte) error {
 	if (opts & checkNilStruct) != 0 {
 		if u == nil {
@@ -117,10 +111,10 @@ func (m *MySQL) loadUser(ctx context.Context, query sq.SelectBuilder) (*api.User
 	var u = &api.User{}
 
 	err = row.StructScan(u)
+	if err == sql.ErrNoRows {
+		return nil, store.ErrNotFound
+	}
 	if err != nil {
-		if err == sql.ErrNoRows {
-			return nil, store.ErrNotFound
-		}
 		return nil, err
 	}
 

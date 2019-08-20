@@ -1045,12 +1045,11 @@ func TestIsOrganizationExists(t *testing.T) {
 				mock   = memory.New()
 			)
 
-			org, err := api.NewOrganization(tc.Existing.Title, tc.Existing.Desc, nil)
+			org, err := api.NewOrganization(tc.Existing.UserID, tc.Existing.Title, tc.Existing.Desc, nil)
 			if !assert.NoError(err) {
 				return
 			}
 			org.ID = tc.Existing.ID
-			org.UserID = tc.Existing.UserID
 
 			err = mock.SaveNewOrganization(ctx, org)
 			if !assert.NoError(err) {
@@ -1134,12 +1133,11 @@ func TestSaveNewOrganization(t *testing.T) {
 			}
 
 			for _, org := range tc.SavedOrgs {
-				o, err := api.NewOrganization(org.Title, org.Desc, nil)
+				o, err := api.NewOrganization(u.ID, org.Title, org.Desc, nil)
 				if !assert.NoError(err) {
 					return
 				}
 				o.ID = org.ID
-				o.UserID = u.ID
 
 				err = mock.SaveNewOrganization(ctx, o)
 				if !assert.NoError(err) {
@@ -1147,12 +1145,11 @@ func TestSaveNewOrganization(t *testing.T) {
 				}
 			}
 
-			o, err := api.NewOrganization(tc.NewOrg.Title, tc.NewOrg.Desc, nil)
+			o, err := api.NewOrganization(u.ID, tc.NewOrg.Title, tc.NewOrg.Desc, nil)
 			if !assert.NoError(err) {
 				return
 			}
 			o.ID = tc.NewOrg.ID
-			o.UserID = u.ID
 
 			err = mock.SaveNewOrganization(ctx, o)
 			if !assert.NoError(err) {
@@ -1229,12 +1226,11 @@ func TestUpdateOrganization(t *testing.T) {
 				return
 			}
 
-			o, err := api.NewOrganization(tc.Org.Title, tc.Org.Desc, nil)
+			o, err := api.NewOrganization(u.ID, tc.Org.Title, tc.Org.Desc, nil)
 			if !assert.NoError(err) {
 				return
 			}
 			o.ID = tc.Org.ID
-			o.UserID = u.ID
 
 			err = mock.SaveNewOrganization(ctx, o)
 			if !assert.NoError(err) {
@@ -1257,6 +1253,7 @@ func TestUpdateOrganization(t *testing.T) {
 			}
 
 			assert.Equal(o.ID, loaded.ID)
+			assert.Equal(o.Title, loaded.Title)
 			assert.Equal(tc.NewDesc, loaded.Description)
 
 			ok := true
@@ -1342,7 +1339,7 @@ func TestIsProjectExists(t *testing.T) {
 				mock   = memory.New()
 			)
 
-			project, err := api.NewProject(tc.Existing.Desc, tc.Existing.OrgID, tc.Existing.Type)
+			project, err := api.NewProject(tc.Existing.OrgID, tc.Existing.Desc, tc.Existing.Type)
 			if !assert.NoError(err) {
 				return
 			}
@@ -1435,12 +1432,11 @@ func TestSaveNewProject(t *testing.T) {
 				return
 			}
 
-			o, err := api.NewOrganization(orgTitle, orgDesc, nil)
+			o, err := api.NewOrganization(u.ID, orgTitle, orgDesc, nil)
 			if !assert.NoError(err) {
 				return
 			}
 			o.ID = randomID()
-			o.UserID = u.ID
 
 			err = mock.SaveNewOrganization(ctx, o)
 			if !assert.NoError(err) {
@@ -1448,7 +1444,7 @@ func TestSaveNewProject(t *testing.T) {
 			}
 
 			for _, project := range tc.SavedProjects {
-				p, err := api.NewProject(project.Desc, o.ID, project.Type)
+				p, err := api.NewProject(o.ID, project.Desc, project.Type)
 				if !assert.NoError(err) {
 					return
 				}
@@ -1460,7 +1456,7 @@ func TestSaveNewProject(t *testing.T) {
 				}
 			}
 
-			p, err := api.NewProject(tc.NewProject.Desc, o.ID, tc.NewProject.Type)
+			p, err := api.NewProject(o.ID, tc.NewProject.Desc, tc.NewProject.Type)
 			if !assert.NoError(err) {
 				return
 			}
@@ -1542,19 +1538,18 @@ func TestUpdateProject(t *testing.T) {
 				return
 			}
 
-			o, err := api.NewOrganization(orgTitle, orgDesc, nil)
+			o, err := api.NewOrganization(u.ID, orgTitle, orgDesc, nil)
 			if !assert.NoError(err) {
 				return
 			}
 			o.ID = randomID()
-			o.UserID = u.ID
 
 			err = mock.SaveNewOrganization(ctx, o)
 			if !assert.NoError(err) {
 				return
 			}
 
-			p, err := api.NewProject(tc.Project.Desc, o.ID, tc.Project.Type)
+			p, err := api.NewProject(o.ID, tc.Project.Desc, tc.Project.Type)
 			if !assert.NoError(err) {
 				return
 			}
@@ -1633,19 +1628,18 @@ func TestSetImage(t *testing.T) {
 				return
 			}
 
-			o, err := api.NewOrganization(orgTitle, orgDesc, nil)
+			o, err := api.NewOrganization(u.ID, orgTitle, orgDesc, nil)
 			if !assert.NoError(err) {
 				return
 			}
 			o.ID = randomID()
-			o.UserID = u.ID
 
 			err = mock.SaveNewOrganization(ctx, o)
 			if !assert.NoError(err) {
 				return
 			}
 
-			p, err := api.NewProject(tc.Project.Desc, o.ID, tc.Project.Type)
+			p, err := api.NewProject(o.ID, tc.Project.Desc, tc.Project.Type)
 			if !assert.NoError(err) {
 				return
 			}

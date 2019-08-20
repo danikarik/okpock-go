@@ -8,8 +8,9 @@ import (
 )
 
 // NewOrganization returns a new instance of organization.
-func NewOrganization(title, desc string, data map[string]interface{}) (*Organization, error) {
+func NewOrganization(userID int64, title, desc string, data map[string]interface{}) (*Organization, error) {
 	return &Organization{
+		UserID:      userID,
 		Title:       title,
 		Description: desc,
 		MetaData:    data,
