@@ -5,11 +5,11 @@ import (
 )
 
 const (
-	appleSerialsRoute    string = "/devices/{deviceLibraryIdentifier}/registrations/{passTypeIdentifier}"
+	appleSerialsRoute    string = "/devices/{deviceID}/registrations/{passTypeID}"
 	appleLogRoute        string = "/log"
-	appleRegisterRoute   string = "/devices/{deviceLibraryIdentifier}/registrations/{passTypeIdentifier}/{serialNumber}"
-	appleUnregisterRoute string = "/devices/{deviceLibraryIdentifier}/registrations/{passTypeIdentifier}/{serialNumber}"
-	appleLatestRoute     string = "/passes/{passTypeIdentifier}/{serialNumber}"
+	appleRegisterRoute   string = "/devices/{deviceID}/registrations/{passTypeID}/{serialNumber}"
+	appleUnregisterRoute string = "/devices/{deviceID}/registrations/{passTypeID}/{serialNumber}"
+	appleLatestRoute     string = "/passes/{passTypeID}/{serialNumber}"
 )
 
 var verifyQueries = []string{

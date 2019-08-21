@@ -11,14 +11,14 @@ import (
 // "Getting the Latest Version of a Pass".
 func (s *Service) latestPass(w http.ResponseWriter, r *http.Request) error {
 	var (
-		ctx                = r.Context()
-		vars               = mux.Vars(r)
-		serialNumber       = vars["serialNumber"]
-		passTypeIdentifier = vars["passTypeIdentifier"]
-		authToken          = applePassFromContext(ctx)
+		ctx          = r.Context()
+		vars         = mux.Vars(r)
+		serialNumber = vars["serialNumber"]
+		passTypeID   = vars["passTypeID"]
+		authToken    = applePassFromContext(ctx)
 	)
 
-	lastUpdate, err := s.env.PassKit.LatestPass(ctx, serialNumber, authToken, passTypeIdentifier)
+	lastUpdate, err := s.env.PassKit.LatestPass(ctx, serialNumber, authToken, passTypeID)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "LatestPass", err)
 	}

@@ -49,13 +49,13 @@ type Memory struct {
 }
 
 // InsertPass ...
-func (m *Memory) InsertPass(ctx context.Context, serialNumber, authToken, passTypeIdentifier string) error {
+func (m *Memory) InsertPass(ctx context.Context, serialNumber, authToken, passTypeID string) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	pass := &pass{
 		serialNumber,
 		authToken,
-		passTypeIdentifier,
+		passTypeID,
 		time.Now(),
 	}
 	m.passes[pass.serial] = pass
@@ -76,7 +76,7 @@ func (m *Memory) UpdatePass(ctx context.Context, serialNumber string) error {
 }
 
 // FindPass ...
-func (m *Memory) FindPass(ctx context.Context, serialNumber, authToken, passTypeIdentifier string) (bool, error) {
+func (m *Memory) FindPass(ctx context.Context, serialNumber, authToken, passTypeID string) (bool, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	_, ok := m.passes[serialNumber]
@@ -98,7 +98,7 @@ func (m *Memory) FindRegistration(ctx context.Context, deviceID, serialNumber st
 }
 
 // FindSerialNumbers ...
-func (m *Memory) FindSerialNumbers(ctx context.Context, deviceID, passTypeIdentifier, tag string) ([]string, error) {
+func (m *Memory) FindSerialNumbers(ctx context.Context, deviceID, passTypeID, tag string) ([]string, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	reg, ok := m.regs[deviceID]
@@ -109,7 +109,7 @@ func (m *Memory) FindSerialNumbers(ctx context.Context, deviceID, passTypeIdenti
 }
 
 // LatestPass ...
-func (m *Memory) LatestPass(ctx context.Context, serialNumber, authToken, passTypeIdentifier string) (time.Time, error) {
+func (m *Memory) LatestPass(ctx context.Context, serialNumber, authToken, passTypeID string) (time.Time, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	pass, ok := m.passes[serialNumber]
@@ -120,21 +120,21 @@ func (m *Memory) LatestPass(ctx context.Context, serialNumber, authToken, passTy
 }
 
 // InsertRegistration ...
-func (m *Memory) InsertRegistration(ctx context.Context, deviceID, pushToken, serialNumber, passTypeIdentifier string) error {
+func (m *Memory) InsertRegistration(ctx context.Context, deviceID, pushToken, serialNumber, passTypeID string) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	reg := &reg{
 		serialNumber,
 		deviceID,
 		pushToken,
-		passTypeIdentifier,
+		passTypeID,
 	}
 	m.regs[deviceID] = reg
 	return nil
 }
 
 // DeleteRegistration ...
-func (m *Memory) DeleteRegistration(ctx context.Context, deviceID, serialNumber, passTypeIdentifier string) (bool, error) {
+func (m *Memory) DeleteRegistration(ctx context.Context, deviceID, serialNumber, passTypeID string) (bool, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 	delete(m.regs, deviceID)

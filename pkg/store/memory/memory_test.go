@@ -23,10 +23,10 @@ func TestInsertPass(t *testing.T) {
 		mock               = memory.New()
 		serialNumber       = uuid.NewV4().String()
 		authToken          = uuid.NewV4().String()
-		passTypeIdentifier = "test.passkit"
+		passTypeID = "test.passkit"
 	)
 	assert := assert.New(t)
-	err := mock.InsertPass(ctx, serialNumber, authToken, passTypeIdentifier)
+	err := mock.InsertPass(ctx, serialNumber, authToken, passTypeID)
 	assert.NoError(err)
 }
 
@@ -36,10 +36,10 @@ func TestUpdatePass(t *testing.T) {
 		mock               = memory.New()
 		serialNumber       = uuid.NewV4().String()
 		authToken          = uuid.NewV4().String()
-		passTypeIdentifier = "test.passkit"
+		passTypeID = "test.passkit"
 	)
 	assert := assert.New(t)
-	err := mock.InsertPass(ctx, serialNumber, authToken, passTypeIdentifier)
+	err := mock.InsertPass(ctx, serialNumber, authToken, passTypeID)
 	assert.NoError(err)
 	err = mock.UpdatePass(ctx, serialNumber)
 	assert.NoError(err)
@@ -51,12 +51,12 @@ func TestFindPass(t *testing.T) {
 		mock               = memory.New()
 		serialNumber       = uuid.NewV4().String()
 		authToken          = uuid.NewV4().String()
-		passTypeIdentifier = "test.passkit"
+		passTypeID = "test.passkit"
 	)
 	assert := assert.New(t)
-	err := mock.InsertPass(ctx, serialNumber, authToken, passTypeIdentifier)
+	err := mock.InsertPass(ctx, serialNumber, authToken, passTypeID)
 	assert.NoError(err)
-	res, err := mock.FindPass(ctx, serialNumber, authToken, passTypeIdentifier)
+	res, err := mock.FindPass(ctx, serialNumber, authToken, passTypeID)
 	assert.NoError(err)
 	assert.True(res)
 }
@@ -68,10 +68,10 @@ func TestFindRegistration(t *testing.T) {
 		deviceID           = uuid.NewV4().String()
 		serialNumber       = uuid.NewV4().String()
 		pushToken          = uuid.NewV4().String()
-		passTypeIdentifier = "test.passkit"
+		passTypeID = "test.passkit"
 	)
 	assert := assert.New(t)
-	err := mock.InsertRegistration(ctx, deviceID, pushToken, serialNumber, passTypeIdentifier)
+	err := mock.InsertRegistration(ctx, deviceID, pushToken, serialNumber, passTypeID)
 	assert.NoError(err)
 	res, err := mock.FindRegistration(ctx, deviceID, serialNumber)
 	assert.NoError(err)
@@ -85,12 +85,12 @@ func TestFindSerialNumbers(t *testing.T) {
 		deviceID           = uuid.NewV4().String()
 		serialNumber       = uuid.NewV4().String()
 		pushToken          = uuid.NewV4().String()
-		passTypeIdentifier = "test.passkit"
+		passTypeID = "test.passkit"
 	)
 	assert := assert.New(t)
-	err := mock.InsertRegistration(ctx, deviceID, pushToken, serialNumber, passTypeIdentifier)
+	err := mock.InsertRegistration(ctx, deviceID, pushToken, serialNumber, passTypeID)
 	assert.NoError(err)
-	serials, err := mock.FindSerialNumbers(ctx, deviceID, passTypeIdentifier, "")
+	serials, err := mock.FindSerialNumbers(ctx, deviceID, passTypeID, "")
 	assert.NoError(err)
 	assert.NotEmpty(serials)
 }
@@ -101,12 +101,12 @@ func TestLatestPass(t *testing.T) {
 		mock               = memory.New()
 		serialNumber       = uuid.NewV4().String()
 		authToken          = uuid.NewV4().String()
-		passTypeIdentifier = "test.passkit"
+		passTypeID = "test.passkit"
 	)
 	assert := assert.New(t)
-	err := mock.InsertPass(ctx, serialNumber, authToken, passTypeIdentifier)
+	err := mock.InsertPass(ctx, serialNumber, authToken, passTypeID)
 	assert.NoError(err)
-	ts, err := mock.LatestPass(ctx, serialNumber, authToken, passTypeIdentifier)
+	ts, err := mock.LatestPass(ctx, serialNumber, authToken, passTypeID)
 	assert.NoError(err)
 	assert.NotNil(ts)
 }
@@ -118,10 +118,10 @@ func TestInsertRegistration(t *testing.T) {
 		deviceID           = uuid.NewV4().String()
 		serialNumber       = uuid.NewV4().String()
 		pushToken          = uuid.NewV4().String()
-		passTypeIdentifier = "test.passkit"
+		passTypeID = "test.passkit"
 	)
 	assert := assert.New(t)
-	err := mock.InsertRegistration(ctx, deviceID, pushToken, serialNumber, passTypeIdentifier)
+	err := mock.InsertRegistration(ctx, deviceID, pushToken, serialNumber, passTypeID)
 	assert.NoError(err)
 }
 
@@ -132,12 +132,12 @@ func TestDeleteRegistration(t *testing.T) {
 		deviceID           = uuid.NewV4().String()
 		serialNumber       = uuid.NewV4().String()
 		pushToken          = uuid.NewV4().String()
-		passTypeIdentifier = "test.passkit"
+		passTypeID = "test.passkit"
 	)
 	assert := assert.New(t)
-	err := mock.InsertRegistration(ctx, deviceID, pushToken, serialNumber, passTypeIdentifier)
+	err := mock.InsertRegistration(ctx, deviceID, pushToken, serialNumber, passTypeID)
 	assert.NoError(err)
-	res, err := mock.DeleteRegistration(ctx, deviceID, serialNumber, passTypeIdentifier)
+	res, err := mock.DeleteRegistration(ctx, deviceID, serialNumber, passTypeID)
 	assert.NoError(err)
 	assert.True(res)
 }

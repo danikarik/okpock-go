@@ -9,10 +9,10 @@ import (
 )
 
 // InsertPass ...
-func (m *MySQL) InsertPass(ctx context.Context, serialNumber, authToken, passTypeIdentifier string) error {
+func (m *MySQL) InsertPass(ctx context.Context, serialNumber, authToken, passTypeID string) error {
 	query := m.builder.Insert("passes").
 		Columns("serial_number", "authentication_token", "pass_type_id", "updated_at").
-		Values(serialNumber, authToken, passTypeIdentifier, time.Now())
+		Values(serialNumber, authToken, passTypeID, time.Now())
 
 	_, err := m.insertQuery(ctx, query)
 	if err != nil {
@@ -37,12 +37,12 @@ func (m *MySQL) UpdatePass(ctx context.Context, serialNumber string) error {
 }
 
 // FindPass ...
-func (m *MySQL) FindPass(ctx context.Context, serialNumber, authToken, passTypeIdentifier string) (bool, error) {
+func (m *MySQL) FindPass(ctx context.Context, serialNumber, authToken, passTypeID string) (bool, error) {
 	query := m.builder.Select("count(1)").From("passes").
 		Where(sq.Eq{
 			"serial_number":        serialNumber,
 			"authentication_token": authToken,
-			"pass_type_id":         passTypeIdentifier,
+			"pass_type_id":         passTypeID,
 		})
 
 	cnt, err := m.countQuery(ctx, query)
@@ -70,14 +70,14 @@ func (m *MySQL) FindRegistration(ctx context.Context, deviceID, serialNumber str
 }
 
 // FindSerialNumbers ...
-func (m *MySQL) FindSerialNumbers(ctx context.Context, deviceID, passTypeIdentifier, tag string) ([]string, error) {
+func (m *MySQL) FindSerialNumbers(ctx context.Context, deviceID, passTypeID, tag string) ([]string, error) {
 	var sns []string
 
 	query := m.builder.Select("p.serial_number").From("passes p").
 		LeftJoin("registrations r on r.serial_number = p.serial_number").
 		Where(sq.Eq{
 			"r.device_id":    deviceID,
-			"r.pass_type_id": passTypeIdentifier,
+			"r.pass_type_id": passTypeID,
 		})
 
 	if tag != "" {
@@ -101,14 +101,14 @@ func (m *MySQL) FindSerialNumbers(ctx context.Context, deviceID, passTypeIdentif
 }
 
 // LatestPass ...
-func (m *MySQL) LatestPass(ctx context.Context, serialNumber, authToken, passTypeIdentifier string) (time.Time, error) {
+func (m *MySQL) LatestPass(ctx context.Context, serialNumber, authToken, passTypeID string) (time.Time, error) {
 	var t time.Time
 
 	query := m.builder.Select("updated_at").From("passes").
 		Where(sq.Eq{
 			"serial_number":        serialNumber,
 			"authentication_token": authToken,
-			"pass_type_id":         passTypeIdentifier,
+			"pass_type_id":         passTypeID,
 		})
 
 	err := m.scanQuery(ctx, query, &t)
@@ -120,10 +120,10 @@ func (m *MySQL) LatestPass(ctx context.Context, serialNumber, authToken, passTyp
 }
 
 // InsertRegistration ...
-func (m *MySQL) InsertRegistration(ctx context.Context, deviceID, pushToken, serialNumber, passTypeIdentifier string) error {
+func (m *MySQL) InsertRegistration(ctx context.Context, deviceID, pushToken, serialNumber, passTypeID string) error {
 	query := m.builder.Insert("registrations").
 		Columns("uuid", "device_id", "push_token", "serial_number", "pass_type_id").
-		Values(uuid.NewV4().String(), deviceID, pushToken, serialNumber, passTypeIdentifier)
+		Values(uuid.NewV4().String(), deviceID, pushToken, serialNumber, passTypeID)
 
 	_, err := m.insertQuery(ctx, query)
 	if err != nil {
@@ -134,12 +134,12 @@ func (m *MySQL) InsertRegistration(ctx context.Context, deviceID, pushToken, ser
 }
 
 // DeleteRegistration ...
-func (m *MySQL) DeleteRegistration(ctx context.Context, deviceID, serialNumber, passTypeIdentifier string) (bool, error) {
+func (m *MySQL) DeleteRegistration(ctx context.Context, deviceID, serialNumber, passTypeID string) (bool, error) {
 	query := m.builder.Delete("registrations").
 		Where(sq.Eq{
 			"device_id":     deviceID,
 			"serial_number": serialNumber,
-			"pass_type_id":  passTypeIdentifier,
+			"pass_type_id":  passTypeID,
 		})
 
 	rows, err := m.deleteQuery(ctx, query)

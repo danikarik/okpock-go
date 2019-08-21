@@ -10,14 +10,14 @@ import (
 // "Unregistering a Device".
 func (s *Service) unregisterDevice(w http.ResponseWriter, r *http.Request) error {
 	var (
-		ctx                     = r.Context()
-		vars                    = mux.Vars(r)
-		deviceLibraryIdentifier = vars["deviceLibraryIdentifier"]
-		passTypeIdentifier      = vars["passTypeIdentifier"]
-		serialNumber            = vars["serialNumber"]
+		ctx          = r.Context()
+		vars         = mux.Vars(r)
+		deviceID     = vars["deviceID"]
+		passTypeID   = vars["passTypeID"]
+		serialNumber = vars["serialNumber"]
 	)
 
-	ok, err := s.env.PassKit.DeleteRegistration(ctx, deviceLibraryIdentifier, serialNumber, passTypeIdentifier)
+	ok, err := s.env.PassKit.DeleteRegistration(ctx, deviceID, serialNumber, passTypeID)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "DeleteRegistration", err)
 	}

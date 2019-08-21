@@ -2,7 +2,7 @@
 
 ## PassKit Endpoints
 
-### GET `/v1/devices/{deviceLibraryIdentifier}/registrations/{passTypeIdentifier}`
+### GET `/v1/devices/{deviceID}/registrations/{passTypeID}`
 
 Response Codes
 
@@ -25,7 +25,7 @@ Response Body
 }
 ```
 
-### POST `/v1/devices/{deviceLibraryIdentifier}/registrations/{passTypeIdentifier}/{serialNumber}`
+### POST `/v1/devices/{deviceID}/registrations/{passTypeID}/{serialNumber}`
 
 Response Codes
 
@@ -34,7 +34,7 @@ Response Codes
 - `400`
 - `500`
 
-### DELETE `/v1/devices/{deviceLibraryIdentifier}/registrations/{passTypeIdentifier}/{serialNumber}`
+### DELETE `/v1/devices/{deviceID}/registrations/{passTypeID}/{serialNumber}`
 
 Response Codes
 
@@ -42,7 +42,7 @@ Response Codes
 - `404`
 - `500`
 
-### GET `/v1/passes/{passTypeIdentifier}/{serialNumber}`
+### GET `/v1/passes/{passTypeID}/{serialNumber}`
 
 Response Codes
 

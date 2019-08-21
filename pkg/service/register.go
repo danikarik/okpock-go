@@ -29,11 +29,11 @@ func (r *Register) String() string { return fmt.Sprintf(`{"pushToken":"%s"}`, r.
 // "Registering a Device to Receive Push Notifications for a Pass".
 func (s *Service) registerDevice(w http.ResponseWriter, r *http.Request) error {
 	var (
-		ctx                     = r.Context()
-		vars                    = mux.Vars(r)
-		deviceLibraryIdentifier = vars["deviceLibraryIdentifier"]
-		passTypeIdentifier      = vars["passTypeIdentifier"]
-		serialNumber            = vars["serialNumber"]
+		ctx          = r.Context()
+		vars         = mux.Vars(r)
+		deviceID     = vars["deviceID"]
+		passTypeID   = vars["passTypeID"]
+		serialNumber = vars["serialNumber"]
 	)
 
 	var register Register
@@ -42,7 +42,7 @@ func (s *Service) registerDevice(w http.ResponseWriter, r *http.Request) error {
 		return s.httpError(w, r, http.StatusBadRequest, "Read", err)
 	}
 
-	exists, err := s.env.PassKit.FindRegistration(ctx, deviceLibraryIdentifier, serialNumber)
+	exists, err := s.env.PassKit.FindRegistration(ctx, deviceID, serialNumber)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "FindRegistration", err)
 	}
@@ -51,7 +51,7 @@ func (s *Service) registerDevice(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	}
 
-	err = s.env.PassKit.InsertRegistration(ctx, deviceLibraryIdentifier, register.PushToken, serialNumber, passTypeIdentifier)
+	err = s.env.PassKit.InsertRegistration(ctx, deviceID, register.PushToken, serialNumber, passTypeID)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "InsertRegistration", err)
 	}

@@ -9,7 +9,7 @@ import (
 type PassKit interface {
 	// InsertPass ...
 	// TODO: description
-	InsertPass(ctx context.Context, serialNumber, authToken, passTypeIdentifier string) error
+	InsertPass(ctx context.Context, serialNumber, authToken, passTypeID string) error
 
 	// UpdatePass ...
 	// TODO: description
@@ -17,7 +17,7 @@ type PassKit interface {
 
 	// FindPass ...
 	// TODO: description
-	FindPass(ctx context.Context, serialNumber, authToken, passTypeIdentifier string) (bool, error)
+	FindPass(ctx context.Context, serialNumber, authToken, passTypeID string) (bool, error)
 
 	// FindRegistration ...
 	// TODO: description
@@ -25,19 +25,19 @@ type PassKit interface {
 
 	// FindSerialNumbers ...
 	// TODO: description
-	FindSerialNumbers(ctx context.Context, deviceID, passTypeIdentifier, tag string) ([]string, error)
+	FindSerialNumbers(ctx context.Context, deviceID, passTypeID, tag string) ([]string, error)
 
 	// LatestPass ...
 	// TODO: description
-	LatestPass(ctx context.Context, serialNumber, authToken, passTypeIdentifier string) (time.Time, error)
+	LatestPass(ctx context.Context, serialNumber, authToken, passTypeID string) (time.Time, error)
 
 	// InsertRegistration ...
 	// TODO: description
-	InsertRegistration(ctx context.Context, deviceID, pushToken, serialNumber, passTypeIdentifier string) error
+	InsertRegistration(ctx context.Context, deviceID, pushToken, serialNumber, passTypeID string) error
 
 	// DeleteRegistration ...
 	// TODO: description
-	DeleteRegistration(ctx context.Context, deviceID, serialNumber, passTypeIdentifier string) (bool, error)
+	DeleteRegistration(ctx context.Context, deviceID, serialNumber, passTypeID string) (bool, error)
 
 	// InsertLog ...
 	// TODO: description
