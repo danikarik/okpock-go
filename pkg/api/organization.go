@@ -54,7 +54,7 @@ func (o *Organization) String() string {
 type OrganizationStore interface {
 	// IsOrganizationExists ...
 	// TODO: description
-	IsOrganizationExists(ctx context.Context, title string, userID int64) (bool, error)
+	IsOrganizationExists(ctx context.Context, userID int64, title string) (bool, error)
 
 	// SaveNewOrganization ...
 	// TODO: description

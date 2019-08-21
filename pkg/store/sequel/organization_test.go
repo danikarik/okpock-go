@@ -69,7 +69,7 @@ func TestIsOrganizationExists(t *testing.T) {
 				}
 			}
 
-			exists, err := db.IsOrganizationExists(ctx, tc.NewOrg, u.ID)
+			exists, err := db.IsOrganizationExists(ctx, u.ID, tc.NewOrg)
 			assert.NoError(err)
 			assert.Equal(tc.Expected, exists)
 		})

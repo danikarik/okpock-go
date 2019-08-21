@@ -1056,7 +1056,7 @@ func TestIsOrganizationExists(t *testing.T) {
 				return
 			}
 
-			exists, err := mock.IsOrganizationExists(ctx, tc.Requested.Title, tc.Requested.UserID)
+			exists, err := mock.IsOrganizationExists(ctx, tc.Requested.UserID, tc.Requested.Title)
 			assert.NoError(err)
 			assert.Equal(tc.Expected, exists)
 		})
@@ -1350,7 +1350,7 @@ func TestIsProjectExists(t *testing.T) {
 				return
 			}
 
-			exists, err := mock.IsProjectExists(ctx, tc.Requested.Desc, tc.Requested.OrgID, tc.Requested.Type)
+			exists, err := mock.IsProjectExists(ctx, tc.Requested.OrgID, tc.Requested.Desc, tc.Requested.Type)
 			assert.NoError(err)
 			assert.Equal(tc.Expected, exists)
 		})

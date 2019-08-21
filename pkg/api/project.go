@@ -137,7 +137,7 @@ func (p *Project) GetField(field ProjectField) string {
 type ProjectStore interface {
 	// IsProjectExists ...
 	// TODO: description
-	IsProjectExists(ctx context.Context, desc string, orgID int64, passType PassType) (bool, error)
+	IsProjectExists(ctx context.Context, orgID int64, desc string, passType PassType) (bool, error)
 
 	// SaveNewProject ...
 	// TODO: description

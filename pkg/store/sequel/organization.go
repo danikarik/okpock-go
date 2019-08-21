@@ -38,11 +38,13 @@ func checkOrganization(o *api.Organization, opts byte) error {
 }
 
 // IsOrganizationExists ...
-func (m *MySQL) IsOrganizationExists(ctx context.Context, title string, userID int64) (bool, error) {
+func (m *MySQL) IsOrganizationExists(ctx context.Context, userID int64, title string) (bool, error) {
 	query := m.builder.Select("count(1)").
 		From("organizations").
-		Where(sq.Eq{"title": title}).
-		Where(sq.Eq{"user_id": userID})
+		Where(sq.Eq{
+			"user_id": userID,
+			"title":   title,
+		})
 
 	cnt, err := m.countQuery(ctx, query)
 	if err != nil {

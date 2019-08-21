@@ -427,7 +427,7 @@ func (m *Memory) UpdateAppMetaData(ctx context.Context, data map[string]interfac
 }
 
 // IsOrganizationExists ...
-func (m *Memory) IsOrganizationExists(ctx context.Context, title string, userID int64) (bool, error) {
+func (m *Memory) IsOrganizationExists(ctx context.Context, userID int64, title string) (bool, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -508,7 +508,7 @@ func (m *Memory) UpdateOrganizationMetaData(ctx context.Context, data map[string
 }
 
 // IsProjectExists ...
-func (m *Memory) IsProjectExists(ctx context.Context, desc string, orgID int64, passType api.PassType) (bool, error) {
+func (m *Memory) IsProjectExists(ctx context.Context, orgID int64, desc string, passType api.PassType) (bool, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
