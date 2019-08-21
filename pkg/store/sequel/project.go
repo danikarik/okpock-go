@@ -3,7 +3,6 @@ package sequel
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
@@ -182,22 +181,22 @@ func (m *MySQL) UpdateProjectDescription(ctx context.Context, desc string, proj 
 
 // SetBackgroundImage ...
 func (m *MySQL) SetBackgroundImage(ctx context.Context, key string, proj *api.Project) error {
-	return errors.New("not implemented")
+	return m.setImage(ctx, api.BackgroundImage, key, proj)
 }
 
 // SetFooterImage ...
 func (m *MySQL) SetFooterImage(ctx context.Context, key string, proj *api.Project) error {
-	return errors.New("not implemented")
+	return m.setImage(ctx, api.FooterImage, key, proj)
 }
 
 // SetIconImage ...
 func (m *MySQL) SetIconImage(ctx context.Context, key string, proj *api.Project) error {
-	return errors.New("not implemented")
+	return m.setImage(ctx, api.IconImage, key, proj)
 }
 
 // SetStripImage ...
 func (m *MySQL) SetStripImage(ctx context.Context, key string, proj *api.Project) error {
-	return errors.New("not implemented")
+	return m.setImage(ctx, api.StripImage, key, proj)
 }
 
 func (m *MySQL) setImage(ctx context.Context, field api.ProjectField, key string, proj *api.Project) error {
