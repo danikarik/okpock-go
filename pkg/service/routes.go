@@ -52,23 +52,32 @@ func (s *Service) withRouter() *Service {
 	{
 		public := api.NewRoute().Subrouter()
 		public.HandleFunc("/", s.okHandler).Methods("GET")
-		public.HandleFunc("/login", s.loginHandler).Methods("POST")
-		public.HandleFunc("/logout", s.logoutHandler).Methods("DELETE")
-		public.HandleFunc("/register", s.registerHandler).Methods("POST")
-		public.HandleFunc("/recover", s.recoverHandler).Methods("POST")
-		public.HandleFunc("/reset", s.resetHandler).Methods("POST")
-		public.HandleFunc("/verify", s.verifyHandler).Methods("GET").Queries(verifyQueries...)
-		public.HandleFunc("/check/email", s.checkEmailHandler).Methods("POST")
-		public.HandleFunc("/check/username", s.checkUsernameHandler).Methods("POST")
+
+		auth := public.NewRoute().Subrouter()
+		auth.HandleFunc("/login", s.loginHandler).Methods("POST")
+		auth.HandleFunc("/logout", s.logoutHandler).Methods("DELETE")
+		auth.HandleFunc("/register", s.registerHandler).Methods("POST")
+		auth.HandleFunc("/recover", s.recoverHandler).Methods("POST")
+		auth.HandleFunc("/reset", s.resetHandler).Methods("POST")
+		auth.HandleFunc("/verify", s.verifyHandler).Methods("GET").Queries(verifyQueries...)
+		auth.HandleFunc("/check/email", s.checkEmailHandler).Methods("POST")
+		auth.HandleFunc("/check/username", s.checkUsernameHandler).Methods("POST")
 
 		protected := api.NewRoute().Subrouter()
 		protected.Use(s.authMiddleware, s.csrfMiddleware)
-		protected.HandleFunc("/invite", s.inviteHandler).Methods("POST")
-		protected.HandleFunc("/account", s.accountHandler).Methods("GET")
-		protected.HandleFunc("/account/email", s.emailChangeHandler).Methods("PUT")
-		protected.HandleFunc("/account/username", s.usernameChangeHandler).Methods("PUT")
-		protected.HandleFunc("/account/password", s.passwordChangeHandler).Methods("PUT")
-		protected.HandleFunc("/account/metadata", s.metaDataChangeHandler).Methods("PUT")
+
+		user := protected.NewRoute().Subrouter()
+		user.HandleFunc("/invite", s.inviteHandler).Methods("POST")
+
+		account := protected.PathPrefix("/account").Subrouter()
+		account.HandleFunc("/info", s.accountInfoHandler).Methods("GET")
+		account.HandleFunc("/email", s.emailChangeHandler).Methods("PUT")
+		account.HandleFunc("/username", s.usernameChangeHandler).Methods("PUT")
+		account.HandleFunc("/password", s.passwordChangeHandler).Methods("PUT")
+		account.HandleFunc("/metadata", s.metaDataChangeHandler).Methods("PUT")
+
+		organizations := protected.PathPrefix("/organizations").Subrouter()
+		organizations.HandleFunc("/", s.okHandler).Methods("POST")
 	}
 
 	s.handler = s.corsMiddleware(r)

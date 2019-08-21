@@ -50,7 +50,7 @@ func TestAccountHandler(t *testing.T) {
 				return
 			}
 
-			req := newRequest("GET", "/account", nil, nil, nil)
+			req := newRequest("GET", "/account/info", nil, nil, nil)
 			rec := httptest.NewRecorder()
 
 			if tc.User != nil {

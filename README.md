@@ -358,7 +358,7 @@ Response Body
 }
 ```
 
-### GET `/account`
+### GET `/account/info`
 
 Response Codes
 
