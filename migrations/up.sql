@@ -1,5 +1,5 @@
 CREATE TABLE IF NOT EXISTS `passes` (
-    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(144) COLLATE utf8mb4_unicode_ci NOT NULL,
     `serial_number` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `authentication_token` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `pass_type_id` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -9,8 +9,7 @@ CREATE TABLE IF NOT EXISTS `passes` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `registrations` (
-    `id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
-    `uuid` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `id` VARCHAR(144) COLLATE utf8mb4_unicode_ci NOT NULL,
     `device_id` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `push_token` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `serial_number` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -20,18 +19,16 @@ CREATE TABLE IF NOT EXISTS `registrations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `logs` (
-    `id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
-    `uuid` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `id` VARCHAR(144) COLLATE utf8mb4_unicode_ci NOT NULL,
     `remote_address` VARCHAR(191) COLLATE utf8mb4_unicode_ci NULL,
     `request_id` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `message` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `updated_at` TIMESTAMP NOT NULL DEFAULT NOW(),
-    PRIMARY KEY (`id`),
-    UNIQUE KEY `logs_uuid_unique` (`uuid`)
+    PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `users` (
-    `id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
+    `id` VARCHAR(144) COLLATE utf8mb4_unicode_ci NOT NULL,
     `role` VARCHAR(191) COLLATE utf8mb4_unicode_ci DEFAULT "client",
     `username` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `email` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
@@ -58,8 +55,8 @@ CREATE TABLE IF NOT EXISTS `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `organizations` (
-    `id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
-    `user_id` INT(10) unsigned NOT NULL,
+    `id` VARCHAR(144) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `user_id` VARCHAR(144) COLLATE utf8mb4_unicode_ci NOT NULL,
     `title` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `description` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `raw_metadata` text DEFAULT NULL,
@@ -71,8 +68,8 @@ CREATE TABLE IF NOT EXISTS `organizations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `projects` (
-    `id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
-    `organization_id` INT(10) unsigned NOT NULL,
+    `id` VARCHAR(144) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `organization_id` VARCHAR(144) COLLATE utf8mb4_unicode_ci NOT NULL,
     `description` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `pass_type` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `background_image` VARCHAR(191) DEFAULT "",

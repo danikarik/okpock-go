@@ -62,6 +62,7 @@ func TestUpdatePass(t *testing.T) {
 	data := []string{
 		fmt.Sprintf(
 			insertPassesTable,
+			uuid.NewV4().String(),
 			testCase.SerialNumber,
 			testCase.AuthToken,
 			testCase.PassTypeID,
@@ -99,6 +100,7 @@ func TestFindPass(t *testing.T) {
 	data := []string{
 		fmt.Sprintf(
 			insertPassesTable,
+			uuid.NewV4().String(),
 			testCase.SerialNumber,
 			testCase.AuthToken,
 			testCase.PassTypeID,
@@ -195,6 +197,7 @@ func TestFindSerialNumbers(t *testing.T) {
 	data := []string{
 		fmt.Sprintf(
 			insertPassesTable,
+			uuid.NewV4().String(),
 			testCase.SerialNumber,
 			testCase.AuthToken,
 			testCase.PassTypeID,
@@ -244,6 +247,7 @@ func TestLatestPass(t *testing.T) {
 	data := []string{
 		fmt.Sprintf(
 			insertPassesTable,
+			uuid.NewV4().String(),
 			testCase.SerialNumber,
 			testCase.AuthToken,
 			testCase.PassTypeID,

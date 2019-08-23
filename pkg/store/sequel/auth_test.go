@@ -55,6 +55,7 @@ func TestUsernameExists(t *testing.T) {
 			for _, uname := range tc.SavedUsernames {
 				sql := fmt.Sprintf(
 					insertUsersTable,
+					uuid.NewV4().String(),
 					uuid.NewV4().String()+"@example.com",
 					uname,
 					"test",
@@ -109,6 +110,7 @@ func TestEmailExists(t *testing.T) {
 			for _, email := range tc.SavedEmails {
 				sql := fmt.Sprintf(
 					insertUsersTable,
+					uuid.NewV4().String(),
 					email,
 					uuid.NewV4().String(),
 					"test",
@@ -196,9 +198,6 @@ func TestSaveNewUser(t *testing.T) {
 
 				err := db.SaveNewUser(ctx, u)
 				if !assert.NoError(err) {
-					return
-				}
-				if !assert.True(u.ID > 0) {
 					return
 				}
 			}

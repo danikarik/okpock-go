@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"errors"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 // PassType refers to `Style Keys` type.
@@ -24,8 +26,9 @@ const (
 )
 
 // NewProject returns a new instance of project.
-func NewProject(orgID int64, desc string, passType PassType) *Project {
+func NewProject(orgID, desc string, passType PassType) *Project {
 	return &Project{
+		ID:             uuid.NewV4().String(),
 		OrganizationID: orgID,
 		Description:    desc,
 		PassType:       passType,
@@ -34,8 +37,8 @@ func NewProject(orgID int64, desc string, passType PassType) *Project {
 
 // Project holds project structure related fields.
 type Project struct {
-	ID             int64 `json:"id" db:"id"`
-	OrganizationID int64 `json:"-" db:"organization_id"`
+	ID             string `json:"id" db:"id"`
+	OrganizationID string `json:"-" db:"organization_id"`
 
 	Description string   `json:"description" db:"description"`
 	PassType    PassType `json:"passType" db:"pass_type"`
@@ -51,7 +54,7 @@ type Project struct {
 
 // IsValid checks whether input is valid or not.
 func (p *Project) IsValid() error {
-	if p.OrganizationID == 0 {
+	if p.OrganizationID == "" {
 		return errors.New("organization id is empty")
 	}
 	if p.Description == "" {
@@ -76,7 +79,7 @@ func (p *Project) String() string {
 type ProjectStore interface {
 	// IsProjectExists ...
 	// TODO: description
-	IsProjectExists(ctx context.Context, orgID int64, desc string, passType PassType) (bool, error)
+	IsProjectExists(ctx context.Context, orgID, desc string, passType PassType) (bool, error)
 
 	// SaveNewProject ...
 	// TODO: description
@@ -84,11 +87,11 @@ type ProjectStore interface {
 
 	// LoadProject ...
 	// TODO: description
-	LoadProject(ctx context.Context, id int64) (*Project, error)
+	LoadProject(ctx context.Context, id string) (*Project, error)
 
 	// LoadProjects ...
 	// TODO: description
-	LoadProjects(ctx context.Context, userID int64) ([]*Project, error)
+	LoadProjects(ctx context.Context, userID string) ([]*Project, error)
 
 	// UpdateProjectDescription ...
 	// TODO: description

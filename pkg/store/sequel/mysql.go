@@ -83,22 +83,13 @@ func (m *MySQL) scanQuery(ctx context.Context, query sq.SelectBuilder, v interfa
 	return nil
 }
 
-func (m *MySQL) insertQuery(ctx context.Context, query sq.InsertBuilder) (int64, error) {
-	res, err := query.RunWith(m.cacher).ExecContext(ctx)
+func (m *MySQL) insertQuery(ctx context.Context, query sq.InsertBuilder) error {
+	_, err := query.RunWith(m.cacher).ExecContext(ctx)
 	if err != nil {
-		return -1, err
+		return err
 	}
 
-	id, err := res.LastInsertId()
-	if err != nil {
-		return -1, err
-	}
-
-	if id == 0 {
-		return -1, store.ErrZeroID
-	}
-
-	return id, nil
+	return nil
 }
 
 func (m *MySQL) updateQuery(ctx context.Context, query sq.UpdateBuilder) (int64, error) {

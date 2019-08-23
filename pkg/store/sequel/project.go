@@ -18,13 +18,13 @@ func checkProject(p *api.Project, opts byte) error {
 	}
 
 	if (opts & checkForeignID) != 0 {
-		if p.OrganizationID == 0 {
+		if p.OrganizationID == "" {
 			return store.ErrZeroID
 		}
 	}
 
 	if (opts & checkZeroID) != 0 {
-		if p.ID == 0 {
+		if p.ID == "" {
 			return store.ErrZeroID
 		}
 	}
@@ -38,7 +38,7 @@ func checkProject(p *api.Project, opts byte) error {
 }
 
 // IsProjectExists ...
-func (m *MySQL) IsProjectExists(ctx context.Context, orgID int64, desc string, passType api.PassType) (bool, error) {
+func (m *MySQL) IsProjectExists(ctx context.Context, orgID, desc string, passType api.PassType) (bool, error) {
 	query := m.builder.Select("count(1)").
 		From("projects").
 		Where(sq.Eq{
@@ -67,6 +67,7 @@ func (m *MySQL) SaveNewProject(ctx context.Context, proj *api.Project) error {
 
 	query := m.builder.Insert("projects").
 		Columns(
+			"id",
 			"organization_id",
 			"description",
 			"pass_type",
@@ -74,6 +75,7 @@ func (m *MySQL) SaveNewProject(ctx context.Context, proj *api.Project) error {
 			"updated_at",
 		).
 		Values(
+			proj.ID,
 			proj.OrganizationID,
 			proj.Description,
 			proj.PassType,
@@ -81,18 +83,17 @@ func (m *MySQL) SaveNewProject(ctx context.Context, proj *api.Project) error {
 			proj.UpdatedAt,
 		)
 
-	id, err := m.insertQuery(ctx, query)
+	err = m.insertQuery(ctx, query)
 	if err != nil {
 		return err
 	}
-	proj.ID = id
 
 	return nil
 }
 
 // LoadProject ...
-func (m *MySQL) LoadProject(ctx context.Context, id int64) (*api.Project, error) {
-	if id == 0 {
+func (m *MySQL) LoadProject(ctx context.Context, id string) (*api.Project, error) {
+	if id == "" {
 		return nil, store.ErrZeroID
 	}
 
@@ -119,8 +120,8 @@ func (m *MySQL) LoadProject(ctx context.Context, id int64) (*api.Project, error)
 }
 
 // LoadProjects ...
-func (m *MySQL) LoadProjects(ctx context.Context, userID int64) ([]*api.Project, error) {
-	if userID == 0 {
+func (m *MySQL) LoadProjects(ctx context.Context, userID string) ([]*api.Project, error) {
+	if userID == "" {
 		return nil, store.ErrZeroID
 	}
 

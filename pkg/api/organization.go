@@ -5,11 +5,14 @@ import (
 	"encoding/json"
 	"errors"
 	"time"
+
+	uuid "github.com/satori/go.uuid"
 )
 
 // NewOrganization returns a new instance of organization.
-func NewOrganization(userID int64, title, desc string, data map[string]interface{}) *Organization {
+func NewOrganization(userID, title, desc string, data map[string]interface{}) *Organization {
 	return &Organization{
+		ID:          uuid.NewV4().String(),
 		UserID:      userID,
 		Title:       title,
 		Description: desc,
@@ -19,8 +22,8 @@ func NewOrganization(userID int64, title, desc string, data map[string]interface
 
 // Organization holds company information.
 type Organization struct {
-	ID     int64 `json:"id" db:"id"`
-	UserID int64 `json:"-" db:"user_id"`
+	ID     string `json:"id" db:"id"`
+	UserID string `json:"-" db:"user_id"`
 
 	Title       string  `json:"title" db:"title"`
 	Description string  `json:"description" db:"description"`
@@ -32,6 +35,9 @@ type Organization struct {
 
 // IsValid checks whether input is valid or not.
 func (o *Organization) IsValid() error {
+	if o.UserID == "" {
+		return errors.New("user id is empty")
+	}
 	if o.Title == "" {
 		return errors.New("title is empty")
 	}
@@ -54,7 +60,7 @@ func (o *Organization) String() string {
 type OrganizationStore interface {
 	// IsOrganizationExists ...
 	// TODO: description
-	IsOrganizationExists(ctx context.Context, userID int64, title string) (bool, error)
+	IsOrganizationExists(ctx context.Context, userID, title string) (bool, error)
 
 	// SaveNewOrganization ...
 	// TODO: description
@@ -62,11 +68,11 @@ type OrganizationStore interface {
 
 	// LoadOrganization ...
 	// TODO: description
-	LoadOrganization(ctx context.Context, id int64) (*Organization, error)
+	LoadOrganization(ctx context.Context, id string) (*Organization, error)
 
 	// LoadOrganizations ...
 	// TODO: description
-	LoadOrganizations(ctx context.Context, userID int64) ([]*Organization, error)
+	LoadOrganizations(ctx context.Context, userID string) ([]*Organization, error)
 
 	// UpdateOrganizationDescription ...
 	// TODO: description

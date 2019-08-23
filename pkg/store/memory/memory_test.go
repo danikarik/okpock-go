@@ -3,7 +3,6 @@ package memory_test
 import (
 	"context"
 	"fmt"
-	"math/rand"
 	"strings"
 	"testing"
 	"time"
@@ -16,8 +15,6 @@ import (
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 )
-
-func randomID() int64 { return rand.Int63() }
 
 func TestInsertPass(t *testing.T) {
 	var (
@@ -159,7 +156,6 @@ func TestInsertLog(t *testing.T) {
 
 func TestUsernameExists(t *testing.T) {
 	type user struct {
-		ID       int64
 		Username string
 		Email    string
 		Password string
@@ -175,7 +171,6 @@ func TestUsernameExists(t *testing.T) {
 			Name: "NotTaken",
 			SavedUsers: []user{
 				user{
-					ID:       1,
 					Username: "mufasa",
 					Email:    "mufasa@jungle.com",
 					Password: "king",
@@ -188,13 +183,11 @@ func TestUsernameExists(t *testing.T) {
 			Name: "Taken",
 			SavedUsers: []user{
 				user{
-					ID:       2,
 					Username: "mufasa",
 					Email:    "mufasa@jungle.com",
 					Password: "king",
 				},
 				user{
-					ID:       3,
 					Username: "simba",
 					Email:    "simba@jungle.com",
 					Password: "prince",
@@ -215,7 +208,6 @@ func TestUsernameExists(t *testing.T) {
 
 			for _, user := range tc.SavedUsers {
 				u := api.NewUser(user.Username, user.Email, user.Password, nil)
-				u.ID = user.ID
 
 				err := mock.SaveNewUser(ctx, u)
 				if !assert.NoError(err) {
@@ -232,7 +224,6 @@ func TestUsernameExists(t *testing.T) {
 
 func TestEmailExists(t *testing.T) {
 	type user struct {
-		ID       int64
 		Username string
 		Email    string
 		Password string
@@ -248,7 +239,6 @@ func TestEmailExists(t *testing.T) {
 			Name: "NotTaken",
 			SavedUsers: []user{
 				user{
-					ID:       4,
 					Username: "mufasa",
 					Email:    "mufasa@jungle.com",
 					Password: "king",
@@ -261,13 +251,11 @@ func TestEmailExists(t *testing.T) {
 			Name: "Taken",
 			SavedUsers: []user{
 				user{
-					ID:       5,
 					Username: "mufasa",
 					Email:    "mufasa@jungle.com",
 					Password: "king",
 				},
 				user{
-					ID:       6,
 					Username: "simba",
 					Email:    "simba@jungle.com",
 					Password: "prince",
@@ -288,7 +276,6 @@ func TestEmailExists(t *testing.T) {
 
 			for _, user := range tc.SavedUsers {
 				u := api.NewUser(user.Username, user.Email, user.Password, nil)
-				u.ID = user.ID
 
 				err := mock.SaveNewUser(ctx, u)
 				if !assert.NoError(err) {
@@ -305,7 +292,6 @@ func TestEmailExists(t *testing.T) {
 
 func TestSaveNewUser(t *testing.T) {
 	type user struct {
-		ID       int64
 		Username string
 		Email    string
 		Password string
@@ -321,7 +307,6 @@ func TestSaveNewUser(t *testing.T) {
 			Name: "NotTaken",
 			SavedUsers: []user{
 				user{
-					ID:       7,
 					Username: "mufasa",
 					Email:    "mufasa@jungle.com",
 					Password: "king",
@@ -334,13 +319,11 @@ func TestSaveNewUser(t *testing.T) {
 			Name: "Taken",
 			SavedUsers: []user{
 				user{
-					ID:       8,
 					Username: "mufasa",
 					Email:    "mufasa@jungle.com",
 					Password: "king",
 				},
 				user{
-					ID:       9,
 					Username: "simba",
 					Email:    "simba@jungle.com",
 					Password: "prince",
@@ -361,7 +344,6 @@ func TestSaveNewUser(t *testing.T) {
 
 			for _, user := range tc.SavedUsers {
 				u := api.NewUser(user.Username, user.Email, user.Password, nil)
-				u.ID = user.ID
 
 				err := mock.SaveNewUser(ctx, u)
 				if !assert.NoError(err) {
@@ -397,7 +379,7 @@ func TestLoadUser(t *testing.T) {
 		},
 	}
 
-	for i, tc := range testCases {
+	for _, tc := range testCases {
 		t.Run(tc.Name, func(t *testing.T) {
 			var (
 				ctx      = context.Background()
@@ -408,7 +390,6 @@ func TestLoadUser(t *testing.T) {
 			)
 
 			u := api.NewUser(username, email, "test", nil)
-			u.ID = int64(i + 1)
 
 			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -460,7 +441,6 @@ func TestLoadUser(t *testing.T) {
 
 func TestAuthenticate(t *testing.T) {
 	type user struct {
-		ID       int64
 		Username string
 		Email    string
 		Password string
@@ -475,7 +455,6 @@ func TestAuthenticate(t *testing.T) {
 		{
 			Name: "CorrectPassword",
 			User: user{
-				ID:       1,
 				Username: "correct",
 				Email:    "correct@example.com",
 				Password: "test",
@@ -486,7 +465,6 @@ func TestAuthenticate(t *testing.T) {
 		{
 			Name: "WrongPassword",
 			User: user{
-				ID:       2,
 				Username: "wrong",
 				Email:    "wrong@example.com",
 				Password: "test",
@@ -532,7 +510,6 @@ func TestAuthenticate(t *testing.T) {
 
 func TestConfirmUser(t *testing.T) {
 	type user struct {
-		ID       int64
 		Username string
 		Email    string
 		Password string
@@ -547,7 +524,6 @@ func TestConfirmUser(t *testing.T) {
 		{
 			Name: "NotConfirmed",
 			User: user{
-				ID:       1,
 				Username: "notconfirmed",
 				Email:    "notconfirmed@example.com",
 				Password: "test",
@@ -558,7 +534,6 @@ func TestConfirmUser(t *testing.T) {
 		{
 			Name: "Confirmed",
 			User: user{
-				ID:       2,
 				Username: "confirmed",
 				Email:    "confirmed@example.com",
 				Password: "test",
@@ -597,7 +572,6 @@ func TestConfirmUser(t *testing.T) {
 
 func TestSetConfirmationToken(t *testing.T) {
 	type user struct {
-		ID       int64
 		Username string
 		Email    string
 		Password string
@@ -611,7 +585,6 @@ func TestSetConfirmationToken(t *testing.T) {
 		{
 			Name: "SignUp",
 			User: user{
-				ID:       1,
 				Username: "signup",
 				Email:    "signup@example.com",
 				Password: "test",
@@ -621,7 +594,6 @@ func TestSetConfirmationToken(t *testing.T) {
 		{
 			Name: "Invite",
 			User: user{
-				ID:       2,
 				Username: "invite",
 				Email:    "invite@example.com",
 				Password: "test",
@@ -665,7 +637,6 @@ func TestSetConfirmationToken(t *testing.T) {
 
 func TestRecoverUser(t *testing.T) {
 	type user struct {
-		ID       int64
 		Username string
 		Email    string
 		Password string
@@ -679,7 +650,6 @@ func TestRecoverUser(t *testing.T) {
 		{
 			Name: "Recovered",
 			User: user{
-				ID:       1,
 				Username: "recovered",
 				Email:    "recovered@example.com",
 				Password: "test",
@@ -689,7 +659,6 @@ func TestRecoverUser(t *testing.T) {
 		{
 			Name: "NotRecovered",
 			User: user{
-				ID:       2,
 				Username: "notrecovered",
 				Email:    "notrecovered@example.com",
 				Password: "test",
@@ -736,7 +705,6 @@ func TestRecoverUser(t *testing.T) {
 
 func TestEmailChange(t *testing.T) {
 	type user struct {
-		ID       int64
 		Username string
 		Email    string
 		NewEmail string
@@ -751,7 +719,6 @@ func TestEmailChange(t *testing.T) {
 		{
 			Name: "EmailConfirmed",
 			User: user{
-				ID:       1,
 				Username: "emailconfirmed",
 				Email:    "emailconfirmed@example.com",
 				NewEmail: "newemailconfirmed@example.com",
@@ -762,7 +729,6 @@ func TestEmailChange(t *testing.T) {
 		{
 			Name: "EmailNotConfirmed",
 			User: user{
-				ID:       2,
 				Username: "emailnotconfirmed",
 				Email:    "emailnotconfirmed@example.com",
 				NewEmail: "newemailnotconfirmed@example.com",
@@ -819,13 +785,11 @@ func TestUpdateUsername(t *testing.T) {
 	)
 
 	user := struct {
-		ID          int64
 		Username    string
 		Email       string
 		Password    string
 		NewUsername string
 	}{
-		ID:          1,
 		Username:    "usernamechange",
 		Email:       "usernamechange@example.com",
 		Password:    "test",
@@ -833,7 +797,6 @@ func TestUpdateUsername(t *testing.T) {
 	}
 
 	u := api.NewUser(user.Username, user.Email, user.Password, nil)
-	u.ID = user.ID
 
 	err := mock.SaveNewUser(ctx, u)
 	if !assert.NoError(err) {
@@ -857,13 +820,11 @@ func TestUpdatePassword(t *testing.T) {
 	)
 
 	user := struct {
-		ID          int64
 		Username    string
 		Email       string
 		Password    string
 		NewPassword string
 	}{
-		ID:          1,
 		Username:    "passwordchange",
 		Email:       "passwordchange@example.com",
 		Password:    "test",
@@ -871,7 +832,6 @@ func TestUpdatePassword(t *testing.T) {
 	}
 
 	u := api.NewUser(user.Username, user.Email, user.Password, nil)
-	u.ID = user.ID
 
 	err := mock.SaveNewUser(ctx, u)
 	if !assert.NoError(err) {
@@ -896,14 +856,12 @@ func TestUpdateMetaData(t *testing.T) {
 	)
 
 	user := struct {
-		ID          int64
 		Username    string
 		Email       string
 		Password    string
 		UserDataKey string
 		AppDataKey  string
 	}{
-		ID:          111,
 		Username:    "metadata",
 		Email:       "metadata@example.com",
 		Password:    "test",
@@ -912,7 +870,6 @@ func TestUpdateMetaData(t *testing.T) {
 	}
 
 	u := api.NewUser(user.Username, user.Email, user.Password, nil)
-	u.ID = user.ID
 
 	err := mock.SaveNewUser(ctx, u)
 	if !assert.NoError(err) {
@@ -952,10 +909,9 @@ func TestUpdateMetaData(t *testing.T) {
 
 func TestIsOrganizationExists(t *testing.T) {
 	type org struct {
-		ID     int64
 		Title  string
 		Desc   string
-		UserID int64
+		UserID string
 	}
 
 	testCases := []struct {
@@ -967,42 +923,39 @@ func TestIsOrganizationExists(t *testing.T) {
 		{
 			Name: "NotTaken",
 			Existing: org{
-				ID:     1,
 				Title:  "GreatApp",
 				Desc:   "Sample Organization",
-				UserID: 1,
+				UserID: uuid.NewV4().String(),
 			},
 			Requested: org{
 				Title:  "AnotherGreatApp",
-				UserID: 2,
+				UserID: uuid.NewV4().String(),
 			},
 			Expected: false,
 		},
 		{
 			Name: "TakenTitle",
 			Existing: org{
-				ID:     2,
 				Title:  "GreatApp",
 				Desc:   "Sample Organization",
-				UserID: 3,
+				UserID: uuid.NewV4().String(),
 			},
 			Requested: org{
 				Title:  "GreatApp",
-				UserID: 4,
+				UserID: uuid.NewV4().String(),
 			},
 			Expected: false,
 		},
 		{
 			Name: "Exists",
 			Existing: org{
-				ID:     3,
 				Title:  "GreatApp",
 				Desc:   "Sample Organization",
-				UserID: 5,
+				UserID: "777",
 			},
 			Requested: org{
 				Title:  "GreatApp",
-				UserID: 5,
+				UserID: "777",
 			},
 			Expected: true,
 		},
@@ -1017,7 +970,6 @@ func TestIsOrganizationExists(t *testing.T) {
 			)
 
 			org := api.NewOrganization(tc.Existing.UserID, tc.Existing.Title, tc.Existing.Desc, nil)
-			org.ID = tc.Existing.ID
 
 			err := mock.SaveNewOrganization(ctx, org)
 			if !assert.NoError(err) {
@@ -1033,7 +985,6 @@ func TestIsOrganizationExists(t *testing.T) {
 
 func TestSaveNewOrganization(t *testing.T) {
 	type org struct {
-		ID     int64
 		Title  string
 		Desc   string
 		UserID int64
@@ -1047,7 +998,6 @@ func TestSaveNewOrganization(t *testing.T) {
 		{
 			Name: "NoExistingOrgs",
 			NewOrg: org{
-				ID:    randomID(),
 				Title: "GreatOrg",
 				Desc:  "Sample Org",
 			},
@@ -1056,18 +1006,15 @@ func TestSaveNewOrganization(t *testing.T) {
 		{
 			Name: "WithExistingOrgs",
 			NewOrg: org{
-				ID:    randomID(),
 				Title: "AnotherGreatOrg",
 				Desc:  "Sample Org",
 			},
 			SavedOrgs: []org{
 				org{
-					ID:    randomID(),
 					Title: "GreatOrg2",
 					Desc:  "Sample Org",
 				},
 				org{
-					ID:    randomID(),
 					Title: "GreatOrg3",
 					Desc:  "Sample Org",
 				},
@@ -1084,13 +1031,12 @@ func TestSaveNewOrganization(t *testing.T) {
 			)
 
 			var (
-				id       = randomID()
-				username = fmt.Sprintf("user%d", id)
-				email    = fmt.Sprintf("user%d@example.com", id)
+				id       = uuid.NewV4().String()
+				username = fmt.Sprintf("user%s", id)
+				email    = fmt.Sprintf("user%s@example.com", id)
 			)
 
 			u := api.NewUser(username, email, "test", nil)
-			u.ID = id
 
 			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -1099,7 +1045,6 @@ func TestSaveNewOrganization(t *testing.T) {
 
 			for _, org := range tc.SavedOrgs {
 				o := api.NewOrganization(u.ID, org.Title, org.Desc, nil)
-				o.ID = org.ID
 
 				err := mock.SaveNewOrganization(ctx, o)
 				if !assert.NoError(err) {
@@ -1108,7 +1053,6 @@ func TestSaveNewOrganization(t *testing.T) {
 			}
 
 			o := api.NewOrganization(u.ID, tc.NewOrg.Title, tc.NewOrg.Desc, nil)
-			o.ID = tc.NewOrg.ID
 
 			err = mock.SaveNewOrganization(ctx, o)
 			if !assert.NoError(err) {
@@ -1136,7 +1080,6 @@ func TestSaveNewOrganization(t *testing.T) {
 
 func TestUpdateOrganization(t *testing.T) {
 	type org struct {
-		ID     int64
 		Title  string
 		Desc   string
 		UserID int64
@@ -1151,7 +1094,6 @@ func TestUpdateOrganization(t *testing.T) {
 		{
 			Name: "GreatOrg",
 			Org: org{
-				ID:    randomID(),
 				Title: "GreatOrg",
 				Desc:  "Sample Org",
 			},
@@ -1169,13 +1111,12 @@ func TestUpdateOrganization(t *testing.T) {
 			)
 
 			var (
-				id       = randomID()
-				username = fmt.Sprintf("user%d", id)
-				email    = fmt.Sprintf("user%d@example.com", id)
+				id       = uuid.NewV4().String()
+				username = fmt.Sprintf("user%s", id)
+				email    = fmt.Sprintf("user%s@example.com", id)
 			)
 
 			u := api.NewUser(username, email, "test", nil)
-			u.ID = id
 
 			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -1183,7 +1124,6 @@ func TestUpdateOrganization(t *testing.T) {
 			}
 
 			o := api.NewOrganization(u.ID, tc.Org.Title, tc.Org.Desc, nil)
-			o.ID = tc.Org.ID
 
 			err = mock.SaveNewOrganization(ctx, o)
 			if !assert.NoError(err) {
@@ -1222,8 +1162,7 @@ func TestUpdateOrganization(t *testing.T) {
 
 func TestIsProjectExists(t *testing.T) {
 	type project struct {
-		ID    int64
-		OrgID int64
+		OrgID string
 		Desc  string
 		Type  api.PassType
 	}
@@ -1237,14 +1176,12 @@ func TestIsProjectExists(t *testing.T) {
 		{
 			Name: "NotTaken",
 			Existing: project{
-				ID:    randomID(),
-				OrgID: randomID(),
+				OrgID: uuid.NewV4().String(),
 				Desc:  "Free Coupon",
 				Type:  api.Coupon,
 			},
 			Requested: project{
-				ID:    randomID(),
-				OrgID: randomID(),
+				OrgID: uuid.NewV4().String(),
 				Desc:  "Boarding Pass",
 				Type:  api.BoardingPass,
 			},
@@ -1253,14 +1190,12 @@ func TestIsProjectExists(t *testing.T) {
 		{
 			Name: "TakenDescription",
 			Existing: project{
-				ID:    randomID(),
-				OrgID: randomID(),
+				OrgID: uuid.NewV4().String(),
 				Desc:  "Free Auction",
 				Type:  api.Coupon,
 			},
 			Requested: project{
-				ID:    randomID(),
-				OrgID: randomID(),
+				OrgID: uuid.NewV4().String(),
 				Desc:  "Free Auction",
 				Type:  api.EventTicket,
 			},
@@ -1269,14 +1204,12 @@ func TestIsProjectExists(t *testing.T) {
 		{
 			Name: "Exists",
 			Existing: project{
-				ID:    randomID(),
-				OrgID: 11,
+				OrgID: "11",
 				Desc:  "Free Auction",
 				Type:  api.Coupon,
 			},
 			Requested: project{
-				ID:    randomID(),
-				OrgID: 11,
+				OrgID: "11",
 				Desc:  "Free Auction",
 				Type:  api.Coupon,
 			},
@@ -1293,7 +1226,6 @@ func TestIsProjectExists(t *testing.T) {
 			)
 
 			project := api.NewProject(tc.Existing.OrgID, tc.Existing.Desc, tc.Existing.Type)
-			project.ID = tc.Existing.ID
 
 			err := mock.SaveNewProject(ctx, project)
 			if !assert.NoError(err) {
@@ -1309,10 +1241,8 @@ func TestIsProjectExists(t *testing.T) {
 
 func TestSaveNewProject(t *testing.T) {
 	type project struct {
-		ID    int64
-		OrgID int64
-		Desc  string
-		Type  api.PassType
+		Desc string
+		Type api.PassType
 	}
 
 	testCases := []struct {
@@ -1323,33 +1253,25 @@ func TestSaveNewProject(t *testing.T) {
 		{
 			Name: "NoExistingProjects",
 			NewProject: project{
-				ID:    randomID(),
-				OrgID: randomID(),
-				Desc:  "Free Coupon",
-				Type:  api.Coupon,
+				Desc: "Free Coupon",
+				Type: api.Coupon,
 			},
 			SavedProjects: []project{},
 		},
 		{
 			Name: "WithExistingProjects",
 			NewProject: project{
-				ID:    randomID(),
-				OrgID: randomID(),
-				Desc:  "Boarding Pass",
-				Type:  api.BoardingPass,
+				Desc: "Boarding Pass",
+				Type: api.BoardingPass,
 			},
 			SavedProjects: []project{
 				project{
-					ID:    randomID(),
-					OrgID: randomID(),
-					Desc:  "Generic",
-					Type:  api.Generic,
+					Desc: "Generic",
+					Type: api.Generic,
 				},
 				project{
-					ID:    randomID(),
-					OrgID: randomID(),
-					Desc:  "Event",
-					Type:  api.EventTicket,
+					Desc: "Event",
+					Type: api.EventTicket,
 				},
 			},
 		},
@@ -1364,15 +1286,14 @@ func TestSaveNewProject(t *testing.T) {
 			)
 
 			var (
-				id       = randomID()
-				username = fmt.Sprintf("user%d", id)
-				email    = fmt.Sprintf("user%d@example.com", id)
-				orgTitle = fmt.Sprintf("title%d", id)
-				orgDesc  = fmt.Sprintf("desc%d", id)
+				id       = uuid.NewV4().String()
+				username = fmt.Sprintf("user%s", id)
+				email    = fmt.Sprintf("user%s@example.com", id)
+				orgTitle = fmt.Sprintf("title%s", id)
+				orgDesc  = fmt.Sprintf("desc%s", id)
 			)
 
 			u := api.NewUser(username, email, "test", nil)
-			u.ID = id
 
 			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -1380,7 +1301,6 @@ func TestSaveNewProject(t *testing.T) {
 			}
 
 			o := api.NewOrganization(u.ID, orgTitle, orgDesc, nil)
-			o.ID = randomID()
 
 			err = mock.SaveNewOrganization(ctx, o)
 			if !assert.NoError(err) {
@@ -1389,7 +1309,6 @@ func TestSaveNewProject(t *testing.T) {
 
 			for _, project := range tc.SavedProjects {
 				p := api.NewProject(o.ID, project.Desc, project.Type)
-				p.ID = project.ID
 
 				err = mock.SaveNewProject(ctx, p)
 				if !assert.NoError(err) {
@@ -1398,7 +1317,6 @@ func TestSaveNewProject(t *testing.T) {
 			}
 
 			p := api.NewProject(o.ID, tc.NewProject.Desc, tc.NewProject.Type)
-			p.ID = tc.NewProject.ID
 
 			err = mock.SaveNewProject(ctx, p)
 			if !assert.NoError(err) {
@@ -1426,10 +1344,8 @@ func TestSaveNewProject(t *testing.T) {
 
 func TestUpdateProject(t *testing.T) {
 	type project struct {
-		ID    int64
-		OrgID int64
-		Desc  string
-		Type  api.PassType
+		Desc string
+		Type api.PassType
 	}
 
 	testCases := []struct {
@@ -1440,10 +1356,8 @@ func TestUpdateProject(t *testing.T) {
 		{
 			Name: "Coupon",
 			Project: project{
-				ID:    randomID(),
-				OrgID: randomID(),
-				Desc:  "Free Coupon",
-				Type:  api.Coupon,
+				Desc: "Free Coupon",
+				Type: api.Coupon,
 			},
 			NewDesc: "Free Auction",
 		},
@@ -1458,15 +1372,14 @@ func TestUpdateProject(t *testing.T) {
 			)
 
 			var (
-				id       = randomID()
-				username = fmt.Sprintf("user%d", id)
-				email    = fmt.Sprintf("user%d@example.com", id)
-				orgTitle = fmt.Sprintf("title%d", id)
-				orgDesc  = fmt.Sprintf("desc%d", id)
+				id       = uuid.NewV4().String()
+				username = fmt.Sprintf("user%s", id)
+				email    = fmt.Sprintf("user%s@example.com", id)
+				orgTitle = fmt.Sprintf("title%s", id)
+				orgDesc  = fmt.Sprintf("desc%s", id)
 			)
 
 			u := api.NewUser(username, email, "test", nil)
-			u.ID = id
 
 			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -1474,7 +1387,6 @@ func TestUpdateProject(t *testing.T) {
 			}
 
 			o := api.NewOrganization(u.ID, orgTitle, orgDesc, nil)
-			o.ID = randomID()
 
 			err = mock.SaveNewOrganization(ctx, o)
 			if !assert.NoError(err) {
@@ -1482,7 +1394,6 @@ func TestUpdateProject(t *testing.T) {
 			}
 
 			p := api.NewProject(o.ID, tc.Project.Desc, tc.Project.Type)
-			p.ID = tc.Project.ID
 
 			err = mock.SaveNewProject(ctx, p)
 			if !assert.NoError(err) {
@@ -1507,10 +1418,8 @@ func TestUpdateProject(t *testing.T) {
 
 func TestSetImage(t *testing.T) {
 	type project struct {
-		ID    int64
-		OrgID int64
-		Desc  string
-		Type  api.PassType
+		Desc string
+		Type api.PassType
 	}
 
 	testCases := []struct {
@@ -1521,10 +1430,8 @@ func TestSetImage(t *testing.T) {
 		{
 			Name: "Coupon",
 			Project: project{
-				ID:    randomID(),
-				OrgID: randomID(),
-				Desc:  "Free Coupon",
-				Type:  api.Coupon,
+				Desc: "Free Coupon",
+				Type: api.Coupon,
 			},
 			NewKey: uuid.NewV4().String(),
 		},
@@ -1539,15 +1446,14 @@ func TestSetImage(t *testing.T) {
 			)
 
 			var (
-				id       = randomID()
-				username = fmt.Sprintf("user%d", id)
-				email    = fmt.Sprintf("user%d@example.com", id)
-				orgTitle = fmt.Sprintf("title%d", id)
-				orgDesc  = fmt.Sprintf("desc%d", id)
+				id       = uuid.NewV4().String()
+				username = fmt.Sprintf("user%s", id)
+				email    = fmt.Sprintf("user%s@example.com", id)
+				orgTitle = fmt.Sprintf("title%s", id)
+				orgDesc  = fmt.Sprintf("desc%s", id)
 			)
 
 			u := api.NewUser(username, email, "test", nil)
-			u.ID = id
 
 			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -1555,7 +1461,6 @@ func TestSetImage(t *testing.T) {
 			}
 
 			o := api.NewOrganization(u.ID, orgTitle, orgDesc, nil)
-			o.ID = randomID()
 
 			err = mock.SaveNewOrganization(ctx, o)
 			if !assert.NoError(err) {
@@ -1563,7 +1468,6 @@ func TestSetImage(t *testing.T) {
 			}
 
 			p := api.NewProject(o.ID, tc.Project.Desc, tc.Project.Type)
-			p.ID = tc.Project.ID
 
 			err = mock.SaveNewProject(ctx, p)
 			if !assert.NoError(err) {

@@ -13,7 +13,6 @@ import (
 
 func TestUsernameChangeHandler(t *testing.T) {
 	type testUser struct {
-		ID       int64
 		Username string
 		Email    string
 		Password string
@@ -28,7 +27,6 @@ func TestUsernameChangeHandler(t *testing.T) {
 		{
 			Name: "ExistingUser",
 			User: &testUser{
-				ID:       10,
 				Username: "testuser",
 				Email:    "testuser@example.com",
 				Password: "test",
@@ -41,7 +39,6 @@ func TestUsernameChangeHandler(t *testing.T) {
 		{
 			Name: "SameUsername",
 			User: &testUser{
-				ID:       11,
 				Username: "sameemail",
 				Email:    "sameemail@example.com",
 				Password: "test",
@@ -54,7 +51,6 @@ func TestUsernameChangeHandler(t *testing.T) {
 		{
 			Name: "EmptyEmail",
 			User: &testUser{
-				ID:       12,
 				Username: "emptyemail",
 				Email:    "emptyemail@example.com",
 				Password: "test",
@@ -67,7 +63,6 @@ func TestUsernameChangeHandler(t *testing.T) {
 		{
 			Name: "Duplicated",
 			User: &testUser{
-				ID:       13,
 				Username: "duplicated",
 				Email:    "duplicated@example.com",
 				Password: "test",
@@ -90,7 +85,6 @@ func TestUsernameChangeHandler(t *testing.T) {
 			}
 
 			another := api.NewUser("another", "another@example.com", "test", nil)
-			another.ID = 999
 
 			err = srv.env.Auth.SaveNewUser(ctx, another)
 			if !assert.NoError(err) {
@@ -98,7 +92,6 @@ func TestUsernameChangeHandler(t *testing.T) {
 			}
 
 			user := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
-			user.ID = tc.User.ID
 
 			err = srv.env.Auth.SaveNewUser(ctx, user)
 			if !assert.NoError(err) {

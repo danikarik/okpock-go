@@ -31,9 +31,9 @@ func New() *Memory {
 	mock := &Memory{
 		passes:   make(map[string]*pass),
 		regs:     make(map[string]*reg),
-		users:    make(map[int64]*api.User),
-		orgs:     make(map[int64]*api.Organization),
-		projects: make(map[int64]*api.Project),
+		users:    make(map[string]*api.User),
+		orgs:     make(map[string]*api.Organization),
+		projects: make(map[string]*api.Project),
 	}
 	return mock
 }
@@ -43,9 +43,9 @@ type Memory struct {
 	mu       sync.Mutex
 	passes   map[string]*pass
 	regs     map[string]*reg
-	users    map[int64]*api.User
-	orgs     map[int64]*api.Organization
-	projects map[int64]*api.Project
+	users    map[string]*api.User
+	orgs     map[string]*api.Organization
+	projects map[string]*api.Project
 }
 
 // InsertPass ...
@@ -191,7 +191,7 @@ func (m *Memory) SaveNewUser(ctx context.Context, user *api.User) error {
 }
 
 // LoadUser ...
-func (m *Memory) LoadUser(ctx context.Context, id int64) (*api.User, error) {
+func (m *Memory) LoadUser(ctx context.Context, id string) (*api.User, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -427,7 +427,7 @@ func (m *Memory) UpdateAppMetaData(ctx context.Context, data map[string]interfac
 }
 
 // IsOrganizationExists ...
-func (m *Memory) IsOrganizationExists(ctx context.Context, userID int64, title string) (bool, error) {
+func (m *Memory) IsOrganizationExists(ctx context.Context, userID, title string) (bool, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -455,7 +455,7 @@ func (m *Memory) SaveNewOrganization(ctx context.Context, org *api.Organization)
 }
 
 // LoadOrganization ...
-func (m *Memory) LoadOrganization(ctx context.Context, id int64) (*api.Organization, error) {
+func (m *Memory) LoadOrganization(ctx context.Context, id string) (*api.Organization, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -469,7 +469,7 @@ func (m *Memory) LoadOrganization(ctx context.Context, id int64) (*api.Organizat
 }
 
 // LoadOrganizations ...
-func (m *Memory) LoadOrganizations(ctx context.Context, userID int64) ([]*api.Organization, error) {
+func (m *Memory) LoadOrganizations(ctx context.Context, userID string) ([]*api.Organization, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -508,7 +508,7 @@ func (m *Memory) UpdateOrganizationMetaData(ctx context.Context, data map[string
 }
 
 // IsProjectExists ...
-func (m *Memory) IsProjectExists(ctx context.Context, orgID int64, desc string, passType api.PassType) (bool, error) {
+func (m *Memory) IsProjectExists(ctx context.Context, orgID, desc string, passType api.PassType) (bool, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -536,7 +536,7 @@ func (m *Memory) SaveNewProject(ctx context.Context, proj *api.Project) error {
 }
 
 // LoadProject ...
-func (m *Memory) LoadProject(ctx context.Context, id int64) (*api.Project, error) {
+func (m *Memory) LoadProject(ctx context.Context, id string) (*api.Project, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -550,7 +550,7 @@ func (m *Memory) LoadProject(ctx context.Context, id int64) (*api.Project, error
 }
 
 // LoadProjects ...
-func (m *Memory) LoadProjects(ctx context.Context, userID int64) ([]*api.Project, error) {
+func (m *Memory) LoadProjects(ctx context.Context, userID string) ([]*api.Project, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 

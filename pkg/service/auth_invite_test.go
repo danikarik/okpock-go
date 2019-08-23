@@ -57,7 +57,6 @@ func TestInviteHandler(t *testing.T) {
 			}
 
 			referer := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
-			referer.ID = 700
 
 			err = srv.env.Auth.SaveNewUser(ctx, referer)
 			if !assert.NoError(err) {
@@ -66,7 +65,6 @@ func TestInviteHandler(t *testing.T) {
 
 			if tc.User != nil {
 				user := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
-				user.ID = 707
 
 				err = srv.env.Auth.SaveNewUser(ctx, user)
 				if !assert.NoError(err) {

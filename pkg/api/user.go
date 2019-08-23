@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/danikarik/okpock/pkg/secure"
+	uuid "github.com/satori/go.uuid"
 )
 
 // Confirmation is an alias for confirmation type.
@@ -55,6 +56,7 @@ const (
 // NewUser returns a new instance of user.
 func NewUser(username, email, hash string, userData map[string]interface{}) *User {
 	return &User{
+		ID:           uuid.NewV4().String(),
 		Username:     username,
 		Email:        email,
 		PasswordHash: hash,
@@ -65,7 +67,7 @@ func NewUser(username, email, hash string, userData map[string]interface{}) *Use
 
 // User represents user row from database.
 type User struct {
-	ID int64 `json:"id" db:"id"`
+	ID string `json:"id" db:"id"`
 
 	Role         Role       `json:"role" db:"role"`
 	Username     string     `json:"username" db:"username"`

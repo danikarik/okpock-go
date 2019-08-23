@@ -2,7 +2,6 @@ package service
 
 import (
 	"errors"
-	"strconv"
 	"time"
 
 	"github.com/danikarik/okpock/pkg/api"
@@ -59,7 +58,7 @@ type UserClaims struct {
 
 // WithUser updates claims' subject.
 func (c *UserClaims) WithUser(u *api.User) *UserClaims {
-	c.Subject = strconv.FormatInt(u.ID, 10)
+	c.Subject = u.ID
 	return c
 }
 

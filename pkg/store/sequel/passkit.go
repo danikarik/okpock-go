@@ -11,10 +11,10 @@ import (
 // InsertPass ...
 func (m *MySQL) InsertPass(ctx context.Context, serialNumber, authToken, passTypeID string) error {
 	query := m.builder.Insert("passes").
-		Columns("serial_number", "authentication_token", "pass_type_id", "updated_at").
-		Values(serialNumber, authToken, passTypeID, time.Now())
+		Columns("id", "serial_number", "authentication_token", "pass_type_id", "updated_at").
+		Values(uuid.NewV4().String(), serialNumber, authToken, passTypeID, time.Now())
 
-	_, err := m.insertQuery(ctx, query)
+	err := m.insertQuery(ctx, query)
 	if err != nil {
 		return err
 	}
@@ -122,10 +122,10 @@ func (m *MySQL) LatestPass(ctx context.Context, serialNumber, authToken, passTyp
 // InsertRegistration ...
 func (m *MySQL) InsertRegistration(ctx context.Context, deviceID, pushToken, serialNumber, passTypeID string) error {
 	query := m.builder.Insert("registrations").
-		Columns("uuid", "device_id", "push_token", "serial_number", "pass_type_id").
+		Columns("id", "device_id", "push_token", "serial_number", "pass_type_id").
 		Values(uuid.NewV4().String(), deviceID, pushToken, serialNumber, passTypeID)
 
-	_, err := m.insertQuery(ctx, query)
+	err := m.insertQuery(ctx, query)
 	if err != nil {
 		return err
 	}
@@ -153,10 +153,10 @@ func (m *MySQL) DeleteRegistration(ctx context.Context, deviceID, serialNumber, 
 // InsertLog ...
 func (m *MySQL) InsertLog(ctx context.Context, remoteAddr, requestID, message string) error {
 	query := m.builder.Insert("logs").
-		Columns("uuid", "remote_address", "request_id", "message", "updated_at").
+		Columns("id", "remote_address", "request_id", "message", "updated_at").
 		Values(uuid.NewV4().String(), remoteAddr, requestID, message, time.Now())
 
-	_, err := m.insertQuery(ctx, query)
+	err := m.insertQuery(ctx, query)
 	if err != nil {
 		return err
 	}

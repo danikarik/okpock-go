@@ -18,13 +18,13 @@ func checkOrganization(o *api.Organization, opts byte) error {
 	}
 
 	if (opts & checkForeignID) != 0 {
-		if o.UserID == 0 {
+		if o.UserID == "" {
 			return store.ErrZeroID
 		}
 	}
 
 	if (opts & checkZeroID) != 0 {
-		if o.ID == 0 {
+		if o.ID == "" {
 			return store.ErrZeroID
 		}
 	}
@@ -38,7 +38,7 @@ func checkOrganization(o *api.Organization, opts byte) error {
 }
 
 // IsOrganizationExists ...
-func (m *MySQL) IsOrganizationExists(ctx context.Context, userID int64, title string) (bool, error) {
+func (m *MySQL) IsOrganizationExists(ctx context.Context, userID, title string) (bool, error) {
 	query := m.builder.Select("count(1)").
 		From("organizations").
 		Where(sq.Eq{
@@ -66,6 +66,7 @@ func (m *MySQL) SaveNewOrganization(ctx context.Context, org *api.Organization) 
 
 	query := m.builder.Insert("organizations").
 		Columns(
+			"id",
 			"user_id",
 			"title",
 			"description",
@@ -74,6 +75,7 @@ func (m *MySQL) SaveNewOrganization(ctx context.Context, org *api.Organization) 
 			"updated_at",
 		).
 		Values(
+			org.ID,
 			org.UserID,
 			org.Title,
 			org.Description,
@@ -82,18 +84,17 @@ func (m *MySQL) SaveNewOrganization(ctx context.Context, org *api.Organization) 
 			org.UpdatedAt,
 		)
 
-	id, err := m.insertQuery(ctx, query)
+	err = m.insertQuery(ctx, query)
 	if err != nil {
 		return err
 	}
-	org.ID = id
 
 	return nil
 }
 
 // LoadOrganization ...
-func (m *MySQL) LoadOrganization(ctx context.Context, id int64) (*api.Organization, error) {
-	if id == 0 {
+func (m *MySQL) LoadOrganization(ctx context.Context, id string) (*api.Organization, error) {
+	if id == "" {
 		return nil, store.ErrZeroID
 	}
 
@@ -120,8 +121,8 @@ func (m *MySQL) LoadOrganization(ctx context.Context, id int64) (*api.Organizati
 }
 
 // LoadOrganizations ...
-func (m *MySQL) LoadOrganizations(ctx context.Context, userID int64) ([]*api.Organization, error) {
-	if userID == 0 {
+func (m *MySQL) LoadOrganizations(ctx context.Context, userID string) ([]*api.Organization, error) {
+	if userID == "" {
 		return nil, store.ErrZeroID
 	}
 

@@ -18,7 +18,7 @@ type Auth interface {
 
 	// LoadUser ...
 	// TODO: description
-	LoadUser(ctx context.Context, id int64) (*User, error)
+	LoadUser(ctx context.Context, id string) (*User, error)
 
 	// LoadUserByUsernameOrEmail ...
 	// TODO: description
