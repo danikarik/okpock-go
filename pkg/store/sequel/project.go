@@ -181,51 +181,87 @@ func (m *MySQL) UpdateProjectDescription(ctx context.Context, desc string, proj 
 
 // SetBackgroundImage ...
 func (m *MySQL) SetBackgroundImage(ctx context.Context, key string, proj *api.Project) error {
-	return m.setImage(ctx, api.BackgroundImage, key, proj)
-}
-
-// SetFooterImage ...
-func (m *MySQL) SetFooterImage(ctx context.Context, key string, proj *api.Project) error {
-	return m.setImage(ctx, api.FooterImage, key, proj)
-}
-
-// SetIconImage ...
-func (m *MySQL) SetIconImage(ctx context.Context, key string, proj *api.Project) error {
-	return m.setImage(ctx, api.IconImage, key, proj)
-}
-
-// SetStripImage ...
-func (m *MySQL) SetStripImage(ctx context.Context, key string, proj *api.Project) error {
-	return m.setImage(ctx, api.StripImage, key, proj)
-}
-
-func (m *MySQL) setImage(ctx context.Context, field api.ProjectField, key string, proj *api.Project) error {
 	err := checkProject(proj, checkNilStruct|checkZeroID|checkForeignID)
 	if err != nil {
 		return err
 	}
 
-	proj.SetField(field, key)
+	proj.BackgroundImage = key
 	proj.UpdatedAt = time.Now()
 
 	query := m.builder.Update("projects").
+		Set("background_image", proj.BackgroundImage).
 		Set("updated_at", proj.UpdatedAt).
 		Where(sq.Eq{"id": proj.ID})
 
-	switch field {
-	case api.BackgroundImage:
-		query = query.Set("background_image", proj.GetField(field))
-		break
-	case api.FooterImage:
-		query = query.Set("footer_image", proj.GetField(field))
-		break
-	case api.IconImage:
-		query = query.Set("icon_image", proj.GetField(field))
-		break
-	case api.StripImage:
-		query = query.Set("strip_image", proj.GetField(field))
-		break
+	_, err = m.updateQuery(ctx, query)
+	if err != nil {
+		return err
 	}
+
+	return nil
+}
+
+// SetFooterImage ...
+func (m *MySQL) SetFooterImage(ctx context.Context, key string, proj *api.Project) error {
+	err := checkProject(proj, checkNilStruct|checkZeroID|checkForeignID)
+	if err != nil {
+		return err
+	}
+
+	proj.FooterImage = key
+	proj.UpdatedAt = time.Now()
+
+	query := m.builder.Update("projects").
+		Set("footer_image", proj.FooterImage).
+		Set("updated_at", proj.UpdatedAt).
+		Where(sq.Eq{"id": proj.ID})
+
+	_, err = m.updateQuery(ctx, query)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// SetIconImage ...
+func (m *MySQL) SetIconImage(ctx context.Context, key string, proj *api.Project) error {
+	err := checkProject(proj, checkNilStruct|checkZeroID|checkForeignID)
+	if err != nil {
+		return err
+	}
+
+	proj.IconImage = key
+	proj.UpdatedAt = time.Now()
+
+	query := m.builder.Update("projects").
+		Set("icon_image", proj.IconImage).
+		Set("updated_at", proj.UpdatedAt).
+		Where(sq.Eq{"id": proj.ID})
+
+	_, err = m.updateQuery(ctx, query)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// SetStripImage ...
+func (m *MySQL) SetStripImage(ctx context.Context, key string, proj *api.Project) error {
+	err := checkProject(proj, checkNilStruct|checkZeroID|checkForeignID)
+	if err != nil {
+		return err
+	}
+
+	proj.StripImage = key
+	proj.UpdatedAt = time.Now()
+
+	query := m.builder.Update("projects").
+		Set("strip_image", proj.StripImage).
+		Set("updated_at", proj.UpdatedAt).
+		Where(sq.Eq{"id": proj.ID})
 
 	_, err = m.updateQuery(ctx, query)
 	if err != nil {

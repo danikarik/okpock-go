@@ -212,7 +212,7 @@ func (s *Service) emailChangeMessage(u *api.User) (*mail.Message, error) {
 
 	return mail.NewMessage(
 		defaultSender,
-		u.GetEmailChange(),
+		u.EmailChange,
 		"Email change",
 		html,
 		text,

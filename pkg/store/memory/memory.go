@@ -229,7 +229,7 @@ func (m *Memory) LoadUserByConfirmationToken(ctx context.Context, token string) 
 	defer m.mu.Unlock()
 
 	for _, u := range m.users {
-		if u.GetConfirmationToken() == token {
+		if u.ConfirmationToken == token {
 			return u, nil
 		}
 	}
@@ -243,7 +243,7 @@ func (m *Memory) LoadUserByRecoveryToken(ctx context.Context, token string) (*ap
 	defer m.mu.Unlock()
 
 	for _, u := range m.users {
-		if u.GetRecoveryToken() == token {
+		if u.RecoveryToken == token {
 			return u, nil
 		}
 	}
@@ -257,7 +257,7 @@ func (m *Memory) LoadUserByEmailChangeToken(ctx context.Context, token string) (
 	defer m.mu.Unlock()
 
 	for _, u := range m.users {
-		if u.GetEmailChangeToken() == token {
+		if u.EmailChangeToken == token {
 			return u, nil
 		}
 	}
@@ -292,7 +292,7 @@ func (m *Memory) ConfirmUser(ctx context.Context, user *api.User) error {
 
 	now := time.Now()
 	user.ConfirmedAt = &now
-	user.SetField(api.ConfirmationToken, "")
+	user.ConfirmationToken = ""
 	m.users[user.ID] = user
 
 	return nil
@@ -312,7 +312,7 @@ func (m *Memory) SetConfirmationToken(ctx context.Context, confirm api.Confirmat
 		user.InvitedAt = &now
 	}
 
-	user.SetField(api.ConfirmationToken, token)
+	user.ConfirmationToken = token
 	m.users[user.ID] = user
 
 	return nil
@@ -323,7 +323,7 @@ func (m *Memory) RecoverUser(ctx context.Context, user *api.User) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	user.SetField(api.RecoveryToken, "")
+	user.RecoveryToken = ""
 	m.users[user.ID] = user
 
 	return nil
@@ -338,7 +338,7 @@ func (m *Memory) SetRecoveryToken(ctx context.Context, user *api.User) error {
 	token := secure.Token()
 
 	user.RecoverySentAt = &now
-	user.SetField(api.RecoveryToken, token)
+	user.RecoveryToken = token
 	m.users[user.ID] = user
 
 	return nil
@@ -349,9 +349,9 @@ func (m *Memory) ConfirmEmailChange(ctx context.Context, user *api.User) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	user.Email = user.GetEmailChange()
-	user.SetField(api.EmailChange, "")
-	user.SetField(api.EmailChangeToken, "")
+	user.Email = user.EmailChange
+	user.EmailChange = ""
+	user.EmailChangeToken = ""
 	m.users[user.ID] = user
 
 	return nil
@@ -366,8 +366,8 @@ func (m *Memory) SetEmailChangeToken(ctx context.Context, email string, user *ap
 	token := secure.Token()
 
 	user.EmailChangeSentAt = &now
-	user.SetField(api.EmailChange, email)
-	user.SetField(api.EmailChangeToken, token)
+	user.EmailChange = email
+	user.EmailChangeToken = token
 	m.users[user.ID] = user
 
 	return nil
@@ -584,7 +584,7 @@ func (m *Memory) SetBackgroundImage(ctx context.Context, key string, proj *api.P
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	proj.SetField(api.BackgroundImage, key)
+	proj.BackgroundImage = key
 	proj.UpdatedAt = time.Now()
 	m.projects[proj.ID] = proj
 
@@ -596,7 +596,7 @@ func (m *Memory) SetFooterImage(ctx context.Context, key string, proj *api.Proje
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	proj.SetField(api.FooterImage, key)
+	proj.FooterImage = key
 	proj.UpdatedAt = time.Now()
 	m.projects[proj.ID] = proj
 
@@ -608,7 +608,7 @@ func (m *Memory) SetIconImage(ctx context.Context, key string, proj *api.Project
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	proj.SetField(api.IconImage, key)
+	proj.IconImage = key
 	proj.UpdatedAt = time.Now()
 	m.projects[proj.ID] = proj
 
@@ -620,7 +620,7 @@ func (m *Memory) SetStripImage(ctx context.Context, key string, proj *api.Projec
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	proj.SetField(api.StripImage, key)
+	proj.StripImage = key
 	proj.UpdatedAt = time.Now()
 	m.projects[proj.ID] = proj
 

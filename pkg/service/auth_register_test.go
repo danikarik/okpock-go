@@ -108,7 +108,7 @@ func TestRegisterHandler(t *testing.T) {
 				assert.Equal(loaded.Email, tc.Request.Email)
 				assert.True(loaded.CheckPassword(tc.Request.Password))
 				assert.False(loaded.IsConfirmed())
-				assert.NotEmpty(loaded.GetConfirmationToken())
+				assert.NotEmpty(loaded.ConfirmationToken)
 				assert.NotNil(loaded.ConfirmationSentAt)
 			}
 		})

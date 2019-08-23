@@ -429,21 +429,21 @@ func TestLoadUser(t *testing.T) {
 					if !assert.NoError(err) {
 						return
 					}
-					loaded, err = mock.LoadUserByConfirmationToken(ctx, u.GetConfirmationToken())
+					loaded, err = mock.LoadUserByConfirmationToken(ctx, u.ConfirmationToken)
 					break
 				case "LoadUserByRecoveryToken":
 					err = mock.SetRecoveryToken(ctx, u)
 					if !assert.NoError(err) {
 						return
 					}
-					loaded, err = mock.LoadUserByRecoveryToken(ctx, u.GetRecoveryToken())
+					loaded, err = mock.LoadUserByRecoveryToken(ctx, u.RecoveryToken)
 					break
 				case "LoadUserByEmailChangeToken":
 					err = mock.SetEmailChangeToken(ctx, "newemail@example.com", u)
 					if !assert.NoError(err) {
 						return
 					}
-					loaded, err = mock.LoadUserByEmailChangeToken(ctx, u.GetEmailChangeToken())
+					loaded, err = mock.LoadUserByEmailChangeToken(ctx, u.EmailChangeToken)
 					break
 				default:
 					err = store.ErrNotFound
@@ -650,7 +650,7 @@ func TestSetConfirmationToken(t *testing.T) {
 				return
 			}
 
-			if !assert.NotEmpty(u.GetConfirmationToken()) {
+			if !assert.NotEmpty(u.ConfirmationToken) {
 				return
 			}
 
@@ -718,16 +718,16 @@ func TestRecoverUser(t *testing.T) {
 				return
 			}
 
-			if !assert.NotEmpty(u.GetRecoveryToken()) {
+			if !assert.NotEmpty(u.RecoveryToken) {
 				return
 			}
 
 			if tc.Recover {
 				err = mock.RecoverUser(ctx, u)
 				assert.NoError(err)
-				assert.Empty(u.GetRecoveryToken())
+				assert.Empty(u.RecoveryToken)
 			} else {
-				assert.NotEmpty(u.GetRecoveryToken())
+				assert.NotEmpty(u.RecoveryToken)
 				assert.NotNil(u.RecoverySentAt)
 			}
 		})
@@ -792,10 +792,10 @@ func TestEmailChange(t *testing.T) {
 				return
 			}
 
-			if !assert.NotEmpty(u.GetEmailChangeToken()) {
+			if !assert.NotEmpty(u.EmailChangeToken) {
 				return
 			}
-			if !assert.Equal(tc.User.NewEmail, u.GetEmailChange()) {
+			if !assert.Equal(tc.User.NewEmail, u.EmailChange) {
 				return
 			}
 
@@ -804,7 +804,7 @@ func TestEmailChange(t *testing.T) {
 				assert.NoError(err)
 				assert.Equal(tc.User.NewEmail, u.Email)
 			} else {
-				assert.NotEmpty(u.GetEmailChangeToken())
+				assert.NotEmpty(u.EmailChangeToken)
 				assert.NotNil(u.EmailChangeSentAt)
 			}
 		})
@@ -1596,10 +1596,10 @@ func TestSetImage(t *testing.T) {
 			}
 
 			assert.Equal(p.ID, loaded.ID)
-			assert.Equal(tc.NewKey, loaded.GetField(api.BackgroundImage))
-			assert.Equal(tc.NewKey, loaded.GetField(api.FooterImage))
-			assert.Equal(tc.NewKey, loaded.GetField(api.IconImage))
-			assert.Equal(tc.NewKey, loaded.GetField(api.StripImage))
+			assert.Equal(tc.NewKey, loaded.BackgroundImage)
+			assert.Equal(tc.NewKey, loaded.FooterImage)
+			assert.Equal(tc.NewKey, loaded.IconImage)
+			assert.Equal(tc.NewKey, loaded.StripImage)
 		})
 	}
 }

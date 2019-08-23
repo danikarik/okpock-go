@@ -94,7 +94,7 @@ func TestRecoverHandler(t *testing.T) {
 					return
 				}
 
-				assert.NotEmpty(loaded.GetRecoveryToken())
+				assert.NotEmpty(loaded.RecoveryToken)
 				assert.NotNil(loaded.RecoverySentAt)
 			}
 		})

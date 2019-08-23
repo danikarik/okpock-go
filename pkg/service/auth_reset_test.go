@@ -103,7 +103,7 @@ func TestResetHandler(t *testing.T) {
 					return
 				}
 
-				token = user.GetRecoveryToken()
+				token = user.RecoveryToken
 				if tc.Token != "" {
 					token = tc.Token
 				}
@@ -113,7 +113,7 @@ func TestResetHandler(t *testing.T) {
 					return
 				}
 
-				token = user.GetConfirmationToken()
+				token = user.ConfirmationToken
 				if tc.Token != "" {
 					token = tc.Token
 				}
@@ -147,10 +147,10 @@ func TestResetHandler(t *testing.T) {
 				}
 
 				if tc.Confirmation == api.RecoveryConfirmation {
-					assert.Empty(loaded.GetRecoveryToken())
+					assert.Empty(loaded.RecoveryToken)
 					assert.True(loaded.CheckPassword(tc.NewPassword))
 				} else if tc.Confirmation == api.InviteConfirmation {
-					assert.Empty(loaded.GetConfirmationToken())
+					assert.Empty(loaded.ConfirmationToken)
 					assert.NotNil(loaded.InvitedAt)
 					assert.True(loaded.CheckPassword(tc.NewPassword))
 				}

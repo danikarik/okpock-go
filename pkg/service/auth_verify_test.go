@@ -103,21 +103,21 @@ func TestVerifyHandler(t *testing.T) {
 				if !assert.NoError(err) {
 					return
 				}
-				token = user.GetConfirmationToken()
+				token = user.ConfirmationToken
 				break
 			case api.RecoveryConfirmation:
 				err = srv.env.Auth.SetRecoveryToken(ctx, user)
 				if !assert.NoError(err) {
 					return
 				}
-				token = user.GetRecoveryToken()
+				token = user.RecoveryToken
 				break
 			case api.EmailChangeConfirmation:
 				err = srv.env.Auth.SetEmailChangeToken(ctx, "new@example.com", user)
 				if !assert.NoError(err) {
 					return
 				}
-				token = user.GetEmailChangeToken()
+				token = user.EmailChangeToken
 				break
 			}
 
@@ -158,21 +158,21 @@ func TestVerifyHandler(t *testing.T) {
 
 				switch tc.Confirm {
 				case api.SignUpConfirmation:
-					assert.Empty(loaded.GetConfirmationToken())
+					assert.Empty(loaded.ConfirmationToken)
 					assert.NotNil(loaded.ConfirmationSentAt)
 					break
 				case api.InviteConfirmation:
 					// should be empty after reset handler
-					assert.NotEmpty(loaded.GetConfirmationToken())
+					assert.NotEmpty(loaded.ConfirmationToken)
 					assert.NotNil(loaded.InvitedAt)
 					break
 				case api.RecoveryConfirmation:
 					// should be empty after reset handler
-					assert.NotEmpty(loaded.GetRecoveryToken())
+					assert.NotEmpty(loaded.RecoveryToken)
 					assert.NotNil(loaded.RecoverySentAt)
 					break
 				case api.EmailChangeConfirmation:
-					assert.Empty(loaded.GetEmailChangeToken())
+					assert.Empty(loaded.EmailChangeToken)
 					assert.NotNil(loaded.EmailChangeSentAt)
 					assert.Equal("new@example.com", loaded.Email)
 					break

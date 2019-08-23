@@ -225,10 +225,10 @@ func (m *MySQL) ConfirmUser(ctx context.Context, user *api.User) error {
 
 	now := time.Now()
 	user.ConfirmedAt = &now
-	user.SetField(api.ConfirmationToken, "")
+	user.ConfirmationToken = ""
 
 	query := m.builder.Update("users").
-		Set("confirmation_token", user.GetConfirmationToken()).
+		Set("confirmation_token", user.ConfirmationToken).
 		Set("confirmed_at", user.ConfirmedAt).
 		Where(sq.Eq{"id": user.ID})
 
@@ -248,12 +248,10 @@ func (m *MySQL) SetConfirmationToken(ctx context.Context, confirm api.Confirmati
 	}
 
 	now := time.Now()
-	token := secure.Token()
-
-	user.SetField(api.ConfirmationToken, token)
+	user.ConfirmationToken = secure.Token()
 
 	query := m.builder.Update("users").
-		Set("confirmation_token", user.GetConfirmationToken()).
+		Set("confirmation_token", user.ConfirmationToken).
 		Where(sq.Eq{"id": user.ID})
 
 	if confirm == api.SignUpConfirmation {
@@ -280,10 +278,10 @@ func (m *MySQL) RecoverUser(ctx context.Context, user *api.User) error {
 	}
 
 	user.UpdatedAt = time.Now()
-	user.SetField(api.RecoveryToken, "")
+	user.RecoveryToken = ""
 
 	query := m.builder.Update("users").
-		Set("recovery_token", user.GetRecoveryToken()).
+		Set("recovery_token", user.RecoveryToken).
 		Set("updated_at", user.UpdatedAt).
 		Where(sq.Eq{"id": user.ID})
 
@@ -303,13 +301,11 @@ func (m *MySQL) SetRecoveryToken(ctx context.Context, user *api.User) error {
 	}
 
 	now := time.Now()
-	token := secure.Token()
-
 	user.RecoverySentAt = &now
-	user.SetField(api.RecoveryToken, token)
+	user.RecoveryToken = secure.Token()
 
 	query := m.builder.Update("users").
-		Set("recovery_token", user.GetRecoveryToken()).
+		Set("recovery_token", user.RecoveryToken).
 		Set("recovery_sent_at", user.RecoverySentAt).
 		Where(sq.Eq{"id": user.ID})
 
@@ -328,14 +324,14 @@ func (m *MySQL) ConfirmEmailChange(ctx context.Context, user *api.User) error {
 		return err
 	}
 
-	user.Email = user.GetEmailChange()
-	user.SetField(api.EmailChange, "")
-	user.SetField(api.EmailChangeToken, "")
+	user.Email = user.EmailChange
+	user.EmailChange = ""
+	user.EmailChangeToken = ""
 
 	query := m.builder.Update("users").
 		Set("email", user.Email).
-		Set("email_change", user.GetEmailChange()).
-		Set("email_change_token", user.GetEmailChangeToken()).
+		Set("email_change", user.EmailChange).
+		Set("email_change_token", user.EmailChangeToken).
 		Where(sq.Eq{"id": user.ID})
 
 	_, err = m.updateQuery(ctx, query)
@@ -354,15 +350,13 @@ func (m *MySQL) SetEmailChangeToken(ctx context.Context, email string, user *api
 	}
 
 	now := time.Now()
-	token := secure.Token()
-
 	user.EmailChangeSentAt = &now
-	user.SetField(api.EmailChange, email)
-	user.SetField(api.EmailChangeToken, token)
+	user.EmailChange = email
+	user.EmailChangeToken = secure.Token()
 
 	query := m.builder.Update("users").
-		Set("email_change", user.GetEmailChange()).
-		Set("email_change_token", user.GetEmailChangeToken()).
+		Set("email_change", user.EmailChange).
+		Set("email_change_token", user.EmailChangeToken).
 		Set("email_change_sent_at", user.EmailChangeSentAt).
 		Where(sq.Eq{"id": user.ID})
 

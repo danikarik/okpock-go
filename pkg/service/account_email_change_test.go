@@ -132,8 +132,8 @@ func TestEmailChangeHandler(t *testing.T) {
 					return
 				}
 
-				assert.Equal(tc.Request.Email, loaded.GetEmailChange())
-				assert.NotEmpty(loaded.GetEmailChangeToken())
+				assert.Equal(tc.Request.Email, loaded.EmailChange)
+				assert.NotEmpty(loaded.EmailChangeToken)
 				assert.NotNil(loaded.EmailChangeSentAt)
 			}
 		})

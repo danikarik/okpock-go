@@ -2,7 +2,6 @@ package api
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"time"
@@ -24,21 +23,6 @@ const (
 	StoreCard = PassType("storeCard")
 )
 
-// ProjectField is an alias for project field.
-type ProjectField int
-
-const (
-	_ ProjectField = iota
-	// BackgroundImage refers to `project.BackgroundImage`.
-	BackgroundImage
-	// FooterImage refers to `project.FooterImage`.
-	FooterImage
-	// IconImage refers to `project.IconImage`.
-	IconImage
-	// StripImage refers to `project.StripImage`.
-	StripImage
-)
-
 // NewProject returns a new instance of project.
 func NewProject(orgID int64, desc string, passType PassType) *Project {
 	return &Project{
@@ -56,10 +40,10 @@ type Project struct {
 	Description string   `json:"description" db:"description"`
 	PassType    PassType `json:"passType" db:"pass_type"`
 
-	BackgroundImage sql.NullString `json:"backgroundImage" db:"background_image"`
-	FooterImage     sql.NullString `json:"footerImage" db:"footer_image"`
-	IconImage       sql.NullString `json:"iconImage" db:"icon_image"`
-	StripImage      sql.NullString `json:"stripImage" db:"strip_image"`
+	BackgroundImage string `json:"backgroundImage" db:"background_image"`
+	FooterImage     string `json:"footerImage" db:"footer_image"`
+	IconImage       string `json:"iconImage" db:"icon_image"`
+	StripImage      string `json:"stripImage" db:"strip_image"`
 
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`
 	UpdatedAt time.Time `json:"updatedAt" db:"updated_at"`
@@ -86,51 +70,6 @@ func (p *Project) String() string {
 		return ""
 	}
 	return string(data)
-}
-
-// SetField sets string value of project field.
-func (p *Project) SetField(field ProjectField, value string) {
-	switch field {
-	case BackgroundImage:
-		p.BackgroundImage.Valid = true
-		p.BackgroundImage.String = value
-		break
-	case FooterImage:
-		p.FooterImage.Valid = true
-		p.FooterImage.String = value
-		break
-	case IconImage:
-		p.IconImage.Valid = true
-		p.IconImage.String = value
-		break
-	case StripImage:
-		p.StripImage.Valid = true
-		p.StripImage.String = value
-		break
-	}
-}
-
-// GetField gets string value of project field.
-func (p *Project) GetField(field ProjectField) string {
-	switch field {
-	case BackgroundImage:
-		if p.BackgroundImage.Valid {
-			return p.BackgroundImage.String
-		}
-	case FooterImage:
-		if p.FooterImage.Valid {
-			return p.FooterImage.String
-		}
-	case IconImage:
-		if p.IconImage.Valid {
-			return p.IconImage.String
-		}
-	case StripImage:
-		if p.StripImage.Valid {
-			return p.StripImage.String
-		}
-	}
-	return ""
 }
 
 // ProjectStore implements method for project logic.

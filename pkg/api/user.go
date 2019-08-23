@@ -1,7 +1,6 @@
 package api
 
 import (
-	"database/sql"
 	"encoding/json"
 	"errors"
 	"time"
@@ -75,15 +74,15 @@ type User struct {
 	ConfirmedAt  *time.Time `json:"confirmedAt,omitempty" db:"confirmed_at"`
 	InvitedAt    *time.Time `json:"invitedAt,omitempty" db:"invited_at"`
 
-	ConfirmationToken  sql.NullString `json:"-" db:"confirmation_token"`
-	ConfirmationSentAt *time.Time     `json:"confirmationSentAt,omitempty" db:"confirmation_sent_at"`
+	ConfirmationToken  string     `json:"-" db:"confirmation_token"`
+	ConfirmationSentAt *time.Time `json:"confirmationSentAt,omitempty" db:"confirmation_sent_at"`
 
-	RecoveryToken  sql.NullString `json:"-" db:"recovery_token"`
-	RecoverySentAt *time.Time     `json:"recoverySentAt,omitempty" db:"recovery_sent_at"`
+	RecoveryToken  string     `json:"-" db:"recovery_token"`
+	RecoverySentAt *time.Time `json:"recoverySentAt,omitempty" db:"recovery_sent_at"`
 
-	EmailChangeToken  sql.NullString `json:"-" db:"email_change_token"`
-	EmailChange       sql.NullString `json:"-" db:"email_change"`
-	EmailChangeSentAt *time.Time     `json:"emailChangeSentAt,omitempty" db:"email_change_sent_at"`
+	EmailChangeToken  string     `json:"-" db:"email_change_token"`
+	EmailChange       string     `json:"-" db:"email_change"`
+	EmailChangeSentAt *time.Time `json:"emailChangeSentAt,omitempty" db:"email_change_sent_at"`
 
 	LastSignInAt *time.Time `json:"lastSignInAt,omitempty" db:"last_signin_at"`
 
@@ -127,60 +126,6 @@ func (u *User) IsConfirmed() bool {
 // HasRole returns true when the users role is set to name.
 func (u *User) HasRole(role Role) bool {
 	return u.Role == role
-}
-
-// SetField sets string value of user field.
-func (u *User) SetField(field UserField, value string) {
-	switch field {
-	case ConfirmationToken:
-		u.ConfirmationToken.Valid = true
-		u.ConfirmationToken.String = value
-		break
-	case RecoveryToken:
-		u.RecoveryToken.Valid = true
-		u.RecoveryToken.String = value
-		break
-	case EmailChangeToken:
-		u.EmailChangeToken.Valid = true
-		u.EmailChangeToken.String = value
-		break
-	case EmailChange:
-		u.EmailChange.Valid = true
-		u.EmailChange.String = value
-		break
-	}
-}
-
-// GetConfirmationToken is a simple wrapper for `ConfirmationToken`.
-func (u *User) GetConfirmationToken() string {
-	if u.ConfirmationToken.Valid {
-		return u.ConfirmationToken.String
-	}
-	return ""
-}
-
-// GetRecoveryToken is a simple wrapper for `RecoveryToken`.
-func (u *User) GetRecoveryToken() string {
-	if u.RecoveryToken.Valid {
-		return u.RecoveryToken.String
-	}
-	return ""
-}
-
-// GetEmailChangeToken is a simple wrapper for `EmailChangeToken`.
-func (u *User) GetEmailChangeToken() string {
-	if u.EmailChangeToken.Valid {
-		return u.EmailChangeToken.String
-	}
-	return ""
-}
-
-// GetEmailChange is a simple wrapper for `EmailChange`.
-func (u *User) GetEmailChange() string {
-	if u.EmailChange.Valid {
-		return u.EmailChange.String
-	}
-	return ""
 }
 
 // CheckPassword compares a bcrypt hashed password with its possible plaintext equivalent.

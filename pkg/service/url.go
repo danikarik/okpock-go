@@ -58,22 +58,22 @@ func (s *Service) confirmationURL(u *api.User, c api.Confirmation) (string, erro
 	switch c {
 	case api.SignUpConfirmation:
 		values.Add("type", string(c))
-		values.Add("token", u.GetConfirmationToken())
+		values.Add("token", u.ConfirmationToken)
 		values.Add("redirect_url", s.appURL(""))
 		break
 	case api.InviteConfirmation:
 		values.Add("type", string(c))
-		values.Add("token", u.GetConfirmationToken())
+		values.Add("token", u.ConfirmationToken)
 		values.Add("redirect_url", s.appURL("/reset"))
 		break
 	case api.RecoveryConfirmation:
 		values.Add("type", string(c))
-		values.Add("token", u.GetRecoveryToken())
+		values.Add("token", u.RecoveryToken)
 		values.Add("redirect_url", s.appURL("/reset"))
 		break
 	case api.EmailChangeConfirmation:
 		values.Add("type", string(c))
-		values.Add("token", u.GetEmailChangeToken())
+		values.Add("token", u.EmailChangeToken)
 		values.Add("redirect_url", s.appURL(""))
 		break
 	}

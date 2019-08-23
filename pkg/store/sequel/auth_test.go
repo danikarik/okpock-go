@@ -306,21 +306,21 @@ func TestLoadUser(t *testing.T) {
 					if !assert.NoError(err) {
 						return
 					}
-					loaded, err = db.LoadUserByConfirmationToken(ctx, u.GetConfirmationToken())
+					loaded, err = db.LoadUserByConfirmationToken(ctx, u.ConfirmationToken)
 					break
 				case "LoadUserByRecoveryToken":
 					err = db.SetRecoveryToken(ctx, u)
 					if !assert.NoError(err) {
 						return
 					}
-					loaded, err = db.LoadUserByRecoveryToken(ctx, u.GetRecoveryToken())
+					loaded, err = db.LoadUserByRecoveryToken(ctx, u.RecoveryToken)
 					break
 				case "LoadUserByEmailChangeToken":
 					err = db.SetEmailChangeToken(ctx, fakeEmail(), u)
 					if !assert.NoError(err) {
 						return
 					}
-					loaded, err = db.LoadUserByEmailChangeToken(ctx, u.GetEmailChangeToken())
+					loaded, err = db.LoadUserByEmailChangeToken(ctx, u.EmailChangeToken)
 					break
 				default:
 					err = store.ErrNotFound
@@ -563,7 +563,7 @@ func TestSetConfirmationToken(t *testing.T) {
 				return
 			}
 
-			if !assert.NotEmpty(u.GetConfirmationToken()) {
+			if !assert.NotEmpty(u.ConfirmationToken) {
 				return
 			}
 
@@ -578,8 +578,8 @@ func TestSetConfirmationToken(t *testing.T) {
 				return
 			}
 
-			assert.NotEmpty(loaded.GetConfirmationToken())
-			assert.Equal(u.GetConfirmationToken(), loaded.GetConfirmationToken())
+			assert.NotEmpty(loaded.ConfirmationToken)
+			assert.Equal(u.ConfirmationToken, loaded.ConfirmationToken)
 
 			if tc.Confirm == api.SignUpConfirmation {
 				assert.NotNil(loaded.ConfirmationSentAt)
@@ -650,16 +650,16 @@ func TestRecoverUser(t *testing.T) {
 				return
 			}
 
-			if !assert.NotEmpty(u.GetRecoveryToken()) {
+			if !assert.NotEmpty(u.RecoveryToken) {
 				return
 			}
 
 			if tc.Recover {
 				err = db.RecoverUser(ctx, u)
 				assert.NoError(err)
-				assert.Empty(u.GetRecoveryToken())
+				assert.Empty(u.RecoveryToken)
 			} else {
-				assert.NotEmpty(u.GetRecoveryToken())
+				assert.NotEmpty(u.RecoveryToken)
 				assert.NotNil(u.RecoverySentAt)
 			}
 
@@ -669,9 +669,9 @@ func TestRecoverUser(t *testing.T) {
 			}
 
 			if tc.Recover {
-				assert.Empty(loaded.GetRecoveryToken())
+				assert.Empty(loaded.RecoveryToken)
 			} else {
-				assert.NotEmpty(loaded.GetRecoveryToken())
+				assert.NotEmpty(loaded.RecoveryToken)
 				assert.NotNil(loaded.RecoverySentAt)
 			}
 		})
@@ -741,10 +741,10 @@ func TestEmailChange(t *testing.T) {
 				return
 			}
 
-			if !assert.NotEmpty(u.GetEmailChangeToken()) {
+			if !assert.NotEmpty(u.EmailChangeToken) {
 				return
 			}
-			if !assert.Equal(tc.User.NewEmail, u.GetEmailChange()) {
+			if !assert.Equal(tc.User.NewEmail, u.EmailChange) {
 				return
 			}
 
@@ -753,7 +753,7 @@ func TestEmailChange(t *testing.T) {
 				assert.NoError(err)
 				assert.Equal(tc.User.NewEmail, u.Email)
 			} else {
-				assert.NotEmpty(u.GetEmailChangeToken())
+				assert.NotEmpty(u.EmailChangeToken)
 				assert.NotNil(u.EmailChangeSentAt)
 			}
 
@@ -765,7 +765,7 @@ func TestEmailChange(t *testing.T) {
 			if tc.Confirm {
 				assert.Equal(tc.User.NewEmail, loaded.Email)
 			} else {
-				assert.NotEmpty(loaded.GetEmailChangeToken())
+				assert.NotEmpty(loaded.EmailChangeToken)
 				assert.NotNil(loaded.EmailChangeSentAt)
 			}
 		})

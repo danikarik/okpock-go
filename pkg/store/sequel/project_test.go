@@ -353,10 +353,10 @@ func TestSetImage(t *testing.T) {
 			}
 
 			assert.Equal(p.ID, loaded.ID)
-			assert.Equal(tc.NewKey, loaded.GetField(api.BackgroundImage))
-			assert.Equal(tc.NewKey, loaded.GetField(api.FooterImage))
-			assert.Equal(tc.NewKey, loaded.GetField(api.IconImage))
-			assert.Equal(tc.NewKey, loaded.GetField(api.StripImage))
+			assert.Equal(tc.NewKey, loaded.BackgroundImage)
+			assert.Equal(tc.NewKey, loaded.FooterImage)
+			assert.Equal(tc.NewKey, loaded.IconImage)
+			assert.Equal(tc.NewKey, loaded.StripImage)
 		})
 	}
 }

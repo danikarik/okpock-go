@@ -104,7 +104,7 @@ func TestInviteHandler(t *testing.T) {
 				assert.Equal(loaded.Username, tc.Request.Email)
 				assert.Equal(loaded.Email, tc.Request.Email)
 				assert.False(loaded.IsConfirmed())
-				assert.NotEmpty(loaded.GetConfirmationToken())
+				assert.NotEmpty(loaded.ConfirmationToken)
 				assert.NotNil(loaded.InvitedAt)
 
 				ref, ok := loaded.AppMetaData[metaReferer]
