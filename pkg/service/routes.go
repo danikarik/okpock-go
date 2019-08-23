@@ -77,7 +77,18 @@ func (s *Service) withRouter() *Service {
 		account.HandleFunc("/metadata", s.metaDataChangeHandler).Methods("PUT")
 
 		organizations := protected.PathPrefix("/organizations").Subrouter()
+		// TODO: SaveNewOrganization
 		organizations.HandleFunc("/", s.okHandler).Methods("POST")
+		// TODO: LoadOrganizations
+		organizations.HandleFunc("/", s.okHandler).Methods("GET")
+		// TODO: LoadOrganization
+		organizations.HandleFunc("/{id}", s.okHandler).Methods("GET")
+		// TODO: UpdateOrganizationDescription
+		organizations.HandleFunc("/{id}/description", s.okHandler).Methods("PUT")
+		// TODO: UpdateOrganizationMetaData
+		organizations.HandleFunc("/{id}/metadata", s.okHandler).Methods("PUT")
+		// TODO: IsOrganizationExists
+		organizations.HandleFunc("/check/title", s.okHandler).Methods("POST")
 	}
 
 	s.handler = s.corsMiddleware(r)
