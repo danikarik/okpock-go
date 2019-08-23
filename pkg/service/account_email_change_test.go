@@ -89,10 +89,7 @@ func TestEmailChangeHandler(t *testing.T) {
 				return
 			}
 
-			another, err := api.NewUser("another", "another@example.com", "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			another := api.NewUser("another", "another@example.com", "test", nil)
 			another.ID = 999
 
 			err = srv.env.Auth.SaveNewUser(ctx, another)
@@ -100,10 +97,7 @@ func TestEmailChangeHandler(t *testing.T) {
 				return
 			}
 
-			user, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			user := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
 			user.ID = tc.User.ID
 
 			err = srv.env.Auth.SaveNewUser(ctx, user)

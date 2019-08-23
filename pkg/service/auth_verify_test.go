@@ -89,10 +89,7 @@ func TestVerifyHandler(t *testing.T) {
 			app := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {}))
 			defer app.Close()
 
-			user, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			user := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
 
 			err = srv.env.Auth.SaveNewUser(ctx, user)
 			if !assert.NoError(err) {

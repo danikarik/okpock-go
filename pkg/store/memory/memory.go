@@ -390,7 +390,7 @@ func (m *Memory) UpdatePassword(ctx context.Context, password string, user *api.
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	hash, err := api.HashPassword(password)
+	hash, err := secure.NewPassword(password)
 	if err != nil {
 		return err
 	}

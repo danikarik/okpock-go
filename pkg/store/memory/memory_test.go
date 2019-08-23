@@ -8,6 +8,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/danikarik/okpock/pkg/secure"
+
 	"github.com/danikarik/okpock/pkg/api"
 	"github.com/danikarik/okpock/pkg/store"
 	"github.com/danikarik/okpock/pkg/store/memory"
@@ -19,11 +21,11 @@ func randomID() int64 { return rand.Int63() }
 
 func TestInsertPass(t *testing.T) {
 	var (
-		ctx                = context.Background()
-		mock               = memory.New()
-		serialNumber       = uuid.NewV4().String()
-		authToken          = uuid.NewV4().String()
-		passTypeID = "test.passkit"
+		ctx          = context.Background()
+		mock         = memory.New()
+		serialNumber = uuid.NewV4().String()
+		authToken    = uuid.NewV4().String()
+		passTypeID   = "test.passkit"
 	)
 	assert := assert.New(t)
 	err := mock.InsertPass(ctx, serialNumber, authToken, passTypeID)
@@ -32,11 +34,11 @@ func TestInsertPass(t *testing.T) {
 
 func TestUpdatePass(t *testing.T) {
 	var (
-		ctx                = context.Background()
-		mock               = memory.New()
-		serialNumber       = uuid.NewV4().String()
-		authToken          = uuid.NewV4().String()
-		passTypeID = "test.passkit"
+		ctx          = context.Background()
+		mock         = memory.New()
+		serialNumber = uuid.NewV4().String()
+		authToken    = uuid.NewV4().String()
+		passTypeID   = "test.passkit"
 	)
 	assert := assert.New(t)
 	err := mock.InsertPass(ctx, serialNumber, authToken, passTypeID)
@@ -47,11 +49,11 @@ func TestUpdatePass(t *testing.T) {
 
 func TestFindPass(t *testing.T) {
 	var (
-		ctx                = context.Background()
-		mock               = memory.New()
-		serialNumber       = uuid.NewV4().String()
-		authToken          = uuid.NewV4().String()
-		passTypeID = "test.passkit"
+		ctx          = context.Background()
+		mock         = memory.New()
+		serialNumber = uuid.NewV4().String()
+		authToken    = uuid.NewV4().String()
+		passTypeID   = "test.passkit"
 	)
 	assert := assert.New(t)
 	err := mock.InsertPass(ctx, serialNumber, authToken, passTypeID)
@@ -63,12 +65,12 @@ func TestFindPass(t *testing.T) {
 
 func TestFindRegistration(t *testing.T) {
 	var (
-		ctx                = context.Background()
-		mock               = memory.New()
-		deviceID           = uuid.NewV4().String()
-		serialNumber       = uuid.NewV4().String()
-		pushToken          = uuid.NewV4().String()
-		passTypeID = "test.passkit"
+		ctx          = context.Background()
+		mock         = memory.New()
+		deviceID     = uuid.NewV4().String()
+		serialNumber = uuid.NewV4().String()
+		pushToken    = uuid.NewV4().String()
+		passTypeID   = "test.passkit"
 	)
 	assert := assert.New(t)
 	err := mock.InsertRegistration(ctx, deviceID, pushToken, serialNumber, passTypeID)
@@ -80,12 +82,12 @@ func TestFindRegistration(t *testing.T) {
 
 func TestFindSerialNumbers(t *testing.T) {
 	var (
-		ctx                = context.Background()
-		mock               = memory.New()
-		deviceID           = uuid.NewV4().String()
-		serialNumber       = uuid.NewV4().String()
-		pushToken          = uuid.NewV4().String()
-		passTypeID = "test.passkit"
+		ctx          = context.Background()
+		mock         = memory.New()
+		deviceID     = uuid.NewV4().String()
+		serialNumber = uuid.NewV4().String()
+		pushToken    = uuid.NewV4().String()
+		passTypeID   = "test.passkit"
 	)
 	assert := assert.New(t)
 	err := mock.InsertRegistration(ctx, deviceID, pushToken, serialNumber, passTypeID)
@@ -97,11 +99,11 @@ func TestFindSerialNumbers(t *testing.T) {
 
 func TestLatestPass(t *testing.T) {
 	var (
-		ctx                = context.Background()
-		mock               = memory.New()
-		serialNumber       = uuid.NewV4().String()
-		authToken          = uuid.NewV4().String()
-		passTypeID = "test.passkit"
+		ctx          = context.Background()
+		mock         = memory.New()
+		serialNumber = uuid.NewV4().String()
+		authToken    = uuid.NewV4().String()
+		passTypeID   = "test.passkit"
 	)
 	assert := assert.New(t)
 	err := mock.InsertPass(ctx, serialNumber, authToken, passTypeID)
@@ -113,12 +115,12 @@ func TestLatestPass(t *testing.T) {
 
 func TestInsertRegistration(t *testing.T) {
 	var (
-		ctx                = context.Background()
-		mock               = memory.New()
-		deviceID           = uuid.NewV4().String()
-		serialNumber       = uuid.NewV4().String()
-		pushToken          = uuid.NewV4().String()
-		passTypeID = "test.passkit"
+		ctx          = context.Background()
+		mock         = memory.New()
+		deviceID     = uuid.NewV4().String()
+		serialNumber = uuid.NewV4().String()
+		pushToken    = uuid.NewV4().String()
+		passTypeID   = "test.passkit"
 	)
 	assert := assert.New(t)
 	err := mock.InsertRegistration(ctx, deviceID, pushToken, serialNumber, passTypeID)
@@ -127,12 +129,12 @@ func TestInsertRegistration(t *testing.T) {
 
 func TestDeleteRegistration(t *testing.T) {
 	var (
-		ctx                = context.Background()
-		mock               = memory.New()
-		deviceID           = uuid.NewV4().String()
-		serialNumber       = uuid.NewV4().String()
-		pushToken          = uuid.NewV4().String()
-		passTypeID = "test.passkit"
+		ctx          = context.Background()
+		mock         = memory.New()
+		deviceID     = uuid.NewV4().String()
+		serialNumber = uuid.NewV4().String()
+		pushToken    = uuid.NewV4().String()
+		passTypeID   = "test.passkit"
 	)
 	assert := assert.New(t)
 	err := mock.InsertRegistration(ctx, deviceID, pushToken, serialNumber, passTypeID)
@@ -212,13 +214,10 @@ func TestUsernameExists(t *testing.T) {
 			)
 
 			for _, user := range tc.SavedUsers {
-				u, err := api.NewUser(user.Username, user.Email, user.Password, nil)
-				if !assert.NoError(err) {
-					return
-				}
+				u := api.NewUser(user.Username, user.Email, user.Password, nil)
 				u.ID = user.ID
 
-				err = mock.SaveNewUser(ctx, u)
+				err := mock.SaveNewUser(ctx, u)
 				if !assert.NoError(err) {
 					return
 				}
@@ -288,13 +287,10 @@ func TestEmailExists(t *testing.T) {
 			)
 
 			for _, user := range tc.SavedUsers {
-				u, err := api.NewUser(user.Username, user.Email, user.Password, nil)
-				if !assert.NoError(err) {
-					return
-				}
+				u := api.NewUser(user.Username, user.Email, user.Password, nil)
 				u.ID = user.ID
 
-				err = mock.SaveNewUser(ctx, u)
+				err := mock.SaveNewUser(ctx, u)
 				if !assert.NoError(err) {
 					return
 				}
@@ -364,13 +360,10 @@ func TestSaveNewUser(t *testing.T) {
 			)
 
 			for _, user := range tc.SavedUsers {
-				u, err := api.NewUser(user.Username, user.Email, user.Password, nil)
-				if !assert.NoError(err) {
-					return
-				}
+				u := api.NewUser(user.Username, user.Email, user.Password, nil)
 				u.ID = user.ID
 
-				err = mock.SaveNewUser(ctx, u)
+				err := mock.SaveNewUser(ctx, u)
 				if !assert.NoError(err) {
 					return
 				}
@@ -414,13 +407,10 @@ func TestLoadUser(t *testing.T) {
 				email    = fmt.Sprintf("%s@example.com", strings.ToLower(tc.Name))
 			)
 
-			u, err := api.NewUser(username, email, "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(username, email, "test", nil)
 			u.ID = int64(i + 1)
 
-			err = mock.SaveNewUser(ctx, u)
+			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
@@ -515,10 +505,12 @@ func TestAuthenticate(t *testing.T) {
 				now    = time.Now()
 			)
 
-			u, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
+			hash, err := secure.NewPassword(tc.User.Password)
 			if !assert.NoError(err) {
 				return
 			}
+
+			u := api.NewUser(tc.User.Username, tc.User.Email, hash, nil)
 
 			err = mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -584,12 +576,9 @@ func TestConfirmUser(t *testing.T) {
 				mock   = memory.New()
 			)
 
-			u, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
 
-			err = mock.SaveNewUser(ctx, u)
+			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
@@ -649,12 +638,9 @@ func TestSetConfirmationToken(t *testing.T) {
 				mock   = memory.New()
 			)
 
-			u, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
 
-			err = mock.SaveNewUser(ctx, u)
+			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
@@ -720,12 +706,9 @@ func TestRecoverUser(t *testing.T) {
 				mock   = memory.New()
 			)
 
-			u, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
 
-			err = mock.SaveNewUser(ctx, u)
+			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
@@ -797,12 +780,9 @@ func TestEmailChange(t *testing.T) {
 				mock   = memory.New()
 			)
 
-			u, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
 
-			err = mock.SaveNewUser(ctx, u)
+			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
@@ -852,16 +832,13 @@ func TestUpdateUsername(t *testing.T) {
 		NewUsername: "newusername",
 	}
 
-	u, err := api.NewUser(user.Username, user.Email, user.Password, nil)
-	if !assert.NoError(err) {
-		return
-	}
-
-	err = mock.SaveNewUser(ctx, u)
-	if !assert.NoError(err) {
-		return
-	}
+	u := api.NewUser(user.Username, user.Email, user.Password, nil)
 	u.ID = user.ID
+
+	err := mock.SaveNewUser(ctx, u)
+	if !assert.NoError(err) {
+		return
+	}
 
 	err = mock.UpdateUsername(ctx, user.NewUsername, u)
 	if !assert.NoError(err) {
@@ -893,16 +870,13 @@ func TestUpdatePassword(t *testing.T) {
 		NewPassword: "newpass",
 	}
 
-	u, err := api.NewUser(user.Username, user.Email, user.Password, nil)
-	if !assert.NoError(err) {
-		return
-	}
-
-	err = mock.SaveNewUser(ctx, u)
-	if !assert.NoError(err) {
-		return
-	}
+	u := api.NewUser(user.Username, user.Email, user.Password, nil)
 	u.ID = user.ID
+
+	err := mock.SaveNewUser(ctx, u)
+	if !assert.NoError(err) {
+		return
+	}
 
 	err = mock.UpdatePassword(ctx, user.NewPassword, u)
 	if !assert.NoError(err) {
@@ -937,16 +911,13 @@ func TestUpdateMetaData(t *testing.T) {
 		AppDataKey:  "app_version",
 	}
 
-	u, err := api.NewUser(user.Username, user.Email, user.Password, nil)
-	if !assert.NoError(err) {
-		return
-	}
-
-	err = mock.SaveNewUser(ctx, u)
-	if !assert.NoError(err) {
-		return
-	}
+	u := api.NewUser(user.Username, user.Email, user.Password, nil)
 	u.ID = user.ID
+
+	err := mock.SaveNewUser(ctx, u)
+	if !assert.NoError(err) {
+		return
+	}
 
 	userData := map[string]interface{}{user.UserDataKey: user.UserDataKey}
 	err = mock.UpdateUserMetaData(ctx, userData, u)
@@ -1045,13 +1016,10 @@ func TestIsOrganizationExists(t *testing.T) {
 				mock   = memory.New()
 			)
 
-			org, err := api.NewOrganization(tc.Existing.UserID, tc.Existing.Title, tc.Existing.Desc, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			org := api.NewOrganization(tc.Existing.UserID, tc.Existing.Title, tc.Existing.Desc, nil)
 			org.ID = tc.Existing.ID
 
-			err = mock.SaveNewOrganization(ctx, org)
+			err := mock.SaveNewOrganization(ctx, org)
 			if !assert.NoError(err) {
 				return
 			}
@@ -1121,34 +1089,25 @@ func TestSaveNewOrganization(t *testing.T) {
 				email    = fmt.Sprintf("user%d@example.com", id)
 			)
 
-			u, err := api.NewUser(username, email, "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(username, email, "test", nil)
 			u.ID = id
 
-			err = mock.SaveNewUser(ctx, u)
+			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
 
 			for _, org := range tc.SavedOrgs {
-				o, err := api.NewOrganization(u.ID, org.Title, org.Desc, nil)
-				if !assert.NoError(err) {
-					return
-				}
+				o := api.NewOrganization(u.ID, org.Title, org.Desc, nil)
 				o.ID = org.ID
 
-				err = mock.SaveNewOrganization(ctx, o)
+				err := mock.SaveNewOrganization(ctx, o)
 				if !assert.NoError(err) {
 					return
 				}
 			}
 
-			o, err := api.NewOrganization(u.ID, tc.NewOrg.Title, tc.NewOrg.Desc, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			o := api.NewOrganization(u.ID, tc.NewOrg.Title, tc.NewOrg.Desc, nil)
 			o.ID = tc.NewOrg.ID
 
 			err = mock.SaveNewOrganization(ctx, o)
@@ -1215,21 +1174,15 @@ func TestUpdateOrganization(t *testing.T) {
 				email    = fmt.Sprintf("user%d@example.com", id)
 			)
 
-			u, err := api.NewUser(username, email, "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(username, email, "test", nil)
 			u.ID = id
 
-			err = mock.SaveNewUser(ctx, u)
+			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
 
-			o, err := api.NewOrganization(u.ID, tc.Org.Title, tc.Org.Desc, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			o := api.NewOrganization(u.ID, tc.Org.Title, tc.Org.Desc, nil)
 			o.ID = tc.Org.ID
 
 			err = mock.SaveNewOrganization(ctx, o)
@@ -1339,13 +1292,10 @@ func TestIsProjectExists(t *testing.T) {
 				mock   = memory.New()
 			)
 
-			project, err := api.NewProject(tc.Existing.OrgID, tc.Existing.Desc, tc.Existing.Type)
-			if !assert.NoError(err) {
-				return
-			}
+			project := api.NewProject(tc.Existing.OrgID, tc.Existing.Desc, tc.Existing.Type)
 			project.ID = tc.Existing.ID
 
-			err = mock.SaveNewProject(ctx, project)
+			err := mock.SaveNewProject(ctx, project)
 			if !assert.NoError(err) {
 				return
 			}
@@ -1421,21 +1371,15 @@ func TestSaveNewProject(t *testing.T) {
 				orgDesc  = fmt.Sprintf("desc%d", id)
 			)
 
-			u, err := api.NewUser(username, email, "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(username, email, "test", nil)
 			u.ID = id
 
-			err = mock.SaveNewUser(ctx, u)
+			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
 
-			o, err := api.NewOrganization(u.ID, orgTitle, orgDesc, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			o := api.NewOrganization(u.ID, orgTitle, orgDesc, nil)
 			o.ID = randomID()
 
 			err = mock.SaveNewOrganization(ctx, o)
@@ -1444,10 +1388,7 @@ func TestSaveNewProject(t *testing.T) {
 			}
 
 			for _, project := range tc.SavedProjects {
-				p, err := api.NewProject(o.ID, project.Desc, project.Type)
-				if !assert.NoError(err) {
-					return
-				}
+				p := api.NewProject(o.ID, project.Desc, project.Type)
 				p.ID = project.ID
 
 				err = mock.SaveNewProject(ctx, p)
@@ -1456,10 +1397,7 @@ func TestSaveNewProject(t *testing.T) {
 				}
 			}
 
-			p, err := api.NewProject(o.ID, tc.NewProject.Desc, tc.NewProject.Type)
-			if !assert.NoError(err) {
-				return
-			}
+			p := api.NewProject(o.ID, tc.NewProject.Desc, tc.NewProject.Type)
 			p.ID = tc.NewProject.ID
 
 			err = mock.SaveNewProject(ctx, p)
@@ -1527,21 +1465,15 @@ func TestUpdateProject(t *testing.T) {
 				orgDesc  = fmt.Sprintf("desc%d", id)
 			)
 
-			u, err := api.NewUser(username, email, "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(username, email, "test", nil)
 			u.ID = id
 
-			err = mock.SaveNewUser(ctx, u)
+			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
 
-			o, err := api.NewOrganization(u.ID, orgTitle, orgDesc, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			o := api.NewOrganization(u.ID, orgTitle, orgDesc, nil)
 			o.ID = randomID()
 
 			err = mock.SaveNewOrganization(ctx, o)
@@ -1549,10 +1481,7 @@ func TestUpdateProject(t *testing.T) {
 				return
 			}
 
-			p, err := api.NewProject(o.ID, tc.Project.Desc, tc.Project.Type)
-			if !assert.NoError(err) {
-				return
-			}
+			p := api.NewProject(o.ID, tc.Project.Desc, tc.Project.Type)
 			p.ID = tc.Project.ID
 
 			err = mock.SaveNewProject(ctx, p)
@@ -1617,21 +1546,15 @@ func TestSetImage(t *testing.T) {
 				orgDesc  = fmt.Sprintf("desc%d", id)
 			)
 
-			u, err := api.NewUser(username, email, "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(username, email, "test", nil)
 			u.ID = id
 
-			err = mock.SaveNewUser(ctx, u)
+			err := mock.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
 
-			o, err := api.NewOrganization(u.ID, orgTitle, orgDesc, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			o := api.NewOrganization(u.ID, orgTitle, orgDesc, nil)
 			o.ID = randomID()
 
 			err = mock.SaveNewOrganization(ctx, o)
@@ -1639,10 +1562,7 @@ func TestSetImage(t *testing.T) {
 				return
 			}
 
-			p, err := api.NewProject(o.ID, tc.Project.Desc, tc.Project.Type)
-			if !assert.NoError(err) {
-				return
-			}
+			p := api.NewProject(o.ID, tc.Project.Desc, tc.Project.Type)
 			p.ID = tc.Project.ID
 
 			err = mock.SaveNewProject(ctx, p)

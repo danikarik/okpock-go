@@ -7,6 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"github.com/danikarik/okpock/pkg/secure"
+
 	"github.com/danikarik/okpock/pkg/api"
 	"github.com/stretchr/testify/assert"
 )
@@ -72,10 +74,12 @@ func TestPasswordChangeHandler(t *testing.T) {
 				return
 			}
 
-			user, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
+			hash, err := secure.NewPassword(tc.User.Password)
 			if !assert.NoError(err) {
 				return
 			}
+
+			user := api.NewUser(tc.User.Username, tc.User.Email, hash, nil)
 
 			err = srv.env.Auth.SaveNewUser(ctx, user)
 			if !assert.NoError(err) {

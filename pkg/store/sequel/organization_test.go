@@ -47,10 +47,7 @@ func TestIsOrganizationExists(t *testing.T) {
 
 			db := sequel.New(conn)
 
-			u, err := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
 
 			err = db.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -58,10 +55,7 @@ func TestIsOrganizationExists(t *testing.T) {
 			}
 
 			for _, title := range tc.SavedOrgs {
-				org, err := api.NewOrganization(u.ID, title, uuid.NewV4().String(), nil)
-				if !assert.NoError(err) {
-					return
-				}
+				org := api.NewOrganization(u.ID, title, uuid.NewV4().String(), nil)
 
 				err = db.SaveNewOrganization(ctx, org)
 				if !assert.NoError(err) {
@@ -110,10 +104,7 @@ func TestSaveNewOrganization(t *testing.T) {
 
 			db := sequel.New(conn)
 
-			u, err := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
 
 			err = db.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -121,10 +112,7 @@ func TestSaveNewOrganization(t *testing.T) {
 			}
 
 			for _, title := range tc.SavedOrgs {
-				org, err := api.NewOrganization(u.ID, title, uuid.NewV4().String(), nil)
-				if !assert.NoError(err) {
-					return
-				}
+				org := api.NewOrganization(u.ID, title, uuid.NewV4().String(), nil)
 
 				err = db.SaveNewOrganization(ctx, org)
 				if !assert.NoError(err) {
@@ -132,10 +120,7 @@ func TestSaveNewOrganization(t *testing.T) {
 				}
 			}
 
-			org, err := api.NewOrganization(u.ID, tc.NewOrg, uuid.NewV4().String(), nil)
-			if !assert.NoError(err) {
-				return
-			}
+			org := api.NewOrganization(u.ID, tc.NewOrg, uuid.NewV4().String(), nil)
 
 			err = db.SaveNewOrganization(ctx, org)
 			if !assert.NoError(err) {
@@ -198,20 +183,14 @@ func TestUpdateOrganization(t *testing.T) {
 
 			db := sequel.New(conn)
 
-			u, err := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
 
 			err = db.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
 
-			org, err := api.NewOrganization(u.ID, tc.Org, uuid.NewV4().String(), nil)
-			if !assert.NoError(err) {
-				return
-			}
+			org := api.NewOrganization(u.ID, tc.Org, uuid.NewV4().String(), nil)
 
 			err = db.SaveNewOrganization(ctx, org)
 			if !assert.NoError(err) {

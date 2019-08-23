@@ -404,7 +404,7 @@ func (m *MySQL) UpdatePassword(ctx context.Context, password string, user *api.U
 		return err
 	}
 
-	hash, err := api.HashPassword(password)
+	hash, err := secure.NewPassword(password)
 	if err != nil {
 		return err
 	}

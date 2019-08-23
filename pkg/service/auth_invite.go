@@ -61,10 +61,12 @@ func (s *Service) inviteHandler(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	// use email as email itself and username.
-	user, err := api.NewUser(req.Email, req.Email, secure.Token(), map[string]interface{}{})
+	hash, err := secure.NewPassword(secure.Token())
 	if err != nil {
-		return s.httpError(w, r, http.StatusBadRequest, "NewUser", err)
+		return s.httpError(w, r, http.StatusBadRequest, "NewPassword", err)
 	}
+
+	user := api.NewUser(req.Email, req.Email, hash, map[string]interface{}{})
 
 	err = s.env.Auth.SaveNewUser(ctx, user)
 	if err != nil {

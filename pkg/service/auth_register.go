@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/danikarik/okpock/pkg/api"
+	"github.com/danikarik/okpock/pkg/secure"
 )
 
 // RegisterRequest holds auth credentials to register.
@@ -64,10 +65,12 @@ func (s *Service) registerHandler(w http.ResponseWriter, r *http.Request) error 
 		return sendJSON(w, http.StatusNotAcceptable, M{"email": req.Email})
 	}
 
-	user, err := api.NewUser(req.Username, req.Email, req.Password, map[string]interface{}{})
+	hash, err := secure.NewPassword(req.Password)
 	if err != nil {
-		return s.httpError(w, r, http.StatusBadRequest, "NewUser", err)
+		return s.httpError(w, r, http.StatusBadRequest, "NewPassword", err)
 	}
+
+	user := api.NewUser(req.Username, req.Email, hash, map[string]interface{}{})
 
 	err = s.env.Auth.SaveNewUser(ctx, user)
 	if err != nil {

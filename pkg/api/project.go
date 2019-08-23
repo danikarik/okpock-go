@@ -40,12 +40,12 @@ const (
 )
 
 // NewProject returns a new instance of project.
-func NewProject(orgID int64, desc string, passType PassType) (*Project, error) {
+func NewProject(orgID int64, desc string, passType PassType) *Project {
 	return &Project{
 		OrganizationID: orgID,
 		Description:    desc,
 		PassType:       passType,
-	}, nil
+	}
 }
 
 // Project holds project structure related fields.

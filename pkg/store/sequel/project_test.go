@@ -64,30 +64,21 @@ func TestIsProjectExists(t *testing.T) {
 
 			db := sequel.New(conn)
 
-			u, err := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
 
 			err = db.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
 
-			org, err := api.NewOrganization(u.ID, uuid.NewV4().String(), uuid.NewV4().String(), nil)
-			if !assert.NoError(err) {
-				return
-			}
+			org := api.NewOrganization(u.ID, uuid.NewV4().String(), uuid.NewV4().String(), nil)
 
 			err = db.SaveNewOrganization(ctx, org)
 			if !assert.NoError(err) {
 				return
 			}
 
-			project, err := api.NewProject(org.ID, tc.Existing.Desc, tc.Existing.Type)
-			if !assert.NoError(err) {
-				return
-			}
+			project := api.NewProject(org.ID, tc.Existing.Desc, tc.Existing.Type)
 
 			err = db.SaveNewProject(ctx, project)
 			if !assert.NoError(err) {
@@ -155,20 +146,14 @@ func TestSaveNewProject(t *testing.T) {
 
 			db := sequel.New(conn)
 
-			u, err := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
 
 			err = db.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
 
-			org, err := api.NewOrganization(u.ID, uuid.NewV4().String(), uuid.NewV4().String(), nil)
-			if !assert.NoError(err) {
-				return
-			}
+			org := api.NewOrganization(u.ID, uuid.NewV4().String(), uuid.NewV4().String(), nil)
 
 			err = db.SaveNewOrganization(ctx, org)
 			if !assert.NoError(err) {
@@ -176,10 +161,7 @@ func TestSaveNewProject(t *testing.T) {
 			}
 
 			for _, project := range tc.SavedProjects {
-				p, err := api.NewProject(org.ID, project.Desc, project.Type)
-				if !assert.NoError(err) {
-					return
-				}
+				p := api.NewProject(org.ID, project.Desc, project.Type)
 
 				err = db.SaveNewProject(ctx, p)
 				if !assert.NoError(err) {
@@ -187,10 +169,7 @@ func TestSaveNewProject(t *testing.T) {
 				}
 			}
 
-			p, err := api.NewProject(org.ID, tc.NewProject.Desc, tc.NewProject.Type)
-			if !assert.NoError(err) {
-				return
-			}
+			p := api.NewProject(org.ID, tc.NewProject.Desc, tc.NewProject.Type)
 
 			err = db.SaveNewProject(ctx, p)
 			if !assert.NoError(err) {
@@ -253,30 +232,21 @@ func TestUpdateProject(t *testing.T) {
 
 			db := sequel.New(conn)
 
-			u, err := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
 
 			err = db.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
 
-			org, err := api.NewOrganization(u.ID, uuid.NewV4().String(), uuid.NewV4().String(), nil)
-			if !assert.NoError(err) {
-				return
-			}
+			org := api.NewOrganization(u.ID, uuid.NewV4().String(), uuid.NewV4().String(), nil)
 
 			err = db.SaveNewOrganization(ctx, org)
 			if !assert.NoError(err) {
 				return
 			}
 
-			p, err := api.NewProject(org.ID, tc.Project.Desc, tc.Project.Type)
-			if !assert.NoError(err) {
-				return
-			}
+			p := api.NewProject(org.ID, tc.Project.Desc, tc.Project.Type)
 
 			err = db.SaveNewProject(ctx, p)
 			if !assert.NoError(err) {
@@ -336,30 +306,21 @@ func TestSetImage(t *testing.T) {
 
 			db := sequel.New(conn)
 
-			u, err := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(fakeUsername(), fakeEmail(), "test", nil)
 
 			err = db.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
 
-			org, err := api.NewOrganization(u.ID, uuid.NewV4().String(), uuid.NewV4().String(), nil)
-			if !assert.NoError(err) {
-				return
-			}
+			org := api.NewOrganization(u.ID, uuid.NewV4().String(), uuid.NewV4().String(), nil)
 
 			err = db.SaveNewOrganization(ctx, org)
 			if !assert.NoError(err) {
 				return
 			}
 
-			p, err := api.NewProject(org.ID, tc.Project.Desc, tc.Project.Type)
-			if !assert.NoError(err) {
-				return
-			}
+			p := api.NewProject(org.ID, tc.Project.Desc, tc.Project.Type)
 
 			err = db.SaveNewProject(ctx, p)
 			if !assert.NoError(err) {

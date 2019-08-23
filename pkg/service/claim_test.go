@@ -21,8 +21,7 @@ func TestUserClaims(t *testing.T) {
 	err := c.Valid()
 	assert.Error(err)
 
-	u, err := api.NewUser("test", "test@example.com", "test", nil)
-	assert.NoError(err)
+	u := api.NewUser("test", "test@example.com", "test", nil)
 	c = c.WithUser(u).WithCSRFToken("token")
 	err = c.Valid()
 	assert.NoError(err)

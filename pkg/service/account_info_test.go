@@ -54,10 +54,7 @@ func TestAccountHandler(t *testing.T) {
 			rec := httptest.NewRecorder()
 
 			if tc.User != nil {
-				user, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
-				if !assert.NoError(err) {
-					return
-				}
+				user := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
 
 				err = srv.env.Auth.SaveNewUser(ctx, user)
 				if !assert.NoError(err) {

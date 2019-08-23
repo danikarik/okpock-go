@@ -6,7 +6,7 @@ import (
 	"errors"
 	"time"
 
-	"golang.org/x/crypto/bcrypt"
+	"github.com/danikarik/okpock/pkg/secure"
 )
 
 // Confirmation is an alias for confirmation type.
@@ -54,19 +54,14 @@ const (
 )
 
 // NewUser returns a new instance of user.
-func NewUser(username, email, pass string, userData map[string]interface{}) (*User, error) {
-	hash, err := HashPassword(pass)
-	if err != nil {
-		return nil, err
-	}
-
+func NewUser(username, email, hash string, userData map[string]interface{}) *User {
 	return &User{
 		Username:     username,
 		Email:        email,
 		PasswordHash: hash,
 		UserMetaData: userData,
 		AppMetaData:  map[string]interface{}{},
-	}, nil
+	}
 }
 
 // User represents user row from database.
@@ -188,16 +183,7 @@ func (u *User) GetEmailChange() string {
 	return ""
 }
 
-// HashPassword returns the bcrypt hash of the password.
-func HashPassword(pass string) (string, error) {
-	hash, err := bcrypt.GenerateFromPassword([]byte(pass), bcrypt.DefaultCost)
-	if err != nil {
-		return "", err
-	}
-	return string(hash), nil
-}
-
 // CheckPassword compares a bcrypt hashed password with its possible plaintext equivalent.
 func (u *User) CheckPassword(pass string) bool {
-	return bcrypt.CompareHashAndPassword([]byte(u.PasswordHash), []byte(pass)) == nil
+	return secure.CheckPassword(u.PasswordHash, pass)
 }

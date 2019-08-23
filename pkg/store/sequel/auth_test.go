@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/danikarik/okpock/pkg/api"
+	"github.com/danikarik/okpock/pkg/secure"
 	"github.com/danikarik/okpock/pkg/store"
 	"github.com/danikarik/okpock/pkg/store/sequel"
 	_ "github.com/go-sql-driver/mysql"
@@ -191,12 +192,9 @@ func TestSaveNewUser(t *testing.T) {
 			db := sequel.New(conn)
 
 			for _, user := range tc.SavedUsers {
-				u, err := api.NewUser(user.Username, user.Email, user.Password, nil)
-				if !assert.NoError(err) {
-					return
-				}
+				u := api.NewUser(user.Username, user.Email, user.Password, nil)
 
-				err = db.SaveNewUser(ctx, u)
+				err := db.SaveNewUser(ctx, u)
 				if !assert.NoError(err) {
 					return
 				}
@@ -274,15 +272,12 @@ func TestLoadUser(t *testing.T) {
 
 			val := uuid.NewV4().String()
 			userData := map[string]interface{}{"key": val}
-			u, err := api.NewUser(
+			u := api.NewUser(
 				fakeUsername(),
 				fakeEmail(),
 				"test",
 				userData,
 			)
-			if !assert.NoError(err) {
-				return
-			}
 
 			err = db.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -398,10 +393,12 @@ func TestAuthenticate(t *testing.T) {
 
 			db := sequel.New(conn)
 
-			u, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
+			hash, err := secure.NewPassword(tc.User.Password)
 			if !assert.NoError(err) {
 				return
 			}
+
+			u := api.NewUser(tc.User.Username, tc.User.Email, hash, nil)
 
 			err = db.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -479,10 +476,7 @@ func TestConfirmUser(t *testing.T) {
 
 			db := sequel.New(conn)
 
-			u, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
 
 			err = db.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -557,10 +551,7 @@ func TestSetConfirmationToken(t *testing.T) {
 
 			db := sequel.New(conn)
 
-			u, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
 
 			err = db.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -647,10 +638,7 @@ func TestRecoverUser(t *testing.T) {
 
 			db := sequel.New(conn)
 
-			u, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
 
 			err = db.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -741,10 +729,7 @@ func TestEmailChange(t *testing.T) {
 
 			db := sequel.New(conn)
 
-			u, err := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
-			if !assert.NoError(err) {
-				return
-			}
+			u := api.NewUser(tc.User.Username, tc.User.Email, tc.User.Password, nil)
 
 			err = db.SaveNewUser(ctx, u)
 			if !assert.NoError(err) {
@@ -814,10 +799,7 @@ func TestUpdateUsername(t *testing.T) {
 		NewUsername: "newusername",
 	}
 
-	u, err := api.NewUser(user.Username, user.Email, user.Password, nil)
-	if !assert.NoError(err) {
-		return
-	}
+	u := api.NewUser(user.Username, user.Email, user.Password, nil)
 
 	err = db.SaveNewUser(ctx, u)
 	if !assert.NoError(err) {
@@ -865,10 +847,7 @@ func TestUpdatePassword(t *testing.T) {
 		NewPassword: "newpass",
 	}
 
-	u, err := api.NewUser(user.Username, user.Email, user.Password, nil)
-	if !assert.NoError(err) {
-		return
-	}
+	u := api.NewUser(user.Username, user.Email, user.Password, nil)
 
 	err = db.SaveNewUser(ctx, u)
 	if !assert.NoError(err) {
@@ -919,10 +898,7 @@ func TestUpdateMetaData(t *testing.T) {
 		AppDataKey:  "app_version",
 	}
 
-	u, err := api.NewUser(user.Username, user.Email, user.Password, nil)
-	if !assert.NoError(err) {
-		return
-	}
+	u := api.NewUser(user.Username, user.Email, user.Password, nil)
 
 	err = db.SaveNewUser(ctx, u)
 	if !assert.NoError(err) {

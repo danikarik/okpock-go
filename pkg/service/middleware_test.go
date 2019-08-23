@@ -18,10 +18,7 @@ func TestCSRFMiddleware(t *testing.T) {
 		return
 	}
 
-	user, err := api.NewUser(fakeUsername(), fakeUsername(), "test", nil)
-	if !assert.NoError(err) {
-		return
-	}
+	user := api.NewUser(fakeUsername(), fakeUsername(), "test", nil)
 
 	err = srv.env.Auth.SaveNewUser(context.Background(), user)
 	if !assert.NoError(err) {
