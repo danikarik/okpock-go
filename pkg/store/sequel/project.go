@@ -130,7 +130,8 @@ func (m *MySQL) LoadProjects(ctx context.Context, userID string) ([]*api.Project
 	query := m.builder.Select("p.*").
 		From("projects p").
 		LeftJoin("organizations o on o.id = p.organization_id").
-		Where(sq.Eq{"o.user_id": userID})
+		Where(sq.Eq{"o.user_id": userID}).
+		OrderBy("created_at desc")
 
 	rows, err := m.selectQuery(ctx, query)
 	if err == store.ErrNotFound {

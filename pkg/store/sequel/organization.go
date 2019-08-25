@@ -130,7 +130,8 @@ func (m *MySQL) LoadOrganizations(ctx context.Context, userID string) ([]*api.Or
 
 	query := m.builder.Select("*").
 		From("organizations").
-		Where(sq.Eq{"user_id": userID})
+		Where(sq.Eq{"user_id": userID}).
+		OrderBy("created_at desc")
 
 	rows, err := m.selectQuery(ctx, query)
 	if err == store.ErrNotFound {
