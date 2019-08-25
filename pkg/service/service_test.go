@@ -9,6 +9,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/danikarik/okpock/pkg/api"
 	"github.com/danikarik/okpock/pkg/env"
 	_ "github.com/go-sql-driver/mysql"
 	uuid "github.com/satori/go.uuid"
@@ -58,6 +59,14 @@ func newRequest(method, url string, body []byte, headers map[string]string, valu
 	req := httptest.NewRequest(method, url, bytes.NewReader(body))
 	req.URL.RawQuery = values.Encode()
 	req.Header = newHeader(headers)
+	return req
+}
+func authRequest(srv *Service, u *api.User, req *http.Request) *http.Request {
+	ucl := NewClaims().WithUser(u).WithCSRFToken(newCSRFToken())
+	tokenString, _ := ucl.MarshalJWT()
+	tokenCookie := srv.tokenCookie(tokenString)
+	req.Header.Set(csrfHeader, ucl.CSRFToken)
+	req.AddCookie(tokenCookie)
 	return req
 }
 
