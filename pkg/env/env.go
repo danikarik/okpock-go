@@ -8,26 +8,23 @@ import (
 
 // Env holds stores and config.
 type Env struct {
-	Config            Config
-	PassKit           api.PassKit
-	Auth              api.Auth
-	OrganizationStore api.OrganizationStore
-	ProjectStore      api.ProjectStore
-	Storage           filestore.Storage
-	Mailer            mail.Mailer
+	Config  Config
+	PassKit api.PassKit
+	Auth    api.Auth
+	Logic   api.Logic
+	Storage filestore.Storage
+	Mailer  mail.Mailer
 }
 
 // New returns a new instance of `Env`.
-func New(c Config, passkit api.PassKit, auth api.Auth,
-	organizationStore api.OrganizationStore, projectStore api.ProjectStore,
+func New(cfg Config, passkit api.PassKit, auth api.Auth, logic api.Logic,
 	storage filestore.Storage, mailer mail.Mailer) *Env {
 	return &Env{
-		Config:            c,
-		PassKit:           passkit,
-		Auth:              auth,
-		OrganizationStore: organizationStore,
-		ProjectStore:      projectStore,
-		Storage:           storage,
-		Mailer:            mailer,
+		Config:  cfg,
+		PassKit: passkit,
+		Auth:    auth,
+		Logic:   logic,
+		Storage: storage,
+		Mailer:  mailer,
 	}
 }

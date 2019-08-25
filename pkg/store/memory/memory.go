@@ -32,7 +32,6 @@ func New() *Memory {
 		passes:   make(map[string]*pass),
 		regs:     make(map[string]*reg),
 		users:    make(map[string]*api.User),
-		orgs:     make(map[string]*api.Organization),
 		projects: make(map[string]*api.Project),
 	}
 	return mock
@@ -44,7 +43,6 @@ type Memory struct {
 	passes   map[string]*pass
 	regs     map[string]*reg
 	users    map[string]*api.User
-	orgs     map[string]*api.Organization
 	projects map[string]*api.Project
 }
 
@@ -426,94 +424,14 @@ func (m *Memory) UpdateAppMetaData(ctx context.Context, data map[string]interfac
 	return nil
 }
 
-// IsOrganizationExists ...
-func (m *Memory) IsOrganizationExists(ctx context.Context, userID, title string) (bool, error) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-
-	for _, org := range m.orgs {
-		if org.Title == title && org.UserID == userID {
-			return true, nil
-		}
-	}
-
-	return false, nil
-}
-
-// SaveNewOrganization ...
-func (m *Memory) SaveNewOrganization(ctx context.Context, org *api.Organization) error {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-
-	if _, exists := m.orgs[org.ID]; exists {
-		return errors.New("organization exists")
-	}
-
-	m.orgs[org.ID] = org
-
-	return nil
-}
-
-// LoadOrganization ...
-func (m *Memory) LoadOrganization(ctx context.Context, id string) (*api.Organization, error) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-
-	for _, o := range m.orgs {
-		if o.ID == id {
-			return o, nil
-		}
-	}
-
-	return nil, store.ErrNotFound
-}
-
-// LoadOrganizations ...
-func (m *Memory) LoadOrganizations(ctx context.Context, userID string) ([]*api.Organization, error) {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-
-	orgs := make([]*api.Organization, 0)
-	for _, o := range m.orgs {
-		if o.UserID == userID {
-			orgs = append(orgs, o)
-		}
-	}
-
-	return orgs, nil
-}
-
-// UpdateOrganizationDescription ...
-func (m *Memory) UpdateOrganizationDescription(ctx context.Context, desc string, org *api.Organization) error {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-
-	org.Description = desc
-	org.UpdatedAt = time.Now()
-	m.orgs[org.ID] = org
-
-	return nil
-}
-
-// UpdateOrganizationMetaData ...
-func (m *Memory) UpdateOrganizationMetaData(ctx context.Context, data map[string]interface{}, org *api.Organization) error {
-	m.mu.Lock()
-	defer m.mu.Unlock()
-
-	org.MetaData = data
-	org.UpdatedAt = time.Now()
-	m.orgs[org.ID] = org
-
-	return nil
-}
-
 // IsProjectExists ...
-func (m *Memory) IsProjectExists(ctx context.Context, orgID, desc string, passType api.PassType) (bool, error) {
+func (m *Memory) IsProjectExists(ctx context.Context, title, name, desc string, passType api.PassType) (bool, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
 	for _, p := range m.projects {
-		if p.Description == desc && p.OrganizationID == orgID && p.PassType == passType {
+		if p.Title == title && p.OrganizationName == name &&
+			p.Description == desc && p.PassType == passType {
 			return true, nil
 		}
 	}
@@ -522,21 +440,21 @@ func (m *Memory) IsProjectExists(ctx context.Context, orgID, desc string, passTy
 }
 
 // SaveNewProject ...
-func (m *Memory) SaveNewProject(ctx context.Context, proj *api.Project) error {
+func (m *Memory) SaveNewProject(ctx context.Context, user *api.User, project *api.Project) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	if _, exists := m.projects[proj.ID]; exists {
+	if _, exists := m.projects[project.ID]; exists {
 		return errors.New("project exists")
 	}
 
-	m.projects[proj.ID] = proj
+	m.projects[project.ID] = project
 
 	return nil
 }
 
 // LoadProject ...
-func (m *Memory) LoadProject(ctx context.Context, id string) (*api.Project, error) {
+func (m *Memory) LoadProject(ctx context.Context, user *api.User, id string) (*api.Project, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
@@ -550,79 +468,65 @@ func (m *Memory) LoadProject(ctx context.Context, id string) (*api.Project, erro
 }
 
 // LoadProjects ...
-func (m *Memory) LoadProjects(ctx context.Context, userID string) ([]*api.Project, error) {
+func (m *Memory) LoadProjects(ctx context.Context, user *api.User) ([]*api.Project, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	projects := make([]*api.Project, 0)
-	for _, p := range m.projects {
-		for _, o := range m.orgs {
-			if o.UserID == userID {
-				projects = append(projects, p)
-			}
-		}
-
-	}
-
-	return projects, nil
+	return nil, errors.New("not implemented")
 }
 
-// UpdateProjectDescription ...
-func (m *Memory) UpdateProjectDescription(ctx context.Context, desc string, proj *api.Project) error {
+// UpdateProject ...
+func (m *Memory) UpdateProject(ctx context.Context, project *api.Project) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	proj.Description = desc
-	proj.UpdatedAt = time.Now()
-	m.projects[proj.ID] = proj
-
-	return nil
+	return errors.New("not implemented")
 }
 
 // SetBackgroundImage ...
-func (m *Memory) SetBackgroundImage(ctx context.Context, key string, proj *api.Project) error {
+func (m *Memory) SetBackgroundImage(ctx context.Context, key string, project *api.Project) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	proj.BackgroundImage = key
-	proj.UpdatedAt = time.Now()
-	m.projects[proj.ID] = proj
+	project.BackgroundImage = key
+	project.UpdatedAt = time.Now()
+	m.projects[project.ID] = project
 
 	return nil
 }
 
 // SetFooterImage ...
-func (m *Memory) SetFooterImage(ctx context.Context, key string, proj *api.Project) error {
+func (m *Memory) SetFooterImage(ctx context.Context, key string, project *api.Project) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	proj.FooterImage = key
-	proj.UpdatedAt = time.Now()
-	m.projects[proj.ID] = proj
+	project.FooterImage = key
+	project.UpdatedAt = time.Now()
+	m.projects[project.ID] = project
 
 	return nil
 }
 
 // SetIconImage ...
-func (m *Memory) SetIconImage(ctx context.Context, key string, proj *api.Project) error {
+func (m *Memory) SetIconImage(ctx context.Context, key string, project *api.Project) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	proj.IconImage = key
-	proj.UpdatedAt = time.Now()
-	m.projects[proj.ID] = proj
+	project.IconImage = key
+	project.UpdatedAt = time.Now()
+	m.projects[project.ID] = project
 
 	return nil
 }
 
 // SetStripImage ...
-func (m *Memory) SetStripImage(ctx context.Context, key string, proj *api.Project) error {
+func (m *Memory) SetStripImage(ctx context.Context, key string, project *api.Project) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	proj.StripImage = key
-	proj.UpdatedAt = time.Now()
-	m.projects[proj.ID] = proj
+	project.StripImage = key
+	project.UpdatedAt = time.Now()
+	m.projects[project.ID] = project
 
 	return nil
 }

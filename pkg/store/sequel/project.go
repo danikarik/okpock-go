@@ -18,7 +18,7 @@ func checkProject(p *api.Project, opts byte) error {
 	}
 
 	if (opts & checkForeignID) != 0 {
-		if p.OrganizationID == "" {
+		if p.OrganizationName == "" {
 			return store.ErrZeroID
 		}
 	}
@@ -68,7 +68,7 @@ func (m *MySQL) SaveNewProject(ctx context.Context, proj *api.Project) error {
 	query := m.builder.Insert("projects").
 		Columns(
 			"id",
-			"organization_id",
+			"organization_name",
 			"description",
 			"pass_type",
 			"created_at",
@@ -76,7 +76,7 @@ func (m *MySQL) SaveNewProject(ctx context.Context, proj *api.Project) error {
 		).
 		Values(
 			proj.ID,
-			proj.OrganizationID,
+			proj.OrganizationName,
 			proj.Description,
 			proj.PassType,
 			proj.CreatedAt,

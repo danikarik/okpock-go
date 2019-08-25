@@ -1,7 +1,6 @@
 package api
 
 import (
-	"context"
 	"encoding/json"
 	"errors"
 	"time"
@@ -26,22 +25,24 @@ const (
 )
 
 // NewProject returns a new instance of project.
-func NewProject(orgID, desc string, passType PassType) *Project {
+func NewProject(title, name, desc string, passType PassType) *Project {
 	return &Project{
-		ID:             uuid.NewV4().String(),
-		OrganizationID: orgID,
-		Description:    desc,
-		PassType:       passType,
+		ID:               uuid.NewV4().String(),
+		Title:            title,
+		OrganizationName: name,
+		Description:      desc,
+		PassType:         passType,
 	}
 }
 
 // Project holds project structure related fields.
 type Project struct {
-	ID             string `json:"id" db:"id"`
-	OrganizationID string `json:"-" db:"organization_id"`
+	ID string `json:"id" db:"id"`
 
-	Description string   `json:"description" db:"description"`
-	PassType    PassType `json:"passType" db:"pass_type"`
+	Title            string   `json:"title" db:"title"`
+	OrganizationName string   `json:"organizationName" db:"organization_name"`
+	Description      string   `json:"description" db:"description"`
+	PassType         PassType `json:"passType" db:"pass_type"`
 
 	BackgroundImage string `json:"backgroundImage" db:"background_image"`
 	FooterImage     string `json:"footerImage" db:"footer_image"`
@@ -54,8 +55,11 @@ type Project struct {
 
 // IsValid checks whether input is valid or not.
 func (p *Project) IsValid() error {
-	if p.OrganizationID == "" {
-		return errors.New("organization id is empty")
+	if p.Title == "" {
+		return errors.New("title is empty")
+	}
+	if p.OrganizationName == "" {
+		return errors.New("organization name is empty")
 	}
 	if p.Description == "" {
 		return errors.New("description is empty")
@@ -73,43 +77,4 @@ func (p *Project) String() string {
 		return ""
 	}
 	return string(data)
-}
-
-// ProjectStore implements method for project logic.
-type ProjectStore interface {
-	// IsProjectExists ...
-	// TODO: description
-	IsProjectExists(ctx context.Context, orgID, desc string, passType PassType) (bool, error)
-
-	// SaveNewProject ...
-	// TODO: description
-	SaveNewProject(ctx context.Context, proj *Project) error
-
-	// LoadProject ...
-	// TODO: description
-	LoadProject(ctx context.Context, id string) (*Project, error)
-
-	// LoadProjects ...
-	// TODO: description
-	LoadProjects(ctx context.Context, userID string) ([]*Project, error)
-
-	// UpdateProjectDescription ...
-	// TODO: description
-	UpdateProjectDescription(ctx context.Context, desc string, proj *Project) error
-
-	// SetBackgroundImage ...
-	// TODO: description
-	SetBackgroundImage(ctx context.Context, key string, proj *Project) error
-
-	// SetFooterImage ...
-	// TODO: description
-	SetFooterImage(ctx context.Context, key string, proj *Project) error
-
-	// SetIconImage ...
-	// TODO: description
-	SetIconImage(ctx context.Context, key string, proj *Project) error
-
-	// SetStripImage ...
-	// TODO: description
-	SetStripImage(ctx context.Context, key string, proj *Project) error
 }

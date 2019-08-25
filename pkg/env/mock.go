@@ -23,5 +23,5 @@ func NewMock() *Env {
 	fs := fsmock.New()
 	ml := mlmock.New()
 
-	return New(cfg, db, db, db, db, fs, ml)
+	return New(cfg, db, db, db, fs, ml)
 }

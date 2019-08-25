@@ -11,9 +11,8 @@ import (
 	"github.com/danikarik/okpock/pkg/mail"
 	"github.com/danikarik/okpock/pkg/mail/awsmail"
 	"github.com/danikarik/okpock/pkg/service"
-	"github.com/danikarik/okpock/pkg/store/sequel"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/jmoiron/sqlx"
+	"github.com/danikarik/okpock/pkg/store/redistore"
+	"github.com/go-redis/redis"
 	"go.uber.org/zap"
 )
 
@@ -50,14 +49,19 @@ func main() {
 	}
 	defer logger.Sync()
 
-	var conn *sqlx.DB
+	var client *redis.Client
 	{
-		conn, err = sqlx.Connect("mysql", cfg.DatabaseURL)
+		client = redis.NewClient(&redis.Options{
+			Addr:     cfg.RedisHost,
+			Password: cfg.RedisPass,
+			DB:       0,
+		})
+		_, err = client.Ping().Result()
 		if err != nil {
-			errorExit("mysql connection: %v", err)
+			errorExit("redis connection: %v", err)
 		}
 	}
-	defer conn.Close()
+	defer client.Close()
 
 	var s3 filestore.Storage
 	{
@@ -77,8 +81,8 @@ func main() {
 
 	var srv *service.Service
 	{
-		db := sequel.New(conn)
-		env := env.New(cfg, db, db, db, db, s3, mailer)
+		db := redistore.New(client)
+		env := env.New(cfg, db, db, db, s3, mailer)
 
 		srv = service.New(Version, env, logger)
 	}

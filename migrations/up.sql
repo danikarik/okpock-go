@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS `passes` (
     `pass_type_id` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `updated_at` TIMESTAMP NOT NULL DEFAULT NOW(),
     PRIMARY KEY (`id`),
-    UNIQUE KEY `passes_serial_number_unique` (`serial_number`)
+    UNIQUE KEY `passes_serial_number_unique_idx` (`serial_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `registrations` (
@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS `registrations` (
     `serial_number` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `pass_type_id` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     PRIMARY KEY (`id`),
-    UNIQUE KEY `registrations_serial_number_unique` (`serial_number`)
+    UNIQUE KEY `registrations_serial_number_unique_idx` (`serial_number`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `logs` (
@@ -49,27 +49,15 @@ CREATE TABLE IF NOT EXISTS `users` (
     `created_at` TIMESTAMP NULL DEFAULT NOW(),
     `updated_at` TIMESTAMP NULL DEFAULT NOW(),
     PRIMARY KEY (`id`),
-    UNIQUE KEY `users_username_unique` (`username`),
-    UNIQUE KEY `users_email_unique` (`email`),
-    UNIQUE KEY `users_username_and_email_unique` (`username`, `email`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
-CREATE TABLE IF NOT EXISTS `organizations` (
-    `id` VARCHAR(144) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `user_id` VARCHAR(144) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `title` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `description` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `raw_metadata` text DEFAULT NULL,
-    `created_at` TIMESTAMP NULL DEFAULT NOW(),
-    `updated_at` TIMESTAMP NULL DEFAULT NOW(),
-    PRIMARY KEY (`id`),
-    FOREIGN KEY `organizations_user_reference` (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-    UNIQUE KEY `organizations_title_and_user_unique` (`user_id`, `title`)
+    UNIQUE KEY `users_username_unique_idx` (`username`),
+    UNIQUE KEY `users_email_unique_idx` (`email`),
+    UNIQUE KEY `users_username_and_email_unique_idx` (`username`, `email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 CREATE TABLE IF NOT EXISTS `projects` (
     `id` VARCHAR(144) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `organization_id` VARCHAR(144) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `title` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `organization_name` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `description` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `pass_type` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
     `background_image` VARCHAR(191) DEFAULT "",
@@ -79,6 +67,5 @@ CREATE TABLE IF NOT EXISTS `projects` (
     `created_at` TIMESTAMP NULL DEFAULT NOW(),
     `updated_at` TIMESTAMP NULL DEFAULT NOW(),
     PRIMARY KEY (`id`),
-    FOREIGN KEY `projects_organization_reference` (`organization_id`) REFERENCES `organizations` (`id`) ON DELETE CASCADE,
-    UNIQUE KEY `projects_title_and_user_unique` (`organization_id`, `description`, `pass_type`)
+    UNIQUE KEY `projects_alt_unique_idx` (`title`, `organization_name`, `description`, `pass_type`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
