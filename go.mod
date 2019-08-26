@@ -7,7 +7,6 @@ require (
 	github.com/aws/aws-sdk-go v1.19.6
 	github.com/danikarik/mux v1.2.3
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
-	github.com/go-redis/redis v6.15.2+incompatible
 	github.com/go-sql-driver/mysql v1.4.1
 	github.com/gomodule/redigo v2.0.0+incompatible
 	github.com/jmoiron/sqlx v1.2.0
