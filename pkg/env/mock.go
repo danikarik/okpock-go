@@ -5,11 +5,13 @@ import (
 
 	fsmock "github.com/danikarik/okpock/pkg/filestore/memory"
 	mlmock "github.com/danikarik/okpock/pkg/mail/memory"
-	dbmock "github.com/danikarik/okpock/pkg/store/memory"
+	"github.com/danikarik/okpock/pkg/store/sequel"
+	_ "github.com/go-sql-driver/mysql" //
+	"github.com/jmoiron/sqlx"
 )
 
 // NewMock returns a new mock `Env`.
-func NewMock() *Env {
+func NewMock() (*Env, error) {
 	cfg := Config{
 		Stage:        "test",
 		Port:         "5000",
@@ -19,9 +21,30 @@ func NewMock() *Env {
 		MailerRegion: os.Getenv("TEST_MAILER_REGION"),
 	}
 
-	db := dbmock.New()
+	conn, err := sqlx.Connect("mysql", cfg.DatabaseURL)
+	if err != nil {
+		return nil, err
+	}
+
+	cleanUp := []string{
+		"DELETE FROM user_projects;",
+		"DELETE FROM projects;",
+		"DELETE FROM users;",
+		"DELETE FROM logs;",
+		"DELETE FROM registrations;",
+		"DELETE FROM passes;",
+	}
+
+	for _, script := range cleanUp {
+		_, err = conn.Exec(script)
+		if err != nil {
+			return nil, err
+		}
+	}
+
+	db := sequel.New(conn)
 	fs := fsmock.New()
 	ml := mlmock.New()
 
-	return New(cfg, db, db, db, fs, ml)
+	return New(cfg, db, db, db, fs, ml), nil
 }

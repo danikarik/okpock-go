@@ -19,7 +19,7 @@ func checkUser(u *api.User, opts byte) error {
 	}
 
 	if (opts & checkZeroID) != 0 {
-		if u.ID == "" {
+		if u.ID == 0 {
 			return store.ErrZeroID
 		}
 	}
@@ -67,13 +67,8 @@ func (m *MySQL) SaveNewUser(ctx context.Context, user *api.User) error {
 		return err
 	}
 
-	user.Role = api.ClientRole
-	user.CreatedAt = time.Now()
-	user.UpdatedAt = time.Now()
-
 	query := m.builder.Insert("users").
 		Columns(
-			"id",
 			"role",
 			"username",
 			"email",
@@ -84,7 +79,6 @@ func (m *MySQL) SaveNewUser(ctx context.Context, user *api.User) error {
 			"updated_at",
 		).
 		Values(
-			user.ID,
 			user.Role,
 			user.Username,
 			user.Email,
@@ -95,10 +89,11 @@ func (m *MySQL) SaveNewUser(ctx context.Context, user *api.User) error {
 			user.UpdatedAt,
 		)
 
-	err = m.insertQuery(ctx, query)
+	id, err := m.insertQuery(ctx, query)
 	if err != nil {
 		return err
 	}
+	user.ID = id
 
 	return nil
 }
@@ -123,8 +118,8 @@ func (m *MySQL) loadUser(ctx context.Context, query sq.SelectBuilder) (*api.User
 }
 
 // LoadUser ...
-func (m *MySQL) LoadUser(ctx context.Context, id string) (*api.User, error) {
-	if id == "" {
+func (m *MySQL) LoadUser(ctx context.Context, id int64) (*api.User, error) {
+	if id == 0 {
 		return nil, store.ErrZeroID
 	}
 

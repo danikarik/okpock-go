@@ -15,14 +15,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func fakeUsername() string {
-	return uuid.NewV4().String()
-}
-
-func fakeEmail() string {
-	return uuid.NewV4().String() + "@example.com"
-}
-
 func TestUsernameExists(t *testing.T) {
 	testCases := []struct {
 		Name           string
@@ -55,7 +47,6 @@ func TestUsernameExists(t *testing.T) {
 			for _, uname := range tc.SavedUsernames {
 				sql := fmt.Sprintf(
 					insertUsersTable,
-					uuid.NewV4().String(),
 					uuid.NewV4().String()+"@example.com",
 					uname,
 					"test",
@@ -110,7 +101,6 @@ func TestEmailExists(t *testing.T) {
 			for _, email := range tc.SavedEmails {
 				sql := fmt.Sprintf(
 					insertUsersTable,
-					uuid.NewV4().String(),
 					email,
 					uuid.NewV4().String(),
 					"test",
@@ -846,14 +836,24 @@ func TestUpdatePassword(t *testing.T) {
 		NewPassword: "newpass",
 	}
 
-	u := api.NewUser(user.Username, user.Email, user.Password, nil)
+	hash, err := secure.NewPassword(user.Password)
+	if !assert.NoError(err) {
+		return
+	}
+
+	u := api.NewUser(user.Username, user.Email, hash, nil)
 
 	err = db.SaveNewUser(ctx, u)
 	if !assert.NoError(err) {
 		return
 	}
 
-	err = db.UpdatePassword(ctx, user.NewPassword, u)
+	hash, err = secure.NewPassword(user.NewPassword)
+	if !assert.NoError(err) {
+		return
+	}
+
+	err = db.UpdatePassword(ctx, hash, u)
 	if !assert.NoError(err) {
 		return
 	}

@@ -43,7 +43,10 @@ func initService(t *testing.T) (*Service, error) {
 		t.Skip(err)
 	}
 
-	e := env.NewMock()
+	e, err := env.NewMock()
+	if err != nil {
+		t.Fatal(err)
+	}
 
 	cfg := zap.NewDevelopmentConfig()
 	cfg.Level = zap.NewAtomicLevelAt(zap.PanicLevel)

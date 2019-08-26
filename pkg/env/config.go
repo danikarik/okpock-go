@@ -7,8 +7,6 @@ type Config struct {
 	Debug        bool   `envconfig:"debug" default:"false" desc:"Application Debug Mode"`
 	Stage        string `envconfig:"stage" default:"development" desc:"Application Stage Environment"`
 	Port         string `envconfig:"port" default:"5000" desc:"Application Port Number"`
-	RedisHost    string `envconfig:"redis_host" required:"true" desc:"Redis Host Address"`
-	RedisPass    string `envconfig:"redis_pass" required:"true" desc:"Redis Host Password"`
 	DatabaseURL  string `envconfig:"database_url" required:"true" desc:"Database URL"`
 	PassesBucket string `envconfig:"passes_bucket" required:"true" desc:"Passes Bucket Name"`
 	ServerSecret string `envconfig:"server_secret" required:"true" desc:"JWT Server Secret"`

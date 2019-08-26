@@ -62,7 +62,6 @@ func TestUpdatePass(t *testing.T) {
 	data := []string{
 		fmt.Sprintf(
 			insertPassesTable,
-			uuid.NewV4().String(),
 			testCase.SerialNumber,
 			testCase.AuthToken,
 			testCase.PassTypeID,
@@ -100,7 +99,6 @@ func TestFindPass(t *testing.T) {
 	data := []string{
 		fmt.Sprintf(
 			insertPassesTable,
-			uuid.NewV4().String(),
 			testCase.SerialNumber,
 			testCase.AuthToken,
 			testCase.PassTypeID,
@@ -149,7 +147,6 @@ func TestFindRegistration(t *testing.T) {
 	data := []string{
 		fmt.Sprintf(
 			insertRegistrationsTable,
-			uuid.NewV4().String(),
 			testCases[0].DeviceID,
 			uuid.NewV4().String(),
 			testCases[0].SerialNumber,
@@ -197,7 +194,6 @@ func TestFindSerialNumbers(t *testing.T) {
 	data := []string{
 		fmt.Sprintf(
 			insertPassesTable,
-			uuid.NewV4().String(),
 			testCase.SerialNumber,
 			testCase.AuthToken,
 			testCase.PassTypeID,
@@ -205,7 +201,6 @@ func TestFindSerialNumbers(t *testing.T) {
 		),
 		fmt.Sprintf(
 			insertRegistrationsTable,
-			uuid.NewV4().String(),
 			testCase.DeviceID,
 			uuid.NewV4().String(),
 			testCase.SerialNumber,
@@ -247,7 +242,6 @@ func TestLatestPass(t *testing.T) {
 	data := []string{
 		fmt.Sprintf(
 			insertPassesTable,
-			uuid.NewV4().String(),
 			testCase.SerialNumber,
 			testCase.AuthToken,
 			testCase.PassTypeID,
@@ -319,7 +313,6 @@ func TestDeleteRegistration(t *testing.T) {
 	data := []string{
 		fmt.Sprintf(
 			insertRegistrationsTable,
-			uuid.NewV4().String(),
 			testCase.DeviceID,
 			testCase.PushToken,
 			testCase.SerialNumber,

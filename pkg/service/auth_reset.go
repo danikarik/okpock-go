@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/danikarik/okpock/pkg/api"
+	"github.com/danikarik/okpock/pkg/secure"
 	"github.com/danikarik/okpock/pkg/store"
 )
 
@@ -70,7 +71,12 @@ func (s *Service) resetByConfirmationToken(req ResetRequest, w http.ResponseWrit
 		return s.httpError(w, r, http.StatusInternalServerError, "LoadUserByConfirmationToken", err)
 	}
 
-	err = s.env.Auth.UpdatePassword(ctx, req.Password, user)
+	hash, err := secure.NewPassword(req.Password)
+	if err != nil {
+		return s.httpError(w, r, http.StatusBadRequest, "NewPassword", err)
+	}
+
+	err = s.env.Auth.UpdatePassword(ctx, hash, user)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "UpdatePassword", err)
 	}
@@ -94,7 +100,12 @@ func (s *Service) resetByRecoveryToken(req ResetRequest, w http.ResponseWriter, 
 		return s.httpError(w, r, http.StatusInternalServerError, "LoadUserByRecoveryToken", err)
 	}
 
-	err = s.env.Auth.UpdatePassword(ctx, req.Password, user)
+	hash, err := secure.NewPassword(req.Password)
+	if err != nil {
+		return s.httpError(w, r, http.StatusBadRequest, "NewPassword", err)
+	}
+
+	err = s.env.Auth.UpdatePassword(ctx, hash, user)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "UpdatePassword", err)
 	}

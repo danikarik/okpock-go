@@ -75,7 +75,7 @@ func TestSerialNumbers(t *testing.T) {
 	}
 
 	values := url.Values{}
-	values.Set("passesUpdatedSince", now.Add(4*time.Second).Format(sequel.TimeFormat))
+	values.Set("passesUpdatedSince", now.Add(-4*time.Second).Format(sequel.TimeFormat))
 	req := newRequest(
 		"GET",
 		fmt.Sprintf("/v1/devices/%s/registrations/%s", deviceID, passTypeID),

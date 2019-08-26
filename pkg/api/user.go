@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/danikarik/okpock/pkg/secure"
-	uuid "github.com/satori/go.uuid"
 )
 
 // Confirmation is an alias for confirmation type.
@@ -56,48 +55,47 @@ const (
 // NewUser returns a new instance of user.
 func NewUser(username, email, hash string, userData map[string]interface{}) *User {
 	return &User{
-		ID:           uuid.NewV4().String(),
 		Role:         ClientRole,
 		Username:     username,
 		Email:        email,
 		PasswordHash: hash,
 		UserMetaData: userData,
 		AppMetaData:  map[string]interface{}{},
-		CreatedAt:    NewTime(time.Now()),
-		UpdatedAt:    NewTime(time.Now()),
+		CreatedAt:    time.Now(),
+		UpdatedAt:    time.Now(),
 	}
 }
 
 // User represents user row from database.
 type User struct {
-	ID string `json:"id" db:"id" redis:"-"`
+	ID int64 `json:"id" db:"id"`
 
-	Role         Role   `json:"role" db:"role" redis:"role"`
-	Username     string `json:"username" db:"username" redis:"username"`
-	Email        string `json:"email" db:"email" redis:"email"`
-	PasswordHash string `json:"-" db:"password_hash" redis:"password_hash"`
-	ConfirmedAt  *Time  `json:"confirmedAt,omitempty" db:"confirmed_at" redis:"confirmed_at,omitempty"`
-	InvitedAt    *Time  `json:"invitedAt,omitempty" db:"invited_at" redis:"invited_at,omitempty"`
+	Role         Role       `json:"role" db:"role"`
+	Username     string     `json:"username" db:"username"`
+	Email        string     `json:"email" db:"email"`
+	PasswordHash string     `json:"-" db:"password_hash"`
+	ConfirmedAt  *time.Time `json:"confirmedAt,omitempty" db:"confirmed_at"`
+	InvitedAt    *time.Time `json:"invitedAt,omitempty" db:"invited_at"`
 
-	ConfirmationToken  string `json:"-" db:"confirmation_token" redis:"confirmation_token"`
-	ConfirmationSentAt *Time  `json:"confirmationSentAt,omitempty" db:"confirmation_sent_at" redis:"confirmation_sent_at,omitempty"`
+	ConfirmationToken  string     `json:"-" db:"confirmation_token"`
+	ConfirmationSentAt *time.Time `json:"confirmationSentAt,omitempty" db:"confirmation_sent_at"`
 
-	RecoveryToken  string `json:"-" db:"recovery_token" redis:"recovery_token"`
-	RecoverySentAt *Time  `json:"recoverySentAt,omitempty" db:"recovery_sent_at" redis:"recovery_sent_at,omitempty"`
+	RecoveryToken  string     `json:"-" db:"recovery_token"`
+	RecoverySentAt *time.Time `json:"recoverySentAt,omitempty" db:"recovery_sent_at"`
 
-	EmailChangeToken  string `json:"-" db:"email_change_token" redis:"email_change_token"`
-	EmailChange       string `json:"-" db:"email_change" redis:"email_change,omitempty"`
-	EmailChangeSentAt *Time  `json:"emailChangeSentAt,omitempty" db:"email_change_sent_at" redis:"email_change_sent_at,omitempty"`
+	EmailChangeToken  string     `json:"-" db:"email_change_token"`
+	EmailChange       string     `json:"-" db:"email_change"`
+	EmailChangeSentAt *time.Time `json:"emailChangeSentAt,omitempty" db:"email_change_sent_at"`
 
-	LastSignInAt *Time `json:"lastSignInAt,omitempty" db:"last_signin_at" redis:"last_signin_at,omitempty"`
+	LastSignInAt *time.Time `json:"lastSignInAt,omitempty" db:"last_signin_at"`
 
-	AppMetaData  JSONMap `json:"-" db:"raw_app_metadata" redis:"raw_app_metadata"`
-	UserMetaData JSONMap `json:"userMetaData" db:"raw_user_metadata" redis:"raw_user_metadata"`
+	AppMetaData  JSONMap `json:"-" db:"raw_app_metadata"`
+	UserMetaData JSONMap `json:"userMetaData" db:"raw_user_metadata"`
 
-	IsSuperAdmin bool `json:"-" db:"is_super_admin" redis:"is_super_admin"`
+	IsSuperAdmin bool `json:"-" db:"is_super_admin"`
 
-	CreatedAt Time `json:"createdAt" db:"created_at" redis:"created_at"`
-	UpdatedAt Time `json:"updatedAt" db:"updated_at" redis:"updated_at"`
+	CreatedAt time.Time `json:"createdAt" db:"created_at"`
+	UpdatedAt time.Time `json:"updatedAt" db:"updated_at"`
 }
 
 // IsValid checks whether input is valid or not.

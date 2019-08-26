@@ -5,16 +5,15 @@ import (
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
-	uuid "github.com/satori/go.uuid"
 )
 
 // InsertPass ...
 func (m *MySQL) InsertPass(ctx context.Context, serialNumber, authToken, passTypeID string) error {
 	query := m.builder.Insert("passes").
-		Columns("id", "serial_number", "authentication_token", "pass_type_id", "updated_at").
-		Values(uuid.NewV4().String(), serialNumber, authToken, passTypeID, time.Now())
+		Columns("serial_number", "authentication_token", "pass_type_id", "updated_at").
+		Values(serialNumber, authToken, passTypeID, time.Now())
 
-	err := m.insertQuery(ctx, query)
+	_, err := m.insertQuery(ctx, query)
 	if err != nil {
 		return err
 	}
@@ -122,10 +121,10 @@ func (m *MySQL) LatestPass(ctx context.Context, serialNumber, authToken, passTyp
 // InsertRegistration ...
 func (m *MySQL) InsertRegistration(ctx context.Context, deviceID, pushToken, serialNumber, passTypeID string) error {
 	query := m.builder.Insert("registrations").
-		Columns("id", "device_id", "push_token", "serial_number", "pass_type_id").
-		Values(uuid.NewV4().String(), deviceID, pushToken, serialNumber, passTypeID)
+		Columns("device_id", "push_token", "serial_number", "pass_type_id").
+		Values(deviceID, pushToken, serialNumber, passTypeID)
 
-	err := m.insertQuery(ctx, query)
+	_, err := m.insertQuery(ctx, query)
 	if err != nil {
 		return err
 	}
@@ -153,10 +152,10 @@ func (m *MySQL) DeleteRegistration(ctx context.Context, deviceID, serialNumber, 
 // InsertLog ...
 func (m *MySQL) InsertLog(ctx context.Context, remoteAddr, requestID, message string) error {
 	query := m.builder.Insert("logs").
-		Columns("id", "remote_address", "request_id", "message", "updated_at").
-		Values(uuid.NewV4().String(), remoteAddr, requestID, message, time.Now())
+		Columns("remote_address", "request_id", "message", "updated_at").
+		Values(remoteAddr, requestID, message, time.Now())
 
-	err := m.insertQuery(ctx, query)
+	_, err := m.insertQuery(ctx, query)
 	if err != nil {
 		return err
 	}

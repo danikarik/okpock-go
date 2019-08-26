@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"regexp"
 	"runtime/debug"
+	"strconv"
 	"strings"
 	"time"
 
@@ -179,7 +180,12 @@ func (s *Service) authMiddleware(w http.ResponseWriter, r *http.Request) (contex
 		return nil, s.httpError(w, r, code, "GetClaims", err)
 	}
 
-	user, err := s.env.Auth.LoadUser(ctx, ucl.Subject)
+	id, err := strconv.ParseInt(ucl.Subject, 10, 64)
+	if err != nil {
+		return nil, s.httpError(w, r, code, "ParseInt", err)
+	}
+
+	user, err := s.env.Auth.LoadUser(ctx, id)
 	if err != nil {
 		return nil, s.httpError(w, r, code, "LoadUser", err)
 	}

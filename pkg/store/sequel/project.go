@@ -17,14 +17,8 @@ func checkProject(p *api.Project, opts byte) error {
 		}
 	}
 
-	if (opts & checkForeignID) != 0 {
-		if p.OrganizationName == "" {
-			return store.ErrZeroID
-		}
-	}
-
 	if (opts & checkZeroID) != 0 {
-		if p.ID == "" {
+		if p.ID == 0 {
 			return store.ErrZeroID
 		}
 	}
@@ -38,13 +32,14 @@ func checkProject(p *api.Project, opts byte) error {
 }
 
 // IsProjectExists ...
-func (m *MySQL) IsProjectExists(ctx context.Context, orgID, desc string, passType api.PassType) (bool, error) {
+func (m *MySQL) IsProjectExists(ctx context.Context, title, organizationName, desc string, passType api.PassType) (bool, error) {
 	query := m.builder.Select("count(1)").
 		From("projects").
 		Where(sq.Eq{
-			"organization_id": orgID,
-			"description":     desc,
-			"pass_type":       passType,
+			"title":             title,
+			"organization_name": organizationName,
+			"description":       desc,
+			"pass_type":         passType,
 		})
 
 	cnt, err := m.countQuery(ctx, query)
@@ -56,18 +51,15 @@ func (m *MySQL) IsProjectExists(ctx context.Context, orgID, desc string, passTyp
 }
 
 // SaveNewProject ...
-func (m *MySQL) SaveNewProject(ctx context.Context, proj *api.Project) error {
-	err := checkProject(proj, checkNilStruct|checkForeignID)
+func (m *MySQL) SaveNewProject(ctx context.Context, user *api.User, project *api.Project) error {
+	err := checkProject(project, checkNilStruct)
 	if err != nil {
 		return err
 	}
 
-	proj.CreatedAt = time.Now()
-	proj.UpdatedAt = time.Now()
-
 	query := m.builder.Insert("projects").
 		Columns(
-			"id",
+			"title",
 			"organization_name",
 			"description",
 			"pass_type",
@@ -75,15 +67,25 @@ func (m *MySQL) SaveNewProject(ctx context.Context, proj *api.Project) error {
 			"updated_at",
 		).
 		Values(
-			proj.ID,
-			proj.OrganizationName,
-			proj.Description,
-			proj.PassType,
-			proj.CreatedAt,
-			proj.UpdatedAt,
+			project.Title,
+			project.OrganizationName,
+			project.Description,
+			project.PassType,
+			project.CreatedAt,
+			project.UpdatedAt,
 		)
 
-	err = m.insertQuery(ctx, query)
+	id, err := m.insertQuery(ctx, query)
+	if err != nil {
+		return err
+	}
+	project.ID = id
+
+	query = m.builder.Insert("user_projects").
+		Columns("user_id", "project_id").
+		Values(user.ID, project.ID)
+
+	_, err = m.insertQuery(ctx, query)
 	if err != nil {
 		return err
 	}
@@ -92,8 +94,8 @@ func (m *MySQL) SaveNewProject(ctx context.Context, proj *api.Project) error {
 }
 
 // LoadProject ...
-func (m *MySQL) LoadProject(ctx context.Context, id string) (*api.Project, error) {
-	if id == "" {
+func (m *MySQL) LoadProject(ctx context.Context, user *api.User, id int64) (*api.Project, error) {
+	if id == 0 {
 		return nil, store.ErrZeroID
 	}
 
@@ -120,8 +122,8 @@ func (m *MySQL) LoadProject(ctx context.Context, id string) (*api.Project, error
 }
 
 // LoadProjects ...
-func (m *MySQL) LoadProjects(ctx context.Context, userID string) ([]*api.Project, error) {
-	if userID == "" {
+func (m *MySQL) LoadProjects(ctx context.Context, user *api.User) ([]*api.Project, error) {
+	if user == nil || user.ID == 0 {
 		return nil, store.ErrZeroID
 	}
 
@@ -129,8 +131,8 @@ func (m *MySQL) LoadProjects(ctx context.Context, userID string) ([]*api.Project
 
 	query := m.builder.Select("p.*").
 		From("projects p").
-		LeftJoin("organizations o on o.id = p.organization_id").
-		Where(sq.Eq{"o.user_id": userID}).
+		LeftJoin("user_projects up on up.project_id = p.id").
+		Where(sq.Eq{"up.user_id": user.ID}).
 		OrderBy("created_at desc")
 
 	rows, err := m.selectQuery(ctx, query)
@@ -142,9 +144,9 @@ func (m *MySQL) LoadProjects(ctx context.Context, userID string) ([]*api.Project
 	}
 
 	for rows.Next() {
-		var proj = &api.Project{}
+		var project = &api.Project{}
 
-		err = rows.StructScan(proj)
+		err = rows.StructScan(project)
 		if err == sql.ErrNoRows {
 			return nil, store.ErrNotFound
 		}
@@ -152,26 +154,25 @@ func (m *MySQL) LoadProjects(ctx context.Context, userID string) ([]*api.Project
 			return nil, err
 		}
 
-		projects = append(projects, proj)
+		projects = append(projects, project)
 	}
 
 	return projects, nil
 }
 
-// UpdateProjectDescription ...
-func (m *MySQL) UpdateProjectDescription(ctx context.Context, desc string, proj *api.Project) error {
-	err := checkProject(proj, checkNilStruct|checkZeroID|checkForeignID)
+// UpdateProject ...
+func (m *MySQL) UpdateProject(ctx context.Context, project *api.Project) error {
+	err := checkProject(project, checkNilStruct|checkZeroID)
 	if err != nil {
 		return err
 	}
 
-	proj.Description = desc
-	proj.UpdatedAt = time.Now()
+	project.UpdatedAt = time.Now()
 
 	query := m.builder.Update("projects").
-		Set("description", proj.Description).
-		Set("updated_at", proj.UpdatedAt).
-		Where(sq.Eq{"id": proj.ID})
+		Set("description", project.Description).
+		Set("updated_at", project.UpdatedAt).
+		Where(sq.Eq{"id": project.ID})
 
 	_, err = m.updateQuery(ctx, query)
 	if err != nil {
@@ -182,19 +183,19 @@ func (m *MySQL) UpdateProjectDescription(ctx context.Context, desc string, proj 
 }
 
 // SetBackgroundImage ...
-func (m *MySQL) SetBackgroundImage(ctx context.Context, key string, proj *api.Project) error {
-	err := checkProject(proj, checkNilStruct|checkZeroID|checkForeignID)
+func (m *MySQL) SetBackgroundImage(ctx context.Context, key string, project *api.Project) error {
+	err := checkProject(project, checkNilStruct|checkZeroID)
 	if err != nil {
 		return err
 	}
 
-	proj.BackgroundImage = key
-	proj.UpdatedAt = time.Now()
+	project.BackgroundImage = key
+	project.UpdatedAt = time.Now()
 
 	query := m.builder.Update("projects").
-		Set("background_image", proj.BackgroundImage).
-		Set("updated_at", proj.UpdatedAt).
-		Where(sq.Eq{"id": proj.ID})
+		Set("background_image", project.BackgroundImage).
+		Set("updated_at", project.UpdatedAt).
+		Where(sq.Eq{"id": project.ID})
 
 	_, err = m.updateQuery(ctx, query)
 	if err != nil {
@@ -205,19 +206,19 @@ func (m *MySQL) SetBackgroundImage(ctx context.Context, key string, proj *api.Pr
 }
 
 // SetFooterImage ...
-func (m *MySQL) SetFooterImage(ctx context.Context, key string, proj *api.Project) error {
-	err := checkProject(proj, checkNilStruct|checkZeroID|checkForeignID)
+func (m *MySQL) SetFooterImage(ctx context.Context, key string, project *api.Project) error {
+	err := checkProject(project, checkNilStruct|checkZeroID)
 	if err != nil {
 		return err
 	}
 
-	proj.FooterImage = key
-	proj.UpdatedAt = time.Now()
+	project.FooterImage = key
+	project.UpdatedAt = time.Now()
 
 	query := m.builder.Update("projects").
-		Set("footer_image", proj.FooterImage).
-		Set("updated_at", proj.UpdatedAt).
-		Where(sq.Eq{"id": proj.ID})
+		Set("footer_image", project.FooterImage).
+		Set("updated_at", project.UpdatedAt).
+		Where(sq.Eq{"id": project.ID})
 
 	_, err = m.updateQuery(ctx, query)
 	if err != nil {
@@ -228,19 +229,19 @@ func (m *MySQL) SetFooterImage(ctx context.Context, key string, proj *api.Projec
 }
 
 // SetIconImage ...
-func (m *MySQL) SetIconImage(ctx context.Context, key string, proj *api.Project) error {
-	err := checkProject(proj, checkNilStruct|checkZeroID|checkForeignID)
+func (m *MySQL) SetIconImage(ctx context.Context, key string, project *api.Project) error {
+	err := checkProject(project, checkNilStruct|checkZeroID)
 	if err != nil {
 		return err
 	}
 
-	proj.IconImage = key
-	proj.UpdatedAt = time.Now()
+	project.IconImage = key
+	project.UpdatedAt = time.Now()
 
 	query := m.builder.Update("projects").
-		Set("icon_image", proj.IconImage).
-		Set("updated_at", proj.UpdatedAt).
-		Where(sq.Eq{"id": proj.ID})
+		Set("icon_image", project.IconImage).
+		Set("updated_at", project.UpdatedAt).
+		Where(sq.Eq{"id": project.ID})
 
 	_, err = m.updateQuery(ctx, query)
 	if err != nil {
@@ -251,19 +252,19 @@ func (m *MySQL) SetIconImage(ctx context.Context, key string, proj *api.Project)
 }
 
 // SetStripImage ...
-func (m *MySQL) SetStripImage(ctx context.Context, key string, proj *api.Project) error {
-	err := checkProject(proj, checkNilStruct|checkZeroID|checkForeignID)
+func (m *MySQL) SetStripImage(ctx context.Context, key string, project *api.Project) error {
+	err := checkProject(project, checkNilStruct|checkZeroID)
 	if err != nil {
 		return err
 	}
 
-	proj.StripImage = key
-	proj.UpdatedAt = time.Now()
+	project.StripImage = key
+	project.UpdatedAt = time.Now()
 
 	query := m.builder.Update("projects").
-		Set("strip_image", proj.StripImage).
-		Set("updated_at", proj.UpdatedAt).
-		Where(sq.Eq{"id": proj.ID})
+		Set("strip_image", project.StripImage).
+		Set("updated_at", project.UpdatedAt).
+		Where(sq.Eq{"id": project.ID})
 
 	_, err = m.updateQuery(ctx, query)
 	if err != nil {

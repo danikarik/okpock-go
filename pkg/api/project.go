@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"time"
-
-	uuid "github.com/satori/go.uuid"
 )
 
 // PassType refers to `Style Keys` type.
@@ -27,17 +25,18 @@ const (
 // NewProject returns a new instance of project.
 func NewProject(title, name, desc string, passType PassType) *Project {
 	return &Project{
-		ID:               uuid.NewV4().String(),
 		Title:            title,
 		OrganizationName: name,
 		Description:      desc,
 		PassType:         passType,
+		CreatedAt:        time.Now(),
+		UpdatedAt:        time.Now(),
 	}
 }
 
 // Project holds project structure related fields.
 type Project struct {
-	ID string `json:"id" db:"id"`
+	ID int64 `json:"id" db:"id"`
 
 	Title            string   `json:"title" db:"title"`
 	OrganizationName string   `json:"organizationName" db:"organization_name"`

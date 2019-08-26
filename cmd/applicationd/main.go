@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"net/http"
 	"os"
-	"time"
 
 	"github.com/danikarik/okpock/pkg/env"
 	"github.com/danikarik/okpock/pkg/filestore"
@@ -12,8 +11,9 @@ import (
 	"github.com/danikarik/okpock/pkg/mail"
 	"github.com/danikarik/okpock/pkg/mail/awsmail"
 	"github.com/danikarik/okpock/pkg/service"
-	"github.com/danikarik/okpock/pkg/store/redistore"
-	"github.com/gomodule/redigo/redis"
+	"github.com/danikarik/okpock/pkg/store/sequel"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/jmoiron/sqlx"
 	"go.uber.org/zap"
 )
 
@@ -50,24 +50,14 @@ func main() {
 	}
 	defer logger.Sync()
 
-	var pool *redis.Pool
+	var conn *sqlx.DB
 	{
-		dialOptions := []redis.DialOption{
-			redis.DialPassword(cfg.RedisPass),
-			redis.DialConnectTimeout(15 * time.Second),
-			redis.DialReadTimeout(15 * time.Second),
-			redis.DialWriteTimeout(15 * time.Second),
-		}
-		pool = &redis.Pool{
-			Dial: func() (redis.Conn, error) {
-				return redis.Dial("tcp", cfg.RedisHost, dialOptions...)
-			},
-			MaxIdle:   5,
-			MaxActive: 100,
-			Wait:      true,
+		conn, err = sqlx.Connect("mysql", cfg.DatabaseURL)
+		if err != nil {
+			errorExit("mysql connection: %v", err)
 		}
 	}
-	defer pool.Close()
+	defer conn.Close()
 
 	var s3 filestore.Storage
 	{
@@ -87,7 +77,7 @@ func main() {
 
 	var srv *service.Service
 	{
-		db := redistore.New(pool)
+		db := sequel.New(conn)
 		env := env.New(cfg, db, db, db, s3, mailer)
 
 		srv = service.New(Version, env, logger)

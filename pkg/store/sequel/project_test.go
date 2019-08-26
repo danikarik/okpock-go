@@ -12,9 +12,13 @@ import (
 
 func TestIsProjectExists(t *testing.T) {
 	type project struct {
-		Desc string
-		Type api.PassType
+		Title            string
+		OrganizationName string
+		Desc             string
+		Type             api.PassType
 	}
+
+	takenTitle := fakeString()
 
 	testCases := []struct {
 		Name      string
@@ -25,24 +29,32 @@ func TestIsProjectExists(t *testing.T) {
 		{
 			Name: "NotTaken",
 			Existing: project{
-				Desc: "Free Coupon",
-				Type: api.Coupon,
+				Title:            fakeString(),
+				OrganizationName: fakeString(),
+				Desc:             fakeString(),
+				Type:             api.Coupon,
 			},
 			Requested: project{
-				Desc: "Boarding Pass",
-				Type: api.BoardingPass,
+				Title:            fakeString(),
+				OrganizationName: fakeString(),
+				Desc:             fakeString(),
+				Type:             api.BoardingPass,
 			},
 			Expected: false,
 		},
 		{
 			Name: "Taken",
 			Existing: project{
-				Desc: "Free Auction",
-				Type: api.Coupon,
+				Title:            takenTitle,
+				OrganizationName: takenTitle,
+				Desc:             takenTitle,
+				Type:             api.BoardingPass,
 			},
 			Requested: project{
-				Desc: "Free Auction",
-				Type: api.Coupon,
+				Title:            takenTitle,
+				OrganizationName: takenTitle,
+				Desc:             takenTitle,
+				Type:             api.BoardingPass,
 			},
 			Expected: true,
 		},
@@ -53,7 +65,7 @@ func TestIsProjectExists(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable, tempOrganizationsTable, tempProjectsTable}
+			schema := []string{tempUsersTable, tempProjectsTable, tempUserProjectsTable}
 			data := []string{}
 
 			conn, err := executeTempScripts(ctx, t, schema, data)
@@ -71,14 +83,14 @@ func TestIsProjectExists(t *testing.T) {
 				return
 			}
 
-			project := api.NewProject(org.ID, tc.Existing.Desc, tc.Existing.Type)
+			project := api.NewProject(tc.Existing.Title, tc.Existing.OrganizationName, tc.Existing.Desc, tc.Existing.Type)
 
-			err = db.SaveNewProject(ctx, project)
+			err = db.SaveNewProject(ctx, u, project)
 			if !assert.NoError(err) {
 				return
 			}
 
-			exists, err := db.IsProjectExists(ctx, org.ID, tc.Requested.Desc, tc.Requested.Type)
+			exists, err := db.IsProjectExists(ctx, tc.Requested.Title, tc.Requested.OrganizationName, tc.Requested.Desc, tc.Requested.Type)
 			assert.NoError(err)
 			assert.Equal(tc.Expected, exists)
 		})
@@ -128,7 +140,7 @@ func TestSaveNewProject(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable, tempOrganizationsTable, tempProjectsTable}
+			schema := []string{tempUsersTable, tempProjectsTable, tempUserProjectsTable}
 			data := []string{}
 
 			conn, err := executeTempScripts(ctx, t, schema, data)
@@ -146,30 +158,25 @@ func TestSaveNewProject(t *testing.T) {
 				return
 			}
 
-			org := api.NewOrganization(u.ID, uuid.NewV4().String(), uuid.NewV4().String(), nil)
-
-			err = db.SaveNewOrganization(ctx, org)
-			if !assert.NoError(err) {
-				return
-			}
+			orgName := fakeString()
 
 			for _, project := range tc.SavedProjects {
-				p := api.NewProject(org.ID, project.Desc, project.Type)
+				p := api.NewProject(orgName, fakeString(), project.Desc, project.Type)
 
-				err = db.SaveNewProject(ctx, p)
+				err = db.SaveNewProject(ctx, u, p)
 				if !assert.NoError(err) {
 					return
 				}
 			}
 
-			p := api.NewProject(org.ID, tc.NewProject.Desc, tc.NewProject.Type)
+			p := api.NewProject(orgName, fakeString(), tc.NewProject.Desc, tc.NewProject.Type)
 
-			err = db.SaveNewProject(ctx, p)
+			err = db.SaveNewProject(ctx, u, p)
 			if !assert.NoError(err) {
 				return
 			}
 
-			loaded, err := db.LoadProject(ctx, p.ID)
+			loaded, err := db.LoadProject(ctx, u, p.ID)
 			if !assert.NoError(err) {
 				return
 			}
@@ -178,7 +185,7 @@ func TestSaveNewProject(t *testing.T) {
 			assert.Equal(p.Description, loaded.Description)
 			assert.Equal(p.PassType, loaded.PassType)
 
-			loadedProjects, err := db.LoadProjects(ctx, u.ID)
+			loadedProjects, err := db.LoadProjects(ctx, u)
 			if !assert.NoError(err) {
 				return
 			}
@@ -214,7 +221,7 @@ func TestUpdateProject(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable, tempOrganizationsTable, tempProjectsTable}
+			schema := []string{tempUsersTable, tempProjectsTable, tempUserProjectsTable}
 			data := []string{}
 
 			conn, err := executeTempScripts(ctx, t, schema, data)
@@ -232,26 +239,20 @@ func TestUpdateProject(t *testing.T) {
 				return
 			}
 
-			org := api.NewOrganization(u.ID, uuid.NewV4().String(), uuid.NewV4().String(), nil)
+			p := api.NewProject(fakeString(), fakeString(), tc.Project.Desc, tc.Project.Type)
 
-			err = db.SaveNewOrganization(ctx, org)
+			err = db.SaveNewProject(ctx, u, p)
 			if !assert.NoError(err) {
 				return
 			}
 
-			p := api.NewProject(org.ID, tc.Project.Desc, tc.Project.Type)
-
-			err = db.SaveNewProject(ctx, p)
+			p.Description = tc.NewDesc
+			err = db.UpdateProject(ctx, p)
 			if !assert.NoError(err) {
 				return
 			}
 
-			err = db.UpdateProjectDescription(ctx, tc.NewDesc, p)
-			if !assert.NoError(err) {
-				return
-			}
-
-			loaded, err := db.LoadProject(ctx, p.ID)
+			loaded, err := db.LoadProject(ctx, u, p.ID)
 			if !assert.NoError(err) {
 				return
 			}
@@ -288,7 +289,7 @@ func TestSetImage(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable, tempOrganizationsTable, tempProjectsTable}
+			schema := []string{tempUsersTable, tempProjectsTable, tempUserProjectsTable}
 			data := []string{}
 
 			conn, err := executeTempScripts(ctx, t, schema, data)
@@ -306,16 +307,9 @@ func TestSetImage(t *testing.T) {
 				return
 			}
 
-			org := api.NewOrganization(u.ID, uuid.NewV4().String(), uuid.NewV4().String(), nil)
+			p := api.NewProject(fakeString(), fakeString(), tc.Project.Desc, tc.Project.Type)
 
-			err = db.SaveNewOrganization(ctx, org)
-			if !assert.NoError(err) {
-				return
-			}
-
-			p := api.NewProject(org.ID, tc.Project.Desc, tc.Project.Type)
-
-			err = db.SaveNewProject(ctx, p)
+			err = db.SaveNewProject(ctx, u, p)
 			if !assert.NoError(err) {
 				return
 			}
@@ -340,7 +334,7 @@ func TestSetImage(t *testing.T) {
 				return
 			}
 
-			loaded, err := db.LoadProject(ctx, p.ID)
+			loaded, err := db.LoadProject(ctx, u, p.ID)
 			if !assert.NoError(err) {
 				return
 			}

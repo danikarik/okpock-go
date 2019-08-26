@@ -76,20 +76,6 @@ func (s *Service) withRouter() *Service {
 		account.HandleFunc("/password", s.passwordChangeHandler).Methods("PUT")
 		account.HandleFunc("/metadata", s.metaDataChangeHandler).Methods("PUT")
 
-		organizations := protected.PathPrefix("/organizations").Subrouter()
-		// TODO: IsOrganizationExists
-		organizations.HandleFunc("/check", s.okHandler).Methods("POST")
-		// TODO: SaveNewOrganization
-		organizations.HandleFunc("/", s.okHandler).Methods("POST")
-		// TODO: LoadOrganizations
-		organizations.HandleFunc("/", s.okHandler).Methods("GET")
-		// TODO: LoadOrganization
-		organizations.HandleFunc("/{id}", s.okHandler).Methods("GET")
-		// TODO: UpdateOrganizationDescription
-		organizations.HandleFunc("/{id}/description", s.okHandler).Methods("PUT")
-		// TODO: UpdateOrganizationMetaData
-		organizations.HandleFunc("/{id}/metadata", s.okHandler).Methods("PUT")
-
 		projects := protected.PathPrefix("/projects").Subrouter()
 		// TODO: IsProjectExists
 		projects.HandleFunc("/check", s.okHandler).Methods("POST")
@@ -99,8 +85,8 @@ func (s *Service) withRouter() *Service {
 		projects.HandleFunc("/", s.okHandler).Methods("GET")
 		// TODO: LoadProject
 		projects.HandleFunc("/{id}", s.okHandler).Methods("GET")
-		// TODO: UpdateProjectDescription
-		projects.HandleFunc("/{id}/description", s.okHandler).Methods("PUT")
+		// TODO: UpdateProject
+		projects.HandleFunc("/{id}", s.okHandler).Methods("PUT")
 		// TODO: SetBackgroundImage, SetFooterImage, SetIconImage, SetStripImage
 		projects.HandleFunc("/{id}/upload", s.okHandler).Methods("PUT")
 	}
