@@ -393,13 +393,8 @@ func (m *MySQL) UpdateUsername(ctx context.Context, username string, user *api.U
 }
 
 // UpdatePassword ...
-func (m *MySQL) UpdatePassword(ctx context.Context, password string, user *api.User) error {
+func (m *MySQL) UpdatePassword(ctx context.Context, hash string, user *api.User) error {
 	err := checkUser(user, checkNilStruct|checkZeroID)
-	if err != nil {
-		return err
-	}
-
-	hash, err := secure.NewPassword(password)
 	if err != nil {
 		return err
 	}

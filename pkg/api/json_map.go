@@ -5,6 +5,8 @@ import (
 	"database/sql/driver"
 	"encoding/json"
 	"errors"
+
+	"github.com/gomodule/redigo/redis"
 )
 
 // JSONMap is an alias for raw json.
@@ -37,4 +39,27 @@ func (j JSONMap) Scan(src interface{}) error {
 		source = []byte("{}")
 	}
 	return json.Unmarshal(source, &j)
+}
+
+// RedisArg implements redis interface.
+func (j JSONMap) RedisArg() interface{} {
+	data, err := json.Marshal(j)
+	if err != nil {
+		return "{}"
+	}
+	return string(data)
+}
+
+// RedisScan implements redis interface.
+func (j *JSONMap) RedisScan(src interface{}) error {
+	data, err := redis.String(src, nil)
+	if err != nil {
+		return err
+	}
+
+	if len(data) == 0 {
+		data = "{}"
+	}
+
+	return json.Unmarshal([]byte(data), &j)
 }

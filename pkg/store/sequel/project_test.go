@@ -71,13 +71,6 @@ func TestIsProjectExists(t *testing.T) {
 				return
 			}
 
-			org := api.NewOrganization(u.ID, uuid.NewV4().String(), uuid.NewV4().String(), nil)
-
-			err = db.SaveNewOrganization(ctx, org)
-			if !assert.NoError(err) {
-				return
-			}
-
 			project := api.NewProject(org.ID, tc.Existing.Desc, tc.Existing.Type)
 
 			err = db.SaveNewProject(ctx, project)

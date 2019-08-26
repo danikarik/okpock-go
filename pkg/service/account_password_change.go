@@ -4,6 +4,8 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+
+	"github.com/danikarik/okpock/pkg/secure"
 )
 
 // PasswordChangeRequest holds new password.
@@ -43,14 +45,17 @@ func (s *Service) passwordChangeHandler(w http.ResponseWriter, r *http.Request) 
 
 	// trigger change if password has diff
 	if !user.CheckPassword(req.Password) {
-		err = s.env.Auth.UpdatePassword(ctx, req.Password, user)
+		hash, err := secure.NewPassword(req.Password)
+		if err != nil {
+			return s.httpError(w, r, http.StatusBadRequest, "NewPassword", err)
+		}
+
+		err = s.env.Auth.UpdatePassword(ctx, hash, user)
 		if err != nil {
 			return s.httpError(w, r, http.StatusInternalServerError, "UpdatePassword", err)
 		}
 
-		return sendJSON(w, http.StatusOK, M{
-			"updatedAt": user.UpdatedAt,
-		})
+		return sendJSON(w, http.StatusOK, M{"updatedAt": user.UpdatedAt})
 	}
 
 	return sendJSON(w, http.StatusNotAcceptable, user)

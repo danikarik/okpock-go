@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/danikarik/okpock/pkg/env"
 	"github.com/danikarik/okpock/pkg/filestore"
@@ -12,7 +13,7 @@ import (
 	"github.com/danikarik/okpock/pkg/mail/awsmail"
 	"github.com/danikarik/okpock/pkg/service"
 	"github.com/danikarik/okpock/pkg/store/redistore"
-	"github.com/go-redis/redis"
+	"github.com/gomodule/redigo/redis"
 	"go.uber.org/zap"
 )
 
@@ -49,19 +50,24 @@ func main() {
 	}
 	defer logger.Sync()
 
-	var client *redis.Client
+	var pool *redis.Pool
 	{
-		client = redis.NewClient(&redis.Options{
-			Addr:     cfg.RedisHost,
-			Password: cfg.RedisPass,
-			DB:       0,
-		})
-		_, err = client.Ping().Result()
-		if err != nil {
-			errorExit("redis connection: %v", err)
+		dialOptions := []redis.DialOption{
+			redis.DialPassword(cfg.RedisPass),
+			redis.DialConnectTimeout(15 * time.Second),
+			redis.DialReadTimeout(15 * time.Second),
+			redis.DialWriteTimeout(15 * time.Second),
+		}
+		pool = &redis.Pool{
+			Dial: func() (redis.Conn, error) {
+				return redis.Dial("tcp", cfg.RedisHost, dialOptions...)
+			},
+			MaxIdle:   5,
+			MaxActive: 100,
+			Wait:      true,
 		}
 	}
-	defer client.Close()
+	defer pool.Close()
 
 	var s3 filestore.Storage
 	{
@@ -81,7 +87,7 @@ func main() {
 
 	var srv *service.Service
 	{
-		db := redistore.New(client)
+		db := redistore.New(pool)
 		env := env.New(cfg, db, db, db, s3, mailer)
 
 		srv = service.New(Version, env, logger)

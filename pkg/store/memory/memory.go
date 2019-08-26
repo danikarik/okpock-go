@@ -276,7 +276,7 @@ func (m *Memory) Authenticate(ctx context.Context, password string, user *api.Us
 		return store.ErrWrongPassword
 	}
 
-	now := time.Now()
+	now := api.Now()
 	user.LastSignInAt = &now
 	m.users[user.ID] = user
 
@@ -288,7 +288,7 @@ func (m *Memory) ConfirmUser(ctx context.Context, user *api.User) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	now := time.Now()
+	now := api.Now()
 	user.ConfirmedAt = &now
 	user.ConfirmationToken = ""
 	m.users[user.ID] = user
@@ -301,7 +301,7 @@ func (m *Memory) SetConfirmationToken(ctx context.Context, confirm api.Confirmat
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	now := time.Now()
+	now := api.Now()
 	token := secure.Token()
 
 	if confirm == api.SignUpConfirmation {
@@ -332,7 +332,7 @@ func (m *Memory) SetRecoveryToken(ctx context.Context, user *api.User) error {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	now := time.Now()
+	now := api.Now()
 	token := secure.Token()
 
 	user.RecoverySentAt = &now
@@ -360,7 +360,7 @@ func (m *Memory) SetEmailChangeToken(ctx context.Context, email string, user *ap
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	now := time.Now()
+	now := api.Now()
 	token := secure.Token()
 
 	user.EmailChangeSentAt = &now
@@ -377,7 +377,7 @@ func (m *Memory) UpdateUsername(ctx context.Context, username string, user *api.
 	defer m.mu.Unlock()
 
 	user.Username = username
-	user.UpdatedAt = time.Now()
+	user.UpdatedAt = api.Now()
 	m.users[user.ID] = user
 
 	return nil
@@ -394,7 +394,7 @@ func (m *Memory) UpdatePassword(ctx context.Context, password string, user *api.
 	}
 
 	user.PasswordHash = hash
-	user.UpdatedAt = time.Now()
+	user.UpdatedAt = api.Now()
 	m.users[user.ID] = user
 
 	return nil
@@ -406,7 +406,7 @@ func (m *Memory) UpdateUserMetaData(ctx context.Context, data map[string]interfa
 	defer m.mu.Unlock()
 
 	user.UserMetaData = data
-	user.UpdatedAt = time.Now()
+	user.UpdatedAt = api.Now()
 	m.users[user.ID] = user
 
 	return nil
@@ -418,7 +418,7 @@ func (m *Memory) UpdateAppMetaData(ctx context.Context, data map[string]interfac
 	defer m.mu.Unlock()
 
 	user.AppMetaData = data
-	user.UpdatedAt = time.Now()
+	user.UpdatedAt = api.Now()
 	m.users[user.ID] = user
 
 	return nil

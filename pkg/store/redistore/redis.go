@@ -1,13 +1,11 @@
 package redistore
 
 import (
-	"github.com/go-redis/redis"
+	"github.com/gomodule/redigo/redis"
 )
 
-// Pool is a Redis implementation of store interfaces.
-type Pool struct{}
-
 // New creates a new instance of `Pool`.
-func New(client *redis.Client) *Pool {
-	return &Pool{}
-}
+func New(p *redis.Pool) *Pool { return &Pool{p} }
+
+// Pool is a Redis implementation of store interfaces.
+type Pool struct{ *redis.Pool }

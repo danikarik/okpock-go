@@ -70,7 +70,7 @@ type Auth interface {
 
 	// UpdatePassword ...
 	// TODO: description
-	UpdatePassword(ctx context.Context, password string, user *User) error
+	UpdatePassword(ctx context.Context, hash string, user *User) error
 
 	// UpdateUserMetaData ...
 	// TODO: description
