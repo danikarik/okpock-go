@@ -80,12 +80,11 @@ func (s *Service) withRouter() *Service {
 		projects.HandleFunc("/check", s.checkProjectHandler).Methods("POST")
 		projects.HandleFunc("/", s.createProjectHandler).Methods("POST")
 		projects.HandleFunc("/", s.userProjectsHandler).Methods("GET")
-		// TODO: LoadProject
-		projects.HandleFunc("/{id}", s.okHandler).Methods("GET")
+		projects.HandleFunc("/{id:[0-9]+}", s.userProjectHandler).Methods("GET")
 		// TODO: UpdateProject
-		projects.HandleFunc("/{id}", s.okHandler).Methods("PUT")
+		projects.HandleFunc("/{id:[0-9]+}", s.okHandler).Methods("PUT")
 		// TODO: SetBackgroundImage, SetFooterImage, SetIconImage, SetStripImage
-		projects.HandleFunc("/{id}/upload", s.okHandler).Methods("PUT")
+		projects.HandleFunc("/{id:[0-9]+}/upload", s.okHandler).Methods("PUT")
 	}
 
 	s.handler = s.corsMiddleware(r)

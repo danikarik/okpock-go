@@ -108,9 +108,9 @@ func (m *MySQL) LoadProject(ctx context.Context, user *api.User, id int64) (*api
 		return nil, err
 	}
 
-	var proj = &api.Project{}
+	var project = &api.Project{}
 
-	err = row.StructScan(proj)
+	err = row.StructScan(project)
 	if err == sql.ErrNoRows {
 		return nil, store.ErrNotFound
 	}
@@ -118,7 +118,7 @@ func (m *MySQL) LoadProject(ctx context.Context, user *api.User, id int64) (*api
 		return nil, err
 	}
 
-	return proj, nil
+	return project, nil
 }
 
 // LoadProjects ...

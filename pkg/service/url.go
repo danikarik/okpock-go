@@ -4,13 +4,18 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"github.com/danikarik/mux"
 	"github.com/danikarik/okpock/pkg/api"
 )
 
-// ErrMissingQueryParam raised when one of required query parameters is missing.
-var ErrMissingQueryParam = errors.New("url: missing query parameter")
+var (
+	// ErrMissingQueryParam raised when one of required query parameters is missing.
+	ErrMissingQueryParam = errors.New("url: missing query parameter")
+	// ErrInvalidID raises when cannot parse id from request.
+	ErrInvalidID = errors.New("id: invalid query parameter")
+)
 
 func checkQueryParams(r *http.Request, params ...string) (map[string]string, error) {
 	vars := mux.Vars(r)
@@ -100,4 +105,20 @@ func (s *Service) redirectError(w http.ResponseWriter, r *http.Request, msg stri
 	url.RawQuery = v.Encode()
 	http.Redirect(w, r, url.String(), http.StatusMovedPermanently)
 	return nil
+}
+
+func (s *Service) idFromRequest(r *http.Request, key string) (int64, error) {
+	vars := mux.Vars(r)
+
+	v, ok := vars[key]
+	if !ok {
+		return -1, ErrInvalidID
+	}
+
+	id, err := strconv.ParseInt(v, 10, 64)
+	if err != nil {
+		return -1, ErrInvalidID
+	}
+
+	return id, nil
 }
