@@ -3,7 +3,6 @@ package service
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -106,8 +105,6 @@ func unmarshalJSON(r *http.Response, v interface{}) error {
 		return err
 	}
 	defer r.Body.Close()
-
-	fmt.Println(string(data))
 
 	err = json.Unmarshal(data, &v)
 	if err != nil {

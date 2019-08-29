@@ -524,7 +524,7 @@ Request Body
 Response Codes
 
 - `200`
-- `403`
+- `400`
 - `406`
 - `500`
 
@@ -559,8 +559,8 @@ Request Body
 Response Codes
 
 - `200`
+- `400`
 - `401`
-- `403`
 - `406`
 - `500`
 
@@ -637,6 +637,48 @@ Response Body
   "stripImage": "strip.png",
   "createdAt": "2019-08-29T22:37:57+06:00",
   "updatedAt": "2019-08-29T22:37:57+06:00"
+}
+```
+
+### PUT `/projects/{id}`
+
+Request Body
+
+```json
+{
+  "title": "Saturday Deal",
+  "organizationName": "Okpock",
+  "description": "Free Coupon",
+}
+```
+
+Response Codes
+
+- `200`
+- `400`
+- `401`
+- `404`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "id": 27,
+  "title": "Saturday Deal",
+  "organizationName": "Okpock",
+  "description": "Free Coupon",
+  "passType": "coupon",
+  "backgroundImage": "background.png",
+  "footerImage": "footer.png",
+  "iconImage": "icon.png",
+  "stripImage": "strip.png",
+  "createdAt": "2019-08-29T22:37:57+06:00",
+  "updatedAt": "2019-08-29T23:43:24+06:00"
 }
 ```
 

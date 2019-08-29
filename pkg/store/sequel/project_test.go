@@ -197,22 +197,30 @@ func TestSaveNewProject(t *testing.T) {
 
 func TestUpdateProject(t *testing.T) {
 	type project struct {
-		Desc string
-		Type api.PassType
+		Title string
+		Name  string
+		Desc  string
+		Type  api.PassType
 	}
 
 	testCases := []struct {
-		Name    string
-		Project project
-		NewDesc string
+		Name       string
+		Project    project
+		NewTitle   string
+		NewOrgName string
+		NewDesc    string
 	}{
 		{
 			Name: "Coupon",
 			Project: project{
-				Desc: "Free Coupon",
-				Type: api.Coupon,
+				Title: "Friday Deal",
+				Name:  "Okpock",
+				Desc:  "Free Coupon",
+				Type:  api.Coupon,
 			},
-			NewDesc: "Free Auction",
+			NewTitle:   "Saturday Deal",
+			NewOrgName: "Okpock Child",
+			NewDesc:    "Free Auction",
 		},
 	}
 
@@ -239,15 +247,17 @@ func TestUpdateProject(t *testing.T) {
 				return
 			}
 
-			p := api.NewProject(fakeString(), fakeString(), tc.Project.Desc, tc.Project.Type)
+			p := api.NewProject(tc.Project.Title,
+				tc.Project.Name,
+				tc.Project.Desc,
+				tc.Project.Type)
 
 			err = db.SaveNewProject(ctx, u, p)
 			if !assert.NoError(err) {
 				return
 			}
 
-			p.Description = tc.NewDesc
-			err = db.UpdateProject(ctx, p)
+			err = db.UpdateProject(ctx, tc.NewTitle, tc.NewOrgName, tc.NewDesc, p)
 			if !assert.NoError(err) {
 				return
 			}
@@ -258,7 +268,10 @@ func TestUpdateProject(t *testing.T) {
 			}
 
 			assert.Equal(p.ID, loaded.ID)
+			assert.Equal(p.Title, loaded.Title)
+			assert.Equal(p.OrganizationName, loaded.OrganizationName)
 			assert.Equal(p.Description, loaded.Description)
+			assert.True(loaded.UpdatedAt.Unix()-p.CreatedAt.Unix() > 0)
 		})
 	}
 }

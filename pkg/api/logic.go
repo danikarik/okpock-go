@@ -17,7 +17,7 @@ type ProjectStore interface {
 	LoadProjects(ctx context.Context, user *User) ([]*Project, error)
 
 	// UpdateProject ...
-	UpdateProject(ctx context.Context, project *Project) error
+	UpdateProject(ctx context.Context, title, organizationName, desc string, project *Project) error
 
 	// SetBackgroundImage ...
 	SetBackgroundImage(ctx context.Context, key string, project *Project) error

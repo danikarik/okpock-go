@@ -161,15 +161,20 @@ func (m *MySQL) LoadProjects(ctx context.Context, user *api.User) ([]*api.Projec
 }
 
 // UpdateProject ...
-func (m *MySQL) UpdateProject(ctx context.Context, project *api.Project) error {
+func (m *MySQL) UpdateProject(ctx context.Context, title, organizationName, desc string, project *api.Project) error {
 	err := checkProject(project, checkNilStruct|checkZeroID)
 	if err != nil {
 		return err
 	}
 
+	project.Title = title
+	project.OrganizationName = organizationName
+	project.Description = desc
 	project.UpdatedAt = time.Now()
 
 	query := m.builder.Update("projects").
+		Set("title", project.Title).
+		Set("organization_name", project.OrganizationName).
 		Set("description", project.Description).
 		Set("updated_at", project.UpdatedAt).
 		Where(sq.Eq{"id": project.ID})

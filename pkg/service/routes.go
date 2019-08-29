@@ -81,8 +81,7 @@ func (s *Service) withRouter() *Service {
 		projects.HandleFunc("/", s.createProjectHandler).Methods("POST")
 		projects.HandleFunc("/", s.userProjectsHandler).Methods("GET")
 		projects.HandleFunc("/{id:[0-9]+}", s.userProjectHandler).Methods("GET")
-		// TODO: UpdateProject
-		projects.HandleFunc("/{id:[0-9]+}", s.okHandler).Methods("PUT")
+		projects.HandleFunc("/{id:[0-9]+}", s.updateProjectHandler).Methods("PUT")
 		// TODO: SetBackgroundImage, SetFooterImage, SetIconImage, SetStripImage
 		projects.HandleFunc("/{id:[0-9]+}/upload", s.okHandler).Methods("PUT")
 	}
