@@ -10,17 +10,20 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
+      - name: Check out code into the working directory
+        uses: actions/checkout@master
+
       - name: Set up MySQL database
         run: mysql -uroot -proot -e 'CREATE DATABASE IF NOT EXISTS test_okpock;'
+
+      - name: Run migrations
+        run: mysql -uroot -proot test_okpock < ./migrations/up.sql
 
       - name: Set up Go 1.12
         uses: actions/setup-go@v1
         with:
           version: 1.12
         id: go
-
-      - name: Check out code into the Go module directory
-        uses: actions/checkout@master
 
       - name: Get dependencies
         env:
