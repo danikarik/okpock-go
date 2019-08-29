@@ -576,6 +576,38 @@ Response Body
 }
 ```
 
+### GET `/projects/`
+
+Response Codes
+
+- `200`
+- `401`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+[
+  {
+    "id": 27,
+    "title": "Friday Deal",
+    "organizationName": "Okpock",
+    "description": "Free Coupon",
+    "passType": "coupon",
+    "backgroundImage": "background.png",
+    "footerImage": "footer.png",
+    "iconImage": "icon.png",
+    "stripImage": "strip.png",
+    "createdAt": "2019-08-29T22:37:57+06:00",
+    "updatedAt": "2019-08-29T22:37:57+06:00"
+  }
+]
+```
+
 ## Author
 
 [@danikarik](https://github.com/danikarik)

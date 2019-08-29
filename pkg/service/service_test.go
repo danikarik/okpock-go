@@ -2,6 +2,8 @@ package service
 
 import (
 	"bytes"
+	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
@@ -96,4 +98,21 @@ func newHeader(h map[string]string) http.Header {
 		}
 	}
 	return header
+}
+
+func unmarshalJSON(r *http.Response, v interface{}) error {
+	data, err := ioutil.ReadAll(r.Body)
+	if err != nil {
+		return err
+	}
+	defer r.Body.Close()
+
+	fmt.Println(string(data))
+
+	err = json.Unmarshal(data, &v)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

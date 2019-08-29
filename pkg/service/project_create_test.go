@@ -64,6 +64,7 @@ func TestCreateProjectHandler(t *testing.T) {
 					tc.Request.OrganizationName,
 					tc.Request.Description,
 					api.PassType(tc.Request.PassType))
+
 				err = srv.env.Logic.SaveNewProject(ctx, user, project)
 				if !assert.NoError(err) {
 					return
@@ -83,6 +84,25 @@ func TestCreateProjectHandler(t *testing.T) {
 
 			if !assert.Equal(tc.Expected, resp.StatusCode) {
 				return
+			}
+
+			if resp.StatusCode == http.StatusCreated {
+				data := M{}
+				err = unmarshalJSON(resp, &data)
+				if !assert.NoError(err) {
+					return
+				}
+
+				id := int64(data["id"].(float64))
+				loaded, err := srv.env.Logic.LoadProject(ctx, user, id)
+				if !assert.NoError(err) {
+					return
+				}
+
+				assert.Equal(tc.Request.Title, loaded.Title)
+				assert.Equal(tc.Request.OrganizationName, loaded.OrganizationName)
+				assert.Equal(tc.Request.Description, loaded.Description)
+				assert.Equal(api.PassType(tc.Request.PassType), loaded.PassType)
 			}
 		})
 	}
