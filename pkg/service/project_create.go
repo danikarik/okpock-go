@@ -8,8 +8,8 @@ import (
 	"github.com/danikarik/okpock/pkg/api"
 )
 
-// CheckProjectRequest holds project info to be checked.
-type CheckProjectRequest struct {
+// CreateProjectRequest holds project info to be saved.
+type CreateProjectRequest struct {
 	Title            string `json:"title"`
 	OrganizationName string `json:"organizationName"`
 	Description      string `json:"description"`
@@ -17,7 +17,7 @@ type CheckProjectRequest struct {
 }
 
 // IsValid checks whether input is valid or not.
-func (r *CheckProjectRequest) IsValid() error {
+func (r *CreateProjectRequest) IsValid() error {
 	if r.Title == "" {
 		return errors.New("titlee is empty")
 	}
@@ -43,7 +43,7 @@ func (r *CheckProjectRequest) IsValid() error {
 }
 
 // String returns string representation of struct.
-func (r *CheckProjectRequest) String() string {
+func (r *CreateProjectRequest) String() string {
 	return fmt.Sprintf(
 		`{"title":"%s","organizationName":"%s","description":"%s","passType":"%s"}`,
 		r.Title,
@@ -53,35 +53,50 @@ func (r *CheckProjectRequest) String() string {
 	)
 }
 
-func (s *Service) checkProjectHandler(w http.ResponseWriter, r *http.Request) error {
+func (s *Service) createProjectHandler(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 
-	var req CheckProjectRequest
+	var req CreateProjectRequest
 	err := readJSON(r, &req)
 	if err != nil {
 		return s.httpError(w, r, http.StatusBadRequest, "ReadJSON", err)
 	}
 
-	exists, err := s.env.Logic.IsProjectExists(
-		ctx,
+	user, err := userFromContext(ctx)
+	if err != nil {
+		return s.httpError(w, r, http.StatusUnauthorized, "UserFromContext", err)
+	}
+
+	project := api.NewProject(
 		req.Title,
 		req.OrganizationName,
 		req.Description,
 		api.PassType(req.PassType),
 	)
+
+	exists, err := s.env.Logic.IsProjectExists(
+		ctx,
+		project.Title,
+		project.OrganizationName,
+		project.Description,
+		project.PassType,
+	)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "IsProjectExists", err)
 	}
-
-	code := http.StatusOK
 	if exists {
-		code = http.StatusNotAcceptable
+		return sendJSON(w, http.StatusNotAcceptable, M{
+			"title":            req.Title,
+			"organizationName": req.OrganizationName,
+			"description":      req.Description,
+			"passType":         req.PassType,
+		})
 	}
 
-	return sendJSON(w, code, M{
-		"title":            req.Title,
-		"organizationName": req.OrganizationName,
-		"description":      req.Description,
-		"passType":         req.PassType,
-	})
+	err = s.env.Logic.SaveNewProject(ctx, user, project)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "SaveNewProject", err)
+	}
+
+	return sendJSON(w, http.StatusCreated, M{"id": project.ID})
 }

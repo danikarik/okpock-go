@@ -543,6 +543,39 @@ Response Body
 }
 ```
 
+### POST `/projects/`
+
+Request Body
+
+```json
+{
+  "title": "Friday Deal",
+  "organizationName": "Okpock",
+  "description": "Free Coupon",
+  "passType": "coupon"
+}
+```
+
+Response Codes
+
+- `200`
+- `401`
+- `403`
+- `406`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "id": 27
+}
+```
+
 ## Author
 
 [@danikarik](https://github.com/danikarik)

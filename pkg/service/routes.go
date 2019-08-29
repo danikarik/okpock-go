@@ -78,8 +78,7 @@ func (s *Service) withRouter() *Service {
 
 		projects := protected.PathPrefix("/projects").Subrouter()
 		projects.HandleFunc("/check", s.checkProjectHandler).Methods("POST")
-		// TODO: SaveNewProject
-		projects.HandleFunc("/", s.okHandler).Methods("POST")
+		projects.HandleFunc("/", s.createProjectHandler).Methods("POST")
 		// TODO: LoadProjects
 		projects.HandleFunc("/", s.okHandler).Methods("GET")
 		// TODO: LoadProject
