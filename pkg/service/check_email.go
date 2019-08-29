@@ -40,9 +40,11 @@ func (s *Service) checkEmailHandler(w http.ResponseWriter, r *http.Request) erro
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "IsEmailExists", err)
 	}
+
+	code := http.StatusOK
 	if exists {
-		return sendJSON(w, http.StatusNotAcceptable, M{"email": req.Email})
+		code = http.StatusNotAcceptable
 	}
 
-	return sendJSON(w, http.StatusOK, M{"email": req.Email})
+	return sendJSON(w, code, M{"email": req.Email})
 }

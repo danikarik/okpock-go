@@ -276,6 +276,7 @@ Request Body
 Response Codes
 
 - `200`
+- `403`
 - `406`
 - `500`
 
@@ -304,6 +305,7 @@ Request Body
 Response Codes
 
 - `200`
+- `403`
 - `406`
 - `500`
 
@@ -503,6 +505,41 @@ Response Body
 {
   "userMetaData": {},
   "updatedAt": "2019-08-05T23:27:28.981648+06:00"
+}
+```
+
+### POST `/projects/check`
+
+Request Body
+
+```json
+{
+  "title": "Friday Deal",
+  "organizationName": "Okpock",
+  "description": "Free Coupon",
+  "passType": "coupon"
+}
+```
+
+Response Codes
+
+- `200`
+- `403`
+- `406`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "title": "Friday Deal",
+  "organizationName": "Okpock",
+  "description": "Free Coupon",
+  "passType": "coupon"
 }
 ```
 

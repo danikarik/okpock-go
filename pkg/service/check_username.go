@@ -40,9 +40,11 @@ func (s *Service) checkUsernameHandler(w http.ResponseWriter, r *http.Request) e
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "IsUsernameExists", err)
 	}
+
+	code := http.StatusOK
 	if exists {
-		return sendJSON(w, http.StatusNotAcceptable, M{"username": req.Username})
+		code = http.StatusNotAcceptable
 	}
 
-	return sendJSON(w, http.StatusOK, M{"username": req.Username})
+	return sendJSON(w, code, M{"username": req.Username})
 }

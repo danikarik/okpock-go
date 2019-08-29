@@ -77,8 +77,7 @@ func (s *Service) withRouter() *Service {
 		account.HandleFunc("/metadata", s.metaDataChangeHandler).Methods("PUT")
 
 		projects := protected.PathPrefix("/projects").Subrouter()
-		// TODO: IsProjectExists
-		projects.HandleFunc("/check", s.okHandler).Methods("POST")
+		projects.HandleFunc("/check", s.checkProjectHandler).Methods("POST")
 		// TODO: SaveNewProject
 		projects.HandleFunc("/", s.okHandler).Methods("POST")
 		// TODO: LoadProjects

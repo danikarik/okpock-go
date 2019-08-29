@@ -9,6 +9,8 @@ import (
 	"os"
 	"testing"
 
+	"github.com/danikarik/okpock/pkg/secure"
+
 	"github.com/danikarik/okpock/pkg/api"
 	"github.com/danikarik/okpock/pkg/env"
 	_ "github.com/go-sql-driver/mysql"
@@ -16,12 +18,25 @@ import (
 	"go.uber.org/zap"
 )
 
+func fakeString() string {
+	return uuid.NewV4().String()
+}
+
 func fakeUsername() string {
 	return uuid.NewV4().String()
 }
 
 func fakeEmail() string {
 	return uuid.NewV4().String() + "@example.com"
+}
+
+func fakePassword() string {
+	raw := "test"
+	hash, err := secure.NewPassword(raw)
+	if err != nil {
+		return raw
+	}
+	return hash
 }
 
 func fakeFile(path string) ([]byte, error) {
