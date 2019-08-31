@@ -8,6 +8,7 @@ type Config struct {
 	Stage        string `envconfig:"stage" default:"development" desc:"Application Stage Environment"`
 	Port         string `envconfig:"port" default:"5000" desc:"Application Port Number"`
 	DatabaseURL  string `envconfig:"database_url" required:"true" desc:"Database URL"`
+	UploadBucket string `envconfig:"upload_bucket" required:"true" desc:"User Uploads Bucket Name"`
 	PassesBucket string `envconfig:"passes_bucket" required:"true" desc:"Passes Bucket Name"`
 	ServerSecret string `envconfig:"server_secret" required:"true" desc:"JWT Server Secret"`
 	MailerRegion string `envconfig:"mailer_region" required:"true" desc:"Mailer Region"`

@@ -76,7 +76,7 @@ func TestCreateProjectHandler(t *testing.T) {
 				return
 			}
 
-			req := authRequest(srv, user, newRequest("POST", "/projects/", body, nil, nil))
+			req := authRequest(srv, user, newRequest("POST", "/projects", body, nil, nil))
 			rec := httptest.NewRecorder()
 
 			srv.ServeHTTP(rec, req)

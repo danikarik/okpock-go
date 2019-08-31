@@ -2,6 +2,7 @@ package api
 
 import (
 	"crypto/sha256"
+	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"time"
@@ -24,6 +25,9 @@ type Upload struct {
 	UUID     string `json:"uuid" db:"uuid"`
 	Filename string `json:"filename" db:"filename"`
 	Hash     string `json:"hash" db:"hash"`
+
+	Body        []byte `json:"-" db:"-"`
+	ContentType string `json:"-" db:"-"`
 
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`
 }
@@ -60,6 +64,6 @@ func Hash(data []byte) (string, error) {
 		return "", err
 	}
 
-	hash := h.Sum(nil)
-	return string(hash), nil
+	sum := h.Sum(nil)
+	return base64.URLEncoding.EncodeToString(sum), nil
 }

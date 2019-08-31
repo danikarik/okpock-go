@@ -16,6 +16,7 @@ func NewMock() (*Env, error) {
 		Stage:        "test",
 		Port:         "5000",
 		DatabaseURL:  os.Getenv("TEST_DATABASE_URL"),
+		UploadBucket: os.Getenv("TEST_UPLOAD_BUCKET"),
 		PassesBucket: os.Getenv("TEST_PASSES_BUCKET"),
 		ServerSecret: os.Getenv("TEST_SERVER_SECRET"),
 		MailerRegion: os.Getenv("TEST_MAILER_REGION"),

@@ -12,8 +12,6 @@ const (
 	appleLatestRoute     string = "/passes/{passTypeID}/{serialNumber}"
 )
 
-const uploadImageRoute string = "/{id:[0-9]+}/upload/{image:(background|footer|icon|strip)}"
-
 var verifyQueries = []string{
 	"type", "{type}",
 	"token", "{token}",
@@ -70,6 +68,7 @@ func (s *Service) withRouter() *Service {
 
 		user := protected.NewRoute().Subrouter()
 		user.HandleFunc("/invite", s.inviteHandler).Methods("POST")
+		user.HandleFunc("/upload", s.uploadHandler).Methods("POST")
 
 		account := protected.PathPrefix("/account").Subrouter()
 		account.HandleFunc("/info", s.accountInfoHandler).Methods("GET")
@@ -80,11 +79,11 @@ func (s *Service) withRouter() *Service {
 
 		projects := protected.PathPrefix("/projects").Subrouter()
 		projects.HandleFunc("/check", s.checkProjectHandler).Methods("POST")
-		projects.HandleFunc("/", s.createProjectHandler).Methods("POST")
-		projects.HandleFunc("/", s.userProjectsHandler).Methods("GET")
+		projects.HandleFunc("", s.createProjectHandler).Methods("POST")
+		projects.HandleFunc("", s.userProjectsHandler).Methods("GET")
 		projects.HandleFunc("/{id:[0-9]+}", s.userProjectHandler).Methods("GET")
 		projects.HandleFunc("/{id:[0-9]+}", s.updateProjectHandler).Methods("PUT")
-		projects.HandleFunc(uploadImageRoute, s.uploadProjectImage).Methods("POST")
+		projects.HandleFunc("/{id:[0-9]+}/upload/{image}", s.uploadProjectImage).Methods("POST")
 	}
 
 	s.handler = s.corsMiddleware(r)

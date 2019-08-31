@@ -47,7 +47,7 @@ func TestUserProjectsHandler(t *testing.T) {
 				}
 			}
 
-			req := authRequest(srv, user, newRequest("GET", "/projects/", nil, nil, nil))
+			req := authRequest(srv, user, newRequest("GET", "/projects", nil, nil, nil))
 			rec := httptest.NewRecorder()
 
 			srv.ServeHTTP(rec, req)

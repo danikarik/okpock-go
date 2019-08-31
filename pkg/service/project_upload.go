@@ -1,12 +1,8 @@
 package service
 
 import (
-	"io/ioutil"
 	"net/http"
 )
-
-// MB is a megabyte.
-const MB = 1 << 20
 
 const (
 	backgroundImage = "background"
@@ -14,21 +10,6 @@ const (
 	iconImage       = "icon"
 	stripImage      = "strip"
 )
-
-func (s *Service) readImageUpload(r *http.Request) ([]byte, error) {
-	err := r.ParseMultipartForm(10 * MB)
-	if err != nil {
-		return nil, err
-	}
-
-	file, _, err := r.FormFile("file")
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	return ioutil.ReadAll(file)
-}
 
 func (s *Service) uploadProjectImage(w http.ResponseWriter, r *http.Request) error {
 	// ctx := r.Context()
