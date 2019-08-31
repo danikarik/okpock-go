@@ -77,3 +77,21 @@ CREATE TABLE IF NOT EXISTS `user_projects` (
     PRIMARY KEY (`id`),
     UNIQUE KEY `projects_user_and_project_unique_idx` (`user_id`, `project_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `uploads` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `uuid` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `filename` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `hash` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `created_at` TIMESTAMP NULL DEFAULT NOW(),
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uploads_alt_unique_idx` (`uuid`, `filename`, `hash`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `user_uploads` (
+    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+    `user_id` int(10) unsigned NOT NULL,
+    `upload_id` int(10) unsigned NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `uploads_user_and_upload_unique_idx` (`user_id`, `upload_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

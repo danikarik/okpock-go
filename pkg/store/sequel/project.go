@@ -123,8 +123,9 @@ func (m *MySQL) LoadProject(ctx context.Context, user *api.User, id int64) (*api
 
 // LoadProjects ...
 func (m *MySQL) LoadProjects(ctx context.Context, user *api.User) ([]*api.Project, error) {
-	if user == nil || user.ID == 0 {
-		return nil, store.ErrZeroID
+	err := checkUser(user, checkNilStruct|checkZeroID)
+	if err != nil {
+		return nil, err
 	}
 
 	var projects = []*api.Project{}

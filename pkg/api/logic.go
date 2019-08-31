@@ -32,7 +32,22 @@ type ProjectStore interface {
 	SetStripImage(ctx context.Context, key string, project *Project) error
 }
 
+// UploadStore implements user upload related methods.
+type UploadStore interface {
+	// IsUploadExists ...
+	IsUploadExists(ctx context.Context, user *User, filename, hash string) (bool, error)
+	// SaveNewUpload ...
+	SaveNewUpload(ctx context.Context, user *User, upload *Upload) error
+	// LoadUpload ...
+	LoadUpload(ctx context.Context, user *User, id int64) (*Upload, error)
+	// LoadUploadByUUID ...
+	LoadUploadByUUID(ctx context.Context, user *User, uuid string) (*Upload, error)
+	// LoadUploads ...
+	LoadUploads(ctx context.Context, user *User) ([]*Upload, error)
+}
+
 // Logic implements method for business logic.
 type Logic interface {
 	ProjectStore
+	UploadStore
 }

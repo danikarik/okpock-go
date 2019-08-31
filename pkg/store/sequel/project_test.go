@@ -65,10 +65,7 @@ func TestIsProjectExists(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable, tempProjectsTable, tempUserProjectsTable}
-			data := []string{}
-
-			conn, err := executeTempScripts(ctx, t, schema, data)
+			conn, err := testConnection(ctx, t)
 			if !assert.NoError(err) {
 				return
 			}
@@ -140,10 +137,7 @@ func TestSaveNewProject(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable, tempProjectsTable, tempUserProjectsTable}
-			data := []string{}
-
-			conn, err := executeTempScripts(ctx, t, schema, data)
+			conn, err := testConnection(ctx, t)
 			if !assert.NoError(err) {
 				return
 			}
@@ -213,14 +207,14 @@ func TestUpdateProject(t *testing.T) {
 		{
 			Name: "Coupon",
 			Project: project{
-				Title: "Friday Deal",
-				Name:  "Okpock",
-				Desc:  "Free Coupon",
+				Title: fakeString(),
+				Name:  fakeString(),
+				Desc:  fakeString(),
 				Type:  api.Coupon,
 			},
-			NewTitle:   "Saturday Deal",
-			NewOrgName: "Okpock Child",
-			NewDesc:    "Free Auction",
+			NewTitle:   fakeString(),
+			NewOrgName: fakeString(),
+			NewDesc:    fakeString(),
 		},
 	}
 
@@ -229,10 +223,7 @@ func TestUpdateProject(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable, tempProjectsTable, tempUserProjectsTable}
-			data := []string{}
-
-			conn, err := executeTempScripts(ctx, t, schema, data)
+			conn, err := testConnection(ctx, t)
 			if !assert.NoError(err) {
 				return
 			}
@@ -271,7 +262,6 @@ func TestUpdateProject(t *testing.T) {
 			assert.Equal(p.Title, loaded.Title)
 			assert.Equal(p.OrganizationName, loaded.OrganizationName)
 			assert.Equal(p.Description, loaded.Description)
-			assert.True(loaded.UpdatedAt.Unix()-p.CreatedAt.Unix() > 0)
 		})
 	}
 }
@@ -302,10 +292,7 @@ func TestSetImage(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable, tempProjectsTable, tempUserProjectsTable}
-			data := []string{}
-
-			conn, err := executeTempScripts(ctx, t, schema, data)
+			conn, err := testConnection(ctx, t)
 			if !assert.NoError(err) {
 				return
 			}

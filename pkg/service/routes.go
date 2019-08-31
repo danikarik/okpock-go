@@ -12,6 +12,8 @@ const (
 	appleLatestRoute     string = "/passes/{passTypeID}/{serialNumber}"
 )
 
+const uploadImageRoute string = "/{id:[0-9]+}/upload/{image:(background|footer|icon|strip)}"
+
 var verifyQueries = []string{
 	"type", "{type}",
 	"token", "{token}",
@@ -82,8 +84,7 @@ func (s *Service) withRouter() *Service {
 		projects.HandleFunc("/", s.userProjectsHandler).Methods("GET")
 		projects.HandleFunc("/{id:[0-9]+}", s.userProjectHandler).Methods("GET")
 		projects.HandleFunc("/{id:[0-9]+}", s.updateProjectHandler).Methods("PUT")
-		// TODO: SetBackgroundImage, SetFooterImage, SetIconImage, SetStripImage
-		projects.HandleFunc("/{id:[0-9]+}/upload", s.okHandler).Methods("PUT")
+		projects.HandleFunc(uploadImageRoute, s.uploadProjectImage).Methods("POST")
 	}
 
 	s.handler = s.corsMiddleware(r)

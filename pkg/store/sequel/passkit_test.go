@@ -2,7 +2,6 @@ package sequel_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 	"time"
 
@@ -26,10 +25,7 @@ func TestInsertPass(t *testing.T) {
 		PassTypeID:   "com.example.pass",
 	}
 
-	schema := []string{tempPassesTable}
-	data := []string{}
-
-	conn, err := executeTempScripts(ctx, t, schema, data)
+	conn, err := testConnection(ctx, t)
 	if !assert.NoError(err) {
 		return
 	}
@@ -52,30 +48,24 @@ func TestUpdatePass(t *testing.T) {
 		PassTypeID   string
 		UpdatedAt    time.Time
 	}{
-		SerialNumber: "2c91cb65-29ad-465a-bbbc-968f0ca224e9",
+		SerialNumber: uuid.NewV4().String(),
 		AuthToken:    "secret",
 		PassTypeID:   "com.example.pass",
 		UpdatedAt:    defaultTime,
 	}
 
-	schema := []string{tempPassesTable}
-	data := []string{
-		fmt.Sprintf(
-			insertPassesTable,
-			testCase.SerialNumber,
-			testCase.AuthToken,
-			testCase.PassTypeID,
-			testCase.UpdatedAt.Format(sequel.TimeFormat),
-		),
-	}
-
-	conn, err := executeTempScripts(ctx, t, schema, data)
+	conn, err := testConnection(ctx, t)
 	if !assert.NoError(err) {
 		return
 	}
 	defer conn.Close()
 
 	db := sequel.New(conn)
+
+	err = db.InsertPass(ctx, testCase.SerialNumber, testCase.AuthToken, testCase.PassTypeID)
+	assert.NoError(err)
+
+	time.Sleep(1 * time.Second)
 
 	err = db.UpdatePass(ctx, testCase.SerialNumber)
 	assert.NoError(err)
@@ -95,24 +85,16 @@ func TestFindPass(t *testing.T) {
 		PassTypeID:   "com.example.pass",
 	}
 
-	schema := []string{tempPassesTable}
-	data := []string{
-		fmt.Sprintf(
-			insertPassesTable,
-			testCase.SerialNumber,
-			testCase.AuthToken,
-			testCase.PassTypeID,
-			time.Now().Format(sequel.TimeFormat),
-		),
-	}
-
-	conn, err := executeTempScripts(ctx, t, schema, data)
+	conn, err := testConnection(ctx, t)
 	if !assert.NoError(err) {
 		return
 	}
 	defer conn.Close()
 
 	db := sequel.New(conn)
+
+	err = db.InsertPass(ctx, testCase.SerialNumber, testCase.AuthToken, testCase.PassTypeID)
+	assert.NoError(err)
 
 	ok, err := db.FindPass(ctx, testCase.SerialNumber, testCase.AuthToken, testCase.PassTypeID)
 	assert.NoError(err)
@@ -143,24 +125,17 @@ func TestFindRegistration(t *testing.T) {
 		},
 	}
 
-	schema := []string{tempRegistrationsTable}
-	data := []string{
-		fmt.Sprintf(
-			insertRegistrationsTable,
-			testCases[0].DeviceID,
-			uuid.NewV4().String(),
-			testCases[0].SerialNumber,
-			testCases[0].PassTypeID,
-		),
-	}
-
-	conn, err := executeTempScripts(ctx, t, schema, data)
+	conn, err := testConnection(ctx, t)
 	if !assert.NoError(err) {
 		return
 	}
 	defer conn.Close()
 
 	db := sequel.New(conn)
+
+	err = db.InsertRegistration(ctx, testCases[0].DeviceID, uuid.NewV4().String(),
+		testCases[0].SerialNumber, testCases[0].PassTypeID)
+	assert.NoError(err)
 
 	for _, c := range testCases {
 		ok, err := db.FindRegistration(ctx, c.DeviceID, c.SerialNumber)
@@ -187,34 +162,30 @@ func TestFindSerialNumbers(t *testing.T) {
 		Expected:     []string{"1967bce8-fb9c-4be7-8946-c1a3a7607a88"},
 	}
 
-	schema := []string{
-		tempPassesTable,
-		tempRegistrationsTable,
-	}
-	data := []string{
-		fmt.Sprintf(
-			insertPassesTable,
-			testCase.SerialNumber,
-			testCase.AuthToken,
-			testCase.PassTypeID,
-			time.Now().Format(sequel.TimeFormat),
-		),
-		fmt.Sprintf(
-			insertRegistrationsTable,
-			testCase.DeviceID,
-			uuid.NewV4().String(),
-			testCase.SerialNumber,
-			testCase.PassTypeID,
-		),
-	}
-
-	conn, err := executeTempScripts(ctx, t, schema, data)
+	conn, err := testConnection(ctx, t)
 	if !assert.NoError(err) {
 		return
 	}
 	defer conn.Close()
 
 	db := sequel.New(conn)
+
+	err = db.InsertPass(
+		ctx,
+		testCase.SerialNumber,
+		testCase.AuthToken,
+		testCase.PassTypeID,
+	)
+	assert.NoError(err)
+
+	err = db.InsertRegistration(
+		ctx,
+		testCase.DeviceID,
+		uuid.NewV4().String(),
+		testCase.SerialNumber,
+		testCase.PassTypeID,
+	)
+	assert.NoError(err)
 
 	sns, err := db.FindSerialNumbers(ctx, testCase.DeviceID, testCase.PassTypeID, "")
 	assert.NoError(err)
@@ -238,24 +209,21 @@ func TestLatestPass(t *testing.T) {
 		UpdatedAt:    defaultTime,
 	}
 
-	schema := []string{tempPassesTable}
-	data := []string{
-		fmt.Sprintf(
-			insertPassesTable,
-			testCase.SerialNumber,
-			testCase.AuthToken,
-			testCase.PassTypeID,
-			testCase.UpdatedAt.Format(sequel.TimeFormat),
-		),
-	}
-
-	conn, err := executeTempScripts(ctx, t, schema, data)
+	conn, err := testConnection(ctx, t)
 	if !assert.NoError(err) {
 		return
 	}
 	defer conn.Close()
 
 	db := sequel.New(conn)
+
+	err = db.InsertPass(
+		ctx,
+		testCase.SerialNumber,
+		testCase.AuthToken,
+		testCase.PassTypeID,
+	)
+	assert.NoError(err)
 
 	lastUpdate, err := db.LatestPass(ctx, testCase.SerialNumber, testCase.AuthToken, testCase.PassTypeID)
 	assert.NoError(err)
@@ -278,10 +246,7 @@ func TestInsertRegistration(t *testing.T) {
 		PassTypeID:   "com.example.pass",
 	}
 
-	schema := []string{tempRegistrationsTable}
-	data := []string{}
-
-	conn, err := executeTempScripts(ctx, t, schema, data)
+	conn, err := testConnection(ctx, t)
 	if !assert.NoError(err) {
 		return
 	}
@@ -309,24 +274,22 @@ func TestDeleteRegistration(t *testing.T) {
 		PassTypeID:   "com.example.pass",
 	}
 
-	schema := []string{tempRegistrationsTable}
-	data := []string{
-		fmt.Sprintf(
-			insertRegistrationsTable,
-			testCase.DeviceID,
-			testCase.PushToken,
-			testCase.SerialNumber,
-			testCase.PassTypeID,
-		),
-	}
-
-	conn, err := executeTempScripts(ctx, t, schema, data)
+	conn, err := testConnection(ctx, t)
 	if !assert.NoError(err) {
 		return
 	}
 	defer conn.Close()
 
 	db := sequel.New(conn)
+
+	err = db.InsertRegistration(
+		ctx,
+		testCase.DeviceID,
+		testCase.PushToken,
+		testCase.SerialNumber,
+		testCase.PassTypeID,
+	)
+	assert.NoError(err)
 
 	ok, err := db.DeleteRegistration(ctx, testCase.DeviceID, testCase.SerialNumber, testCase.PassTypeID)
 	assert.NoError(err)
@@ -347,10 +310,7 @@ func TestInsertLog(t *testing.T) {
 		Message:    "test",
 	}
 
-	schema := []string{tempLogsTable}
-	data := []string{}
-
-	conn, err := executeTempScripts(ctx, t, schema, data)
+	conn, err := testConnection(ctx, t)
 	if !assert.NoError(err) {
 		return
 	}

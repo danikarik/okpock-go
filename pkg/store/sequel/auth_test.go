@@ -2,7 +2,6 @@ package sequel_test
 
 import (
 	"context"
-	"fmt"
 	"testing"
 	"time"
 
@@ -41,26 +40,21 @@ func TestUsernameExists(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable}
-			data := []string{}
-
-			for _, uname := range tc.SavedUsernames {
-				sql := fmt.Sprintf(
-					insertUsersTable,
-					uuid.NewV4().String()+"@example.com",
-					uname,
-					"test",
-				)
-				data = append(data, sql)
-			}
-
-			conn, err := executeTempScripts(ctx, t, schema, data)
+			conn, err := testConnection(ctx, t)
 			if !assert.NoError(err) {
 				return
 			}
 			defer conn.Close()
 
 			db := sequel.New(conn)
+
+			for _, uname := range tc.SavedUsernames {
+				user := api.NewUser(uname, fakeEmail(), "test", nil)
+				err = db.SaveNewUser(ctx, user)
+				if !assert.NoError(err) {
+					return
+				}
+			}
 
 			exists, err := db.IsUsernameExists(ctx, tc.NewUsername)
 			assert.NoError(err)
@@ -95,26 +89,21 @@ func TestEmailExists(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable}
-			data := []string{}
-
-			for _, email := range tc.SavedEmails {
-				sql := fmt.Sprintf(
-					insertUsersTable,
-					email,
-					uuid.NewV4().String(),
-					"test",
-				)
-				data = append(data, sql)
-			}
-
-			conn, err := executeTempScripts(ctx, t, schema, data)
+			conn, err := testConnection(ctx, t)
 			if !assert.NoError(err) {
 				return
 			}
 			defer conn.Close()
 
 			db := sequel.New(conn)
+
+			for _, email := range tc.SavedEmails {
+				user := api.NewUser(fakeUsername(), email, "test", nil)
+				err = db.SaveNewUser(ctx, user)
+				if !assert.NoError(err) {
+					return
+				}
+			}
 
 			exists, err := db.IsEmailExists(ctx, tc.NewEmail)
 			assert.NoError(err)
@@ -172,10 +161,7 @@ func TestSaveNewUser(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable}
-			data := []string{}
-
-			conn, err := executeTempScripts(ctx, t, schema, data)
+			conn, err := testConnection(ctx, t)
 			if !assert.NoError(err) {
 				return
 			}
@@ -203,10 +189,7 @@ func TestSaveInvalidUser(t *testing.T) {
 	ctx := context.Background()
 	assert := assert.New(t)
 
-	schema := []string{tempUsersTable}
-	data := []string{}
-
-	conn, err := executeTempScripts(ctx, t, schema, data)
+	conn, err := testConnection(ctx, t)
 	if !assert.NoError(err) {
 		return
 	}
@@ -248,10 +231,7 @@ func TestLoadUser(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable}
-			data := []string{}
-
-			conn, err := executeTempScripts(ctx, t, schema, data)
+			conn, err := testConnection(ctx, t)
 			if !assert.NoError(err) {
 				return
 			}
@@ -371,10 +351,7 @@ func TestAuthenticate(t *testing.T) {
 			assert := assert.New(t)
 			now := time.Now()
 
-			schema := []string{tempUsersTable}
-			data := []string{}
-
-			conn, err := executeTempScripts(ctx, t, schema, data)
+			conn, err := testConnection(ctx, t)
 			if !assert.NoError(err) {
 				return
 			}
@@ -454,10 +431,7 @@ func TestConfirmUser(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable}
-			data := []string{}
-
-			conn, err := executeTempScripts(ctx, t, schema, data)
+			conn, err := testConnection(ctx, t)
 			if !assert.NoError(err) {
 				return
 			}
@@ -529,10 +503,7 @@ func TestSetConfirmationToken(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable}
-			data := []string{}
-
-			conn, err := executeTempScripts(ctx, t, schema, data)
+			conn, err := testConnection(ctx, t)
 			if !assert.NoError(err) {
 				return
 			}
@@ -616,10 +587,7 @@ func TestRecoverUser(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable}
-			data := []string{}
-
-			conn, err := executeTempScripts(ctx, t, schema, data)
+			conn, err := testConnection(ctx, t)
 			if !assert.NoError(err) {
 				return
 			}
@@ -707,10 +675,7 @@ func TestEmailChange(t *testing.T) {
 			ctx := context.Background()
 			assert := assert.New(t)
 
-			schema := []string{tempUsersTable}
-			data := []string{}
-
-			conn, err := executeTempScripts(ctx, t, schema, data)
+			conn, err := testConnection(ctx, t)
 			if !assert.NoError(err) {
 				return
 			}
@@ -765,10 +730,7 @@ func TestUpdateUsername(t *testing.T) {
 	ctx := context.Background()
 	assert := assert.New(t)
 
-	schema := []string{tempUsersTable}
-	data := []string{}
-
-	conn, err := executeTempScripts(ctx, t, schema, data)
+	conn, err := testConnection(ctx, t)
 	if !assert.NoError(err) {
 		return
 	}
@@ -813,10 +775,7 @@ func TestUpdatePassword(t *testing.T) {
 	ctx := context.Background()
 	assert := assert.New(t)
 
-	schema := []string{tempUsersTable}
-	data := []string{}
-
-	conn, err := executeTempScripts(ctx, t, schema, data)
+	conn, err := testConnection(ctx, t)
 	if !assert.NoError(err) {
 		return
 	}
@@ -872,10 +831,7 @@ func TestUpdateMetaData(t *testing.T) {
 	ctx := context.Background()
 	assert := assert.New(t)
 
-	schema := []string{tempUsersTable}
-	data := []string{}
-
-	conn, err := executeTempScripts(ctx, t, schema, data)
+	conn, err := testConnection(ctx, t)
 	if !assert.NoError(err) {
 		return
 	}
