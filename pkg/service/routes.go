@@ -83,7 +83,7 @@ func (s *Service) withRouter() *Service {
 		projects.HandleFunc("", s.userProjectsHandler).Methods("GET")
 		projects.HandleFunc("/{id:[0-9]+}", s.userProjectHandler).Methods("GET")
 		projects.HandleFunc("/{id:[0-9]+}", s.updateProjectHandler).Methods("PUT")
-		projects.HandleFunc("/{id:[0-9]+}/upload/{image}", s.uploadProjectImage).Methods("POST")
+		projects.HandleFunc("/{id:[0-9]+}/upload", s.uploadProjectImage).Methods("POST")
 	}
 
 	s.handler = s.corsMiddleware(r)

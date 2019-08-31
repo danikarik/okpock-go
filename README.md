@@ -360,6 +360,34 @@ Response Body
 }
 ```
 
+### POST `/upload`
+
+`file` multipart field
+
+Response Codes
+
+- `201`
+- `400`
+- `401`
+- `406`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "id": 1,
+  "uuid": "1/4553abc6-64ba-47e9-80e9-51b214faed4b",
+  "filename": "gopher.jpg",
+  "hash": "i1hNKTFWBI18JOWn9VcSENiteao3aexiPHCjax4OtZg=",
+  "createdAt": "2019-09-01T03:23:14.162087+06:00"
+}
+```
+
 ### GET `/account/info`
 
 Response Codes
@@ -677,6 +705,55 @@ Response Body
   "footerImage": "footer.png",
   "iconImage": "icon.png",
   "stripImage": "strip.png",
+  "createdAt": "2019-08-29T22:37:57+06:00",
+  "updatedAt": "2019-08-29T23:43:24+06:00"
+}
+```
+
+### POST `/projects/{id}/upload`
+
+Request Body
+
+```json
+{
+  "uuid": "1/3165f717-0086-40de-aa01-eab5104c8e0f",
+  "type": "background"
+}
+```
+
+Available types
+
+- `background`
+- `footer`
+- `icon`
+- `strip`
+
+Response Codes
+
+- `200`
+- `400`
+- `401`
+- `404`
+- `406`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "id": 27,
+  "title": "Saturday Deal",
+  "organizationName": "Okpock",
+  "description": "Free Coupon",
+  "passType": "coupon",
+  "backgroundImage": "1/3165f717-0086-40de-aa01-eab5104c8e0f",
+  "footerImage": "",
+  "iconImage": "",
+  "stripImage": "",
   "createdAt": "2019-08-29T22:37:57+06:00",
   "updatedAt": "2019-08-29T23:43:24+06:00"
 }

@@ -18,7 +18,7 @@ type UpdateProjectRequest struct {
 // IsValid checks whether input is valid or not.
 func (r *UpdateProjectRequest) IsValid() error {
 	if r.Title == "" {
-		return errors.New("titlee is empty")
+		return errors.New("title is empty")
 	}
 	if r.OrganizationName == "" {
 		return errors.New("organization name is empty")
