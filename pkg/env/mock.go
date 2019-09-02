@@ -28,12 +28,14 @@ func NewMock() (*Env, error) {
 	}
 
 	cleanUp := []string{
-		"DELETE FROM user_projects;",
-		"DELETE FROM projects;",
-		"DELETE FROM users;",
-		"DELETE FROM logs;",
-		"DELETE FROM registrations;",
-		"DELETE FROM passes;",
+		"DELETE FROM `user_uploads`",
+		"DELETE FROM `uploads`",
+		"DELETE FROM `user_projects`",
+		"DELETE FROM `projects`",
+		"DELETE FROM `users`",
+		"DELETE FROM `logs`",
+		"DELETE FROM `registrations`",
+		"DELETE FROM `passes`",
 	}
 
 	for _, script := range cleanUp {

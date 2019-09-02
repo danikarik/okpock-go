@@ -87,7 +87,7 @@ func (m *mockHandler) UploadFile(ctx context.Context, bucket string, obj *filest
 		Body:          obj.Body,
 	}
 
-	index := mockIndex(f.Bucket, f.Key)
+	index := mockIndex(f.Bucket, obj.Path())
 	m.files[index] = f
 
 	return nil

@@ -45,7 +45,7 @@ func (s *Service) readImageUpload(r *http.Request) (*api.Upload, error) {
 	}, nil
 }
 
-func (s *Service) uploadHandler(w http.ResponseWriter, r *http.Request) error {
+func (s *Service) createUploadHandler(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 
 	upload, err := s.readImageUpload(r)
@@ -87,4 +87,68 @@ func (s *Service) uploadHandler(w http.ResponseWriter, r *http.Request) error {
 	}
 
 	return sendJSON(w, http.StatusCreated, upload)
+}
+
+func (s *Service) uploadsHandler(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+
+	user, err := userFromContext(ctx)
+	if err != nil {
+		return s.httpError(w, r, http.StatusUnauthorized, "UserFromContext", err)
+	}
+
+	uploads, err := s.env.Logic.LoadUploads(ctx, user)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "LoadUploads", err)
+	}
+
+	return sendJSON(w, http.StatusOK, uploads)
+}
+
+func (s *Service) uploadHandler(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+
+	user, err := userFromContext(ctx)
+	if err != nil {
+		return s.httpError(w, r, http.StatusUnauthorized, "UserFromContext", err)
+	}
+
+	id, err := s.idFromRequest(r, "id")
+	if err != nil {
+		return s.httpError(w, r, http.StatusBadRequest, "IDFromRequest", err)
+	}
+
+	upload, err := s.env.Logic.LoadUpload(ctx, user, id)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "LoadUpload", err)
+	}
+
+	return sendJSON(w, http.StatusOK, upload)
+}
+
+func (s *Service) uploadFileHandler(w http.ResponseWriter, r *http.Request) error {
+	ctx := r.Context()
+
+	user, err := userFromContext(ctx)
+	if err != nil {
+		return s.httpError(w, r, http.StatusUnauthorized, "UserFromContext", err)
+	}
+
+	id, err := s.idFromRequest(r, "id")
+	if err != nil {
+		return s.httpError(w, r, http.StatusBadRequest, "IDFromRequest", err)
+	}
+
+	upload, err := s.env.Logic.LoadUpload(ctx, user, id)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "LoadUpload", err)
+	}
+
+	bucket := s.env.Config.UploadBucket
+	object, err := s.env.Storage.GetFile(ctx, bucket, upload.UUID)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "GetFile", err)
+	}
+
+	return object.Serve(w)
 }

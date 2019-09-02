@@ -62,13 +62,13 @@ func TestMockUploadFile(t *testing.T) {
 				return
 			}
 
-			obj, err := store.GetFile(ctx, bucket, tc.Object.Key)
+			obj, err := store.GetFile(ctx, bucket, tc.Object.Path())
 			if !assert.NoError(err) {
 				return
 			}
 
 			assert.Equal(tc.Object.Prefix, obj.Prefix)
-			assert.Equal(tc.Object.Key, obj.Key)
+			assert.Equal(tc.Object.Path(), obj.Key)
 			assert.Equal(tc.Object.Body, obj.Body)
 			assert.Equal(tc.Object.ContentType, obj.ContentType)
 
@@ -79,7 +79,7 @@ func TestMockUploadFile(t *testing.T) {
 
 			if assert.Len(objs, 1) {
 				assert.Equal(tc.Object.Prefix, objs[0].Prefix)
-				assert.Equal(tc.Object.Key, objs[0].Key)
+				assert.Equal(tc.Object.Path(), objs[0].Key)
 				assert.Equal(tc.Object.Body, objs[0].Body)
 				assert.Equal(tc.Object.ContentType, objs[0].ContentType)
 			}

@@ -360,7 +360,7 @@ Response Body
 }
 ```
 
-### POST `/upload`
+### POST `/uploads`
 
 `file` multipart field
 
@@ -387,6 +387,74 @@ Response Body
   "createdAt": "2019-09-01T03:23:14.162087+06:00"
 }
 ```
+
+### GET `/uploads`
+
+Response Codes
+
+- `200`
+- `401`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+[
+  {
+    "id": 1,
+    "uuid": "1/4553abc6-64ba-47e9-80e9-51b214faed4b",
+    "filename": "gopher.jpg",
+    "hash": "i1hNKTFWBI18JOWn9VcSENiteao3aexiPHCjax4OtZg=",
+    "createdAt": "2019-09-01T03:23:14.162087+06:00"
+  }
+]
+```
+
+### GET `/uploads/{id}`
+
+Response Codes
+
+- `200`
+- `400`
+- `401`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "id": 1,
+  "uuid": "1/4553abc6-64ba-47e9-80e9-51b214faed4b",
+  "filename": "gopher.jpg",
+  "hash": "i1hNKTFWBI18JOWn9VcSENiteao3aexiPHCjax4OtZg=",
+  "createdAt": "2019-09-01T03:23:14.162087+06:00"
+}
+```
+
+### GET `/uploads/{id}/file`
+
+Response Codes
+
+- `200`
+- `400`
+- `401`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+- `binary` stream
 
 ### GET `/account/info`
 

@@ -68,7 +68,12 @@ func (s *Service) withRouter() *Service {
 
 		user := protected.NewRoute().Subrouter()
 		user.HandleFunc("/invite", s.inviteHandler).Methods("POST")
-		user.HandleFunc("/upload", s.uploadHandler).Methods("POST")
+
+		uploads := protected.PathPrefix("/uploads").Subrouter()
+		uploads.HandleFunc("", s.createUploadHandler).Methods("POST")
+		uploads.HandleFunc("", s.uploadsHandler).Methods("GET")
+		uploads.HandleFunc("/{id:[0-9]+}", s.uploadHandler).Methods("GET")
+		uploads.HandleFunc("/{id:[0-9]+}/file", s.uploadFileHandler).Methods("GET")
 
 		account := protected.PathPrefix("/account").Subrouter()
 		account.HandleFunc("/info", s.accountInfoHandler).Methods("GET")
