@@ -4,20 +4,23 @@ import (
 	"bytes"
 	"encoding/json"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
 	"os"
 	"testing"
 
-	"github.com/danikarik/okpock/pkg/secure"
-
 	"github.com/danikarik/okpock/pkg/api"
 	"github.com/danikarik/okpock/pkg/env"
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/danikarik/okpock/pkg/secure"
 	uuid "github.com/satori/go.uuid"
 	"go.uber.org/zap"
 )
+
+func fakeID() int64 {
+	return rand.Int63n(10000)
+}
 
 func fakeString() string {
 	return uuid.NewV4().String()
@@ -51,7 +54,7 @@ func fakeFile(path string) ([]byte, error) {
 
 func initService(t *testing.T) (*Service, error) {
 	_, err := env.NewLookup(
-		"TEST_DATABASE_URL",
+		"TEST_UPLOAD_BUCKET",
 		"TEST_PASSES_BUCKET",
 		"TEST_SERVER_SECRET",
 	)

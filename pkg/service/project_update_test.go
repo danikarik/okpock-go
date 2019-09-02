@@ -50,7 +50,14 @@ func TestUpdateProjectHandler(t *testing.T) {
 				return
 			}
 
-			project := api.NewProject(fakeString(), fakeString(), fakeString(), api.Coupon)
+			project := &api.Project{
+				ID:               fakeID(),
+				Title:            fakeString(),
+				OrganizationName: fakeString(),
+				Description:      fakeString(),
+				PassType:         api.Coupon,
+			}
+
 			err = srv.env.Logic.SaveNewProject(ctx, user, project)
 			if !assert.NoError(err) {
 				return
