@@ -17,14 +17,29 @@ func TestHashFile(t *testing.T) {
 		Expected string
 	}{
 		{
-			Name:     "TextFile",
-			Path:     "testdata/test.txt",
-			Expected: "740c172dc6bd2f9262eb3e19d080b7f106249899",
+			Name:     "CouponIcon",
+			Path:     "testdata/coupon.pass/icon.png",
+			Expected: "f8a2bb1b52c426275312c98c626d5be92758170e",
 		},
 		{
-			Name:     "ImageFile",
-			Path:     "testdata/gopher.jpg",
-			Expected: "4e8069b789897df23449b8a1bbc812232e36a7d3",
+			Name:     "CouponIcon2x",
+			Path:     "testdata/coupon.pass/icon@2x.png",
+			Expected: "4204eafa4ac2df2339cf3308a2b0ecd228732589",
+		},
+		{
+			Name:     "CouponPassJson",
+			Path:     "testdata/coupon.pass/pass.json",
+			Expected: "ac5eccd991c295c58d7daf0675c05f67973a6321",
+		},
+		{
+			Name:     "CouponLogo",
+			Path:     "testdata/coupon.pass/logo.png",
+			Expected: "2147d5e2561b98bc2d9653c51349947d6ddc419d",
+		},
+		{
+			Name:     "CouponLogo2x",
+			Path:     "testdata/coupon.pass/logo@2x.png",
+			Expected: "b98b0504f4f067de4f7a6c1e95df8a78024dc3bb",
 		},
 	}
 
@@ -49,15 +64,20 @@ func TestHashFile(t *testing.T) {
 
 func TestManifest(t *testing.T) {
 	testCases := []struct {
-		Name  string
-		Paths []string
+		Name     string
+		Paths    []string
+		Expected string
 	}{
 		{
-			Name: "SimpleOne",
+			Name: "Coupon",
 			Paths: []string{
-				"testdata/gopher.jpg",
-				"testdata/test.txt",
+				"testdata/coupon.pass/icon.png",
+				"testdata/coupon.pass/icon@2x.png",
+				"testdata/coupon.pass/pass.json",
+				"testdata/coupon.pass/logo.png",
+				"testdata/coupon.pass/logo@2x.png",
 			},
+			Expected: "testdata/coupon.pass/manifest.json",
 		},
 	}
 
@@ -65,7 +85,11 @@ func TestManifest(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			assert := assert.New(t)
 
-			hashes := make(map[string]string)
+			manifestData, err := ioutil.ReadFile(tc.Expected)
+			if !assert.NoError(err) {
+				return
+			}
+
 			files := make([]pkpass.File, len(tc.Paths))
 			for i, path := range tc.Paths {
 				file, err := os.Open(path)
@@ -83,13 +107,6 @@ func TestManifest(t *testing.T) {
 				if !assert.NoError(err) {
 					return
 				}
-
-				hash, err := pkpass.HashFile(data)
-				if !assert.NoError(err) {
-					return
-				}
-
-				hashes[fi.Name()] = hash
 
 				files[i] = pkpass.File{
 					Name: fi.Name(),
@@ -110,8 +127,14 @@ func TestManifest(t *testing.T) {
 				return
 			}
 
+			expectedManifest := pkpass.Manifest{}
+			err = json.Unmarshal(manifestData, &expectedManifest)
+			if !assert.NoError(err) {
+				return
+			}
+
 			for filename, hash := range loadedManifest {
-				v, ok := hashes[filename]
+				v, ok := expectedManifest[filename]
 				if !assert.True(ok) {
 					return
 				}

@@ -15,10 +15,14 @@ func TestZip(t *testing.T) {
 		Paths []string
 	}{
 		{
-			Name: "SimpleOne",
+			Name: "Coupon",
 			Paths: []string{
-				"testdata/gopher.jpg",
-				"testdata/test.txt",
+				"testdata/coupon.pass/icon.png",
+				"testdata/coupon.pass/icon@2x.png",
+				"testdata/coupon.pass/pass.json",
+				"testdata/coupon.pass/logo.png",
+				"testdata/coupon.pass/logo@2x.png",
+				"testdata/coupon.pass/manifest.json",
 			},
 		},
 	}
