@@ -1,7 +1,9 @@
 package pkpass_test
 
 import (
+	"encoding/json"
 	"io/ioutil"
+	"os"
 	"testing"
 
 	"github.com/danikarik/okpock/pkg/pkpass"
@@ -41,6 +43,82 @@ func TestHashFile(t *testing.T) {
 			}
 
 			assert.Equal(tc.Expected, hash)
+		})
+	}
+}
+
+func TestManifest(t *testing.T) {
+	testCases := []struct {
+		Name  string
+		Paths []string
+	}{
+		{
+			Name: "SimpleOne",
+			Paths: []string{
+				"testdata/gopher.jpg",
+				"testdata/test.txt",
+			},
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			assert := assert.New(t)
+
+			hashes := make(map[string]string)
+			files := make([]pkpass.File, len(tc.Paths))
+			for i, path := range tc.Paths {
+				file, err := os.Open(path)
+				if !assert.NoError(err) {
+					return
+				}
+				defer file.Close()
+
+				fi, err := file.Stat()
+				if !assert.NoError(err) {
+					return
+				}
+
+				data, err := ioutil.ReadAll(file)
+				if !assert.NoError(err) {
+					return
+				}
+
+				hash, err := pkpass.HashFile(data)
+				if !assert.NoError(err) {
+					return
+				}
+
+				hashes[fi.Name()] = hash
+
+				files[i] = pkpass.File{
+					Name: fi.Name(),
+					Data: data,
+				}
+			}
+
+			manifest, err := pkpass.CreateManifest(files...)
+			if !assert.NoError(err) {
+				return
+			}
+
+			assert.Equal(pkpass.ManifestFilename, manifest.Name)
+
+			loadedManifest := pkpass.Manifest{}
+			err = json.Unmarshal(manifest.Data, &loadedManifest)
+			if !assert.NoError(err) {
+				return
+			}
+
+			for filename, hash := range loadedManifest {
+				v, ok := hashes[filename]
+				if !assert.True(ok) {
+					return
+				}
+				if !assert.Equal(v, hash) {
+					return
+				}
+			}
 		})
 	}
 }
