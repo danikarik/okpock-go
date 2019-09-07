@@ -10,7 +10,11 @@ import (
 )
 
 func TestPKCS7Sign(t *testing.T) {
-	env, err := env.NewLookup("COUPON_P12")
+	env, err := env.NewLookup(
+		"WWDR_CERTIFICATE",
+		"COUPON_CERTIFICATE",
+		"COUPON_PASSWORD",
+	)
 	if err != nil {
 		t.Skip(err)
 	}
@@ -31,7 +35,20 @@ func TestPKCS7Sign(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			assert := assert.New(t)
 
-			signer := pkpass.NewSigner(env.Get("COUPON_P12"))
+			root, err := ioutil.ReadFile(env.Get("WWDR_CERTIFICATE"))
+			if !assert.NoError(err) {
+				return
+			}
+
+			signing, err := ioutil.ReadFile(env.Get("COUPON_CERTIFICATE"))
+			if !assert.NoError(err) {
+				return
+			}
+
+			signer, err := pkpass.NewSigner(root, signing, env.Get("COUPON_PASSWORD"))
+			if !assert.NoError(err) {
+				return
+			}
 
 			data, err := ioutil.ReadFile(tc.Path)
 			if !assert.NoError(err) {
