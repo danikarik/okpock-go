@@ -1,9 +1,9 @@
 {
   "formatVersion" : 1,
-  "passTypeIdentifier" : "pass.com.apple.devpubs.example",
+  "passTypeIdentifier" : "pass.com.okpock.coupon",
   "serialNumber" : "E5982H-I2",
-  "teamIdentifier" : "A93A5CM278",
-  "webServiceURL" : "https://example.com/passes/",
+  "teamIdentifier" : "2LT23LKU24",
+  "webServiceURL" : "https://api-dev.okpock.com/",
   "authenticationToken" : "vxwxd7J8AlNNFPS8k0a0FfUFtq0ewzFdc",
   "barcode" : {
     "message" : "123456789",

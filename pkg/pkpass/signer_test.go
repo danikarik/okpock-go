@@ -9,15 +9,8 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-var requiredVars = []string{
-	"WWDR_CERTIFICATE",
-	"COUPON_CERTIFICATE",
-	"COUPON_KEY",
-	"COUPON_PASSWORD",
-}
-
-func TestOpenSSLSign(t *testing.T) {
-	env, err := env.NewLookup(requiredVars...)
+func TestPKCS7Sign(t *testing.T) {
+	env, err := env.NewLookup("COUPON_P12")
 	if err != nil {
 		t.Skip(err)
 	}
@@ -38,12 +31,7 @@ func TestOpenSSLSign(t *testing.T) {
 		t.Run(tc.Name, func(t *testing.T) {
 			assert := assert.New(t)
 
-			signer := pkpass.NewOpenSSL(
-				env.Get("WWDR_CERTIFICATE"),
-				env.Get("COUPON_CERTIFICATE"),
-				env.Get("COUPON_KEY"),
-				env.Get("COUPON_PASSWORD"),
-			)
+			signer := pkpass.NewSigner(env.Get("COUPON_P12"))
 
 			data, err := ioutil.ReadFile(tc.Path)
 			if !assert.NoError(err) {

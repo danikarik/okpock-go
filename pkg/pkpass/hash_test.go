@@ -29,7 +29,7 @@ func TestHashFile(t *testing.T) {
 		{
 			Name:     "CouponPassJson",
 			Path:     "testdata/coupon.pass/pass.json",
-			Expected: "ac5eccd991c295c58d7daf0675c05f67973a6321",
+			Expected: "54275630505d94f36e7420ea5a357aa6ac29646c",
 		},
 		{
 			Name:     "CouponLogo",
