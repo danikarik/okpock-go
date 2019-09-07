@@ -24,5 +24,6 @@ func NewMock() (*Env, error) {
 	fs := fsmock.New()
 	ml := mlmock.New()
 
-	return New(cfg, db, db, db, fs, ml), nil
+	// TODO: add mock signer
+	return New(cfg, db, db, db, fs, ml, nil), nil
 }

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"net/http"
 	"os"
@@ -10,6 +11,7 @@ import (
 	"github.com/danikarik/okpock/pkg/filestore/awsstore"
 	"github.com/danikarik/okpock/pkg/mail"
 	"github.com/danikarik/okpock/pkg/mail/awsmail"
+	"github.com/danikarik/okpock/pkg/pkpass"
 	"github.com/danikarik/okpock/pkg/service"
 	"github.com/danikarik/okpock/pkg/store/sequel"
 	_ "github.com/go-sql-driver/mysql"
@@ -21,7 +23,10 @@ import (
 var Version string
 
 func main() {
-	var err error
+	var (
+		ctx = context.Background()
+		err error
+	)
 
 	var cfg env.Config
 	{
@@ -75,10 +80,31 @@ func main() {
 		}
 	}
 
+	var rootCert *filestore.Object
+	{
+		rootCert, err = s3.GetFile(ctx, cfg.Certificates.Bucket, cfg.Certificates.RootCert)
+		if err != nil {
+			errorExit("get root certificate: %v", err)
+		}
+	}
+
+	var couponSigner pkpass.Signer
+	{
+		cert, err := s3.GetFile(ctx, cfg.Certificates.Bucket, cfg.Certificates.Coupon.Path)
+		if err != nil {
+			errorExit("get coupon certificate: %v", err)
+		}
+
+		couponSigner, err = pkpass.NewSigner(rootCert.Body, cert.Body, cfg.Certificates.Coupon.Pass)
+		if err != nil {
+			errorExit("coupon signer: %v", err)
+		}
+	}
+
 	var srv *service.Service
 	{
 		db := sequel.New(conn)
-		env := env.New(cfg, db, db, db, s3, mailer)
+		env := env.New(cfg, db, db, db, s3, mailer, couponSigner)
 
 		srv = service.New(Version, env, logger)
 	}
