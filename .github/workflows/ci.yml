@@ -36,7 +36,7 @@ jobs:
           AWS_S3_BUCKET: ${{ secrets.TEST_CERTIFICATES_BUCKET }}
         uses: actions/aws/cli@master
         with:
-          args: s3 cp s3://${AWS_S3_BUCKET}/wwdr.pem wwdr.pem
+          args: s3 cp s3://${AWS_S3_BUCKET}/wwdr.pem ${GITHUB_WORKSPACE}/wwdr.pem
 
       - name: Copy coupon certificate
         env:
@@ -46,7 +46,7 @@ jobs:
           AWS_S3_BUCKET: ${{ secrets.TEST_CERTIFICATES_BUCKET }}
         uses: actions/aws/cli@master
         with:
-          args: s3 cp s3://${AWS_S3_BUCKET}/coupon-dev.p12 coupon-dev.p12
+          args: s3 cp s3://${AWS_S3_BUCKET}/coupon-dev.p12 ${GITHUB_WORKSPACE}/coupon-dev.p12
 
       - name: Run tests
         env:
@@ -62,8 +62,8 @@ jobs:
           TEST_PASSES_BUCKET: ${{ secrets.TEST_PASSES_BUCKET }}
           TEST_PROJECT: ${{ secrets.TEST_PROJECT }}
           TEST_TEMPLATES_BUCKET: ${{ secrets.TEST_TEMPLATES_BUCKET }}
-          TEST_CERTIFICATES_ROOT_CERT: ${{ secrets.TEST_CERTIFICATES_ROOT_CERT }}
-          TEST_CERTIFICATES_COUPON_PATH: ${{ secrets.TEST_CERTIFICATES_COUPON_PATH }}
+          TEST_CERTIFICATES_ROOT_CERT: ${GITHUB_WORKSPACE}/wwdr.pem
+          TEST_CERTIFICATES_COUPON_PATH: ${GITHUB_WORKSPACE}/coupon-dev.p12
           TEST_CERTIFICATES_COUPON_PASS: ${{ secrets.TEST_CERTIFICATES_COUPON_PASS }}
         run: make test
 
