@@ -2,6 +2,8 @@ package pkpass_test
 
 import (
 	"io/ioutil"
+	"os"
+	"strconv"
 	"testing"
 
 	"github.com/danikarik/okpock/pkg/env"
@@ -9,7 +11,18 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+func skipTest(t *testing.T) {
+	if v, ok := os.LookupEnv("SKIP_SIGNER_TEST"); ok {
+		skip, err := strconv.ParseBool(v)
+		if err == nil && skip {
+			t.Skip(`skip test: SKIP_SIGNER_TEST is present`)
+		}
+	}
+}
+
 func TestPKCS7Sign(t *testing.T) {
+	skipTest(t)
+
 	env, err := env.NewLookup(
 		"TEST_CERTIFICATES_ROOT_CERT",
 		"TEST_CERTIFICATES_COUPON_PATH",

@@ -64,6 +64,7 @@ jobs:
           TEST_PROJECT: ${{ secrets.TEST_PROJECT }}
           TEST_TEMPLATES_BUCKET: ${{ secrets.TEST_TEMPLATES_BUCKET }}
           TEST_CERTIFICATES_COUPON_PASS: ${{ secrets.TEST_CERTIFICATES_COUPON_PASS }}
+          SKIP_SIGNER_TEST: true
         run: |
           export TEST_CERTIFICATES_ROOT_CERT=${GITHUB_WORKSPACE}/wwdr.pem
           export TEST_CERTIFICATES_COUPON_PATH=${GITHUB_WORKSPACE}/coupon-dev.p12
