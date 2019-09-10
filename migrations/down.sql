@@ -13,3 +13,7 @@ DROP TABLE IF EXISTS `projects`;
 DROP TABLE IF EXISTS `user_uploads`;
 
 DROP TABLE IF EXISTS `uploads`;
+
+DROP TABLE IF EXISTS `project_pass_cards`;
+
+DROP TABLE IF EXISTS `pass_cards`;

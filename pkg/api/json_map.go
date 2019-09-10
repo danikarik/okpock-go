@@ -7,7 +7,7 @@ import (
 	"errors"
 )
 
-// JSONMap is an alias for raw json.
+// JSONMap is an alias for raw json map.
 type JSONMap map[string]interface{}
 
 // Value is a value that drivers must be able to handle.
