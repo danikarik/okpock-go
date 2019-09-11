@@ -7,6 +7,9 @@ import (
 	"errors"
 	"fmt"
 	"time"
+
+	"github.com/danikarik/okpock/pkg/secure"
+	uuid "github.com/satori/go.uuid"
 )
 
 const (
@@ -159,12 +162,59 @@ type PassStructure struct {
 	TransitType     string  `json:"transitType,omitempty"`
 }
 
+// NewPassCardInfo returns a new instance of `PassCardInfo`.
+func NewPassCardInfo(data *PassCard) *PassCardInfo {
+	return &PassCardInfo{
+		Data:      data,
+		CreatedAt: time.Now(),
+		UpdatedAt: time.Now(),
+	}
+}
+
 // PassCardInfo is a wrapper around `PassCard` with extra fields.
 type PassCardInfo struct {
 	ID        int64     `json:"id" db:"id"`
 	Data      *PassCard `json:"data" db:"raw_data"`
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`
 	UpdatedAt time.Time `json:"updatedAt" db:"updated_at"`
+}
+
+// IsValid checks whether input is valid or not.
+func (p *PassCardInfo) IsValid() error {
+	return p.Data.IsValid()
+}
+
+// String returns string representation of struct.
+func (p *PassCardInfo) String() string {
+	data, err := json.Marshal(p)
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
+// DefaultDataDetectorTypes is a default list for data detector.
+func DefaultDataDetectorTypes() []string {
+	return []string{
+		PKDataDetectorTypePhoneNumber,
+		PKDataDetectorTypeLink,
+		PKDataDetectorTypeAddress,
+		PKDataDetectorTypeCalendarEvent,
+	}
+}
+
+// DefaultTextAlignment is a default test alignment.
+func DefaultTextAlignment() string {
+	return PKTextAlignmentNatural
+}
+
+// NewEmptyPassCard returns a new instance of `PassCard`.
+func NewEmptyPassCard() *PassCard {
+	return &PassCard{
+		FormatVersion:       1,
+		SerialNumber:        uuid.NewV4().String(),
+		AuthenticationToken: secure.Token(),
+	}
 }
 
 // PassCard refers `pass.json` structure.

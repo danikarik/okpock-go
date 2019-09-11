@@ -46,6 +46,22 @@ type UploadStore interface {
 	LoadUploads(ctx context.Context, user *User) ([]*Upload, error)
 }
 
+// PassCardStore implements pass card related methods.
+type PassCardStore interface {
+	// SaveNewPassCard ...
+	SaveNewPassCard(ctx context.Context, project *Project, passcard *PassCardInfo) error
+	// LoadPassCard ...
+	LoadPassCard(ctx context.Context, project *Project, id int64) (*PassCardInfo, error)
+	// LoadPassCardBySerialNumber ...
+	LoadPassCardBySerialNumber(ctx context.Context, project *Project, serialNumber string) (*PassCardInfo, error)
+	// LoadPassCards ...
+	LoadPassCards(ctx context.Context, project *Project) ([]*PassCardInfo, error)
+	// LoadPassCardsByBarcodeMessage ...
+	LoadPassCardsByBarcodeMessage(ctx context.Context, project *Project, message string) ([]*PassCardInfo, error)
+	// UpdatePassCard ...
+	UpdatePassCard(ctx context.Context, data *PassCard, passcard *PassCardInfo) error
+}
+
 // Logic implements method for business logic.
 type Logic interface {
 	ProjectStore

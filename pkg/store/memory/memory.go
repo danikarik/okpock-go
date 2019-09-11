@@ -29,27 +29,31 @@ type reg struct {
 // New returns a new instance of memory mock.
 func New() *Memory {
 	mock := &Memory{
-		passes:       make(map[string]*pass),
-		regs:         make(map[string]*reg),
-		users:        make(map[int64]*api.User),
-		userProjects: make(map[int64]int64),
-		projects:     make(map[int64]*api.Project),
-		userUploads:  make(map[int64]int64),
-		uploads:      make(map[int64]*api.Upload),
+		passes:           make(map[string]*pass),
+		regs:             make(map[string]*reg),
+		users:            make(map[int64]*api.User),
+		userProjects:     make(map[int64]int64),
+		projects:         make(map[int64]*api.Project),
+		userUploads:      make(map[int64]int64),
+		uploads:          make(map[int64]*api.Upload),
+		passCards:        make(map[int64]*api.PassCardInfo),
+		projectPassCards: make(map[int64]int64),
 	}
 	return mock
 }
 
 // Memory is mock implementor.
 type Memory struct {
-	mu           sync.Mutex
-	passes       map[string]*pass
-	regs         map[string]*reg
-	users        map[int64]*api.User
-	userProjects map[int64]int64
-	projects     map[int64]*api.Project
-	userUploads  map[int64]int64
-	uploads      map[int64]*api.Upload
+	mu               sync.Mutex
+	passes           map[string]*pass
+	regs             map[string]*reg
+	users            map[int64]*api.User
+	userProjects     map[int64]int64
+	projects         map[int64]*api.Project
+	userUploads      map[int64]int64
+	uploads          map[int64]*api.Upload
+	passCards        map[int64]*api.PassCardInfo
+	projectPassCards map[int64]int64
 }
 
 // InsertPass ...

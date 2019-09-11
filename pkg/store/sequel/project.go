@@ -99,9 +99,13 @@ func (m *MySQL) LoadProject(ctx context.Context, user *api.User, id int64) (*api
 		return nil, store.ErrZeroID
 	}
 
-	query := m.builder.Select("*").
-		From("projects").
-		Where(sq.Eq{"id": id})
+	query := m.builder.Select("p.*").
+		From("projects p").
+		LeftJoin("user_projects up on up.project_id = p.id").
+		Where(sq.Eq{
+			"p.id":       id,
+			"up.user_id": user.ID,
+		})
 
 	row, err := m.selectRowQuery(ctx, query)
 	if err != nil {
