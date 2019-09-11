@@ -827,6 +827,146 @@ Response Body
 }
 ```
 
+### GET `/dictionary/detectortypes`
+
+Response Codes
+
+- `200`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "data": [
+    "PKDataDetectorTypePhoneNumber",
+    "PKDataDetectorTypeLink",
+    "PKDataDetectorTypeAddress",
+    "PKDataDetectorTypeCalendarEvent"
+  ]
+}
+```
+
+### GET `/dictionary/textalignment`
+
+Response Codes
+
+- `200`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "data": [
+    "PKTextAlignmentLeft",
+    "PKTextAlignmentCenter",
+    "PKTextAlignmentRight",
+    "PKTextAlignmentNatural"
+  ]
+}
+```
+
+### GET `/dictionary/datestyle`
+
+Response Codes
+
+- `200`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "data": [
+    "PKDateStyleNone",
+    "PKDateStyleShort",
+    "PKDateStyleMedium",
+    "PKDateStyleLong",
+    "PKDateStyleFull"
+  ]
+}
+```
+
+### GET `/dictionary/numberstyle`
+
+Response Codes
+
+- `200`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "data": [
+    "PKNumberStyleDecimal",
+    "PKNumberStylePercent",
+    "PKNumberStyleScientific",
+    "PKNumberStyleSpellOut"
+  ]
+}
+```
+
+### GET `/dictionary/transittype`
+
+Response Codes
+
+- `200`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "data": [
+    "PKTransitTypeAir",
+    "PKTransitTypeBoat",
+    "PKTransitTypeBus",
+    "PKTransitTypeGeneric",
+    "PKTransitTypeTrain"
+  ]
+}
+```
+
+### GET `/dictionary/barcodeformat`
+
+Response Codes
+
+- `200`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "data": [
+    "PKBarcodeFormatQR",
+    "PKBarcodeFormatPDF417",
+    "PKBarcodeFormatAztec",
+    "PKBarcodeFormatCode128"
+  ]
+}
+```
+
 ## Author
 
 [@danikarik](https://github.com/danikarik)

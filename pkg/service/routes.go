@@ -89,6 +89,21 @@ func (s *Service) withRouter() *Service {
 		projects.HandleFunc("/{id:[0-9]+}", s.userProjectHandler).Methods("GET")
 		projects.HandleFunc("/{id:[0-9]+}", s.updateProjectHandler).Methods("PUT")
 		projects.HandleFunc("/{id:[0-9]+}/upload", s.uploadProjectImage).Methods("POST")
+
+		cards := projects.PathPrefix("/{id:[0-9]+}/cards").Subrouter()
+		cards.HandleFunc("", s.okHandler).Methods("POST")                   // TODO: SaveNewPassCard
+		cards.HandleFunc("", s.okHandler).Methods("GET")                    // TODO: LoadPassCards
+		cards.HandleFunc("/{serial}", s.okHandler).Methods("GET")           // TODO: LoadPassCard
+		cards.HandleFunc("/{serial}", s.okHandler).Methods("PUT")           // TODO: UpdatePassCard
+		cards.HandleFunc("/barcodes/{message}", s.okHandler).Methods("GET") // TODO: LoadPassCardsByBarcode
+
+		dictionary := protected.PathPrefix("/dictionary").Subrouter()
+		dictionary.HandleFunc("/detectortypes", s.detectorTypesHandler).Methods("GET")
+		dictionary.HandleFunc("/textalignment", s.textAlignmentHandler).Methods("GET")
+		dictionary.HandleFunc("/datestyle", s.dateStyleHandler).Methods("GET")
+		dictionary.HandleFunc("/numberstyle", s.numberStyleHandler).Methods("GET")
+		dictionary.HandleFunc("/transittype", s.transitTypeHandler).Methods("GET")
+		dictionary.HandleFunc("/barcodeformat", s.barcodeFormatHandler).Methods("GET")
 	}
 
 	s.handler = s.corsMiddleware(r)
