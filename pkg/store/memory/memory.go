@@ -105,6 +105,18 @@ func (m *Memory) FindRegistration(ctx context.Context, deviceID, serialNumber st
 	return true, nil
 }
 
+// FindRegistrationBySerialNumber ...
+func (m *Memory) FindRegistrationBySerialNumber(ctx context.Context, serialNumber string) (bool, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	for _, reg := range m.regs {
+		if reg.serial == serialNumber {
+			return true, nil
+		}
+	}
+	return false, nil
+}
+
 // FindSerialNumbers ...
 func (m *Memory) FindSerialNumbers(ctx context.Context, deviceID, passTypeIdentifier, tag string) ([]string, error) {
 	m.mu.Lock()

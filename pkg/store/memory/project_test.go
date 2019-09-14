@@ -311,6 +311,11 @@ func TestSetImage(t *testing.T) {
 				return
 			}
 
+			err = db.SetLogoImage(ctx, tc.NewKey, p)
+			if !assert.NoError(err) {
+				return
+			}
+
 			err = db.SetStripImage(ctx, tc.NewKey, p)
 			if !assert.NoError(err) {
 				return
@@ -325,6 +330,7 @@ func TestSetImage(t *testing.T) {
 			assert.Equal(tc.NewKey, loaded.BackgroundImage)
 			assert.Equal(tc.NewKey, loaded.FooterImage)
 			assert.Equal(tc.NewKey, loaded.IconImage)
+			assert.Equal(tc.NewKey, loaded.LogoImage)
 			assert.Equal(tc.NewKey, loaded.StripImage)
 		})
 	}

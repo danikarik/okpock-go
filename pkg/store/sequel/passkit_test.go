@@ -144,6 +144,49 @@ func TestFindRegistration(t *testing.T) {
 	}
 }
 
+func TestFindRegistrationBySerialNumber(t *testing.T) {
+	ctx := context.Background()
+	assert := assert.New(t)
+
+	testCases := []struct {
+		SerialNumber string
+		PassTypeID   string
+		DeviceID     string
+		Expected     bool
+	}{
+		{
+			SerialNumber: "2c91cb65-29ad-465a-bbbc-968f0ca224e9",
+			PassTypeID:   "com.example.pass",
+			DeviceID:     "52a26307-aef2-45de-af72-4e5acfa55b8d",
+			Expected:     true,
+		},
+		{
+			SerialNumber: "1967bce8-fb9c-4be7-8946-c1a3a7607a88",
+			PassTypeID:   "com.example.pass",
+			DeviceID:     "52a26307-aef2-45de-af72-4e5acfa55b8d",
+			Expected:     false,
+		},
+	}
+
+	conn, err := testConnection(ctx, t)
+	if !assert.NoError(err) {
+		return
+	}
+	defer conn.Close()
+
+	db := sequel.New(conn)
+
+	err = db.InsertRegistration(ctx, testCases[0].DeviceID, uuid.NewV4().String(),
+		testCases[0].SerialNumber, testCases[0].PassTypeID)
+	assert.NoError(err)
+
+	for _, c := range testCases {
+		ok, err := db.FindRegistrationBySerialNumber(ctx, c.SerialNumber)
+		assert.NoError(err)
+		assert.Equal(c.Expected, ok)
+	}
+}
+
 func TestFindSerialNumbers(t *testing.T) {
 	ctx := context.Background()
 	assert := assert.New(t)

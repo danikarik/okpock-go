@@ -19,6 +19,9 @@ type PassKit interface {
 	// FindRegistration ...
 	FindRegistration(ctx context.Context, deviceID, serialNumber string) (bool, error)
 
+	// FindRegistrationBySerialNumber ...
+	FindRegistrationBySerialNumber(ctx context.Context, serialNumber string) (bool, error)
+
 	// FindSerialNumbers ...
 	FindSerialNumbers(ctx context.Context, deviceID, passTypeID, tag string) ([]string, error)
 

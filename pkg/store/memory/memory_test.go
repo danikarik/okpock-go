@@ -93,6 +93,23 @@ func TestFindRegistration(t *testing.T) {
 	assert.True(res)
 }
 
+func TestFindRegistrationBySerialNumber(t *testing.T) {
+	var (
+		ctx                = context.Background()
+		mock               = memory.New()
+		deviceID           = uuid.NewV4().String()
+		serialNumber       = uuid.NewV4().String()
+		pushToken          = uuid.NewV4().String()
+		passTypeIdentifier = "test.passkit"
+	)
+	assert := assert.New(t)
+	err := mock.InsertRegistration(ctx, deviceID, pushToken, serialNumber, passTypeIdentifier)
+	assert.NoError(err)
+	res, err := mock.FindRegistrationBySerialNumber(ctx, serialNumber)
+	assert.NoError(err)
+	assert.True(res)
+}
+
 func TestFindSerialNumbers(t *testing.T) {
 	var (
 		ctx                = context.Background()

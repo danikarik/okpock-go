@@ -12,6 +12,7 @@ const (
 	backgroundImage = "background"
 	footerImage     = "footer"
 	iconImage       = "icon"
+	logoImage       = "logo"
 	stripImage      = "strip"
 )
 
@@ -28,7 +29,7 @@ func (r *UploadImageRequest) IsValid() error {
 	}
 
 	switch r.Type {
-	case backgroundImage, footerImage, iconImage, stripImage:
+	case backgroundImage, footerImage, iconImage, logoImage, stripImage:
 		break
 	default:
 		return errors.New("image type is invalid")
@@ -95,6 +96,12 @@ func (s *Service) uploadProjectImage(w http.ResponseWriter, r *http.Request) err
 		err = s.env.Logic.SetIconImage(ctx, req.UUID, project)
 		if err != nil {
 			return s.httpError(w, r, http.StatusInternalServerError, "SetIconImage", err)
+		}
+		break
+	case logoImage:
+		err = s.env.Logic.SetLogoImage(ctx, req.UUID, project)
+		if err != nil {
+			return s.httpError(w, r, http.StatusInternalServerError, "SetLogoImage", err)
 		}
 		break
 	case stripImage:

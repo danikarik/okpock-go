@@ -10,8 +10,10 @@ import (
 // ErrEmptyFolder returned when there is no files to be zipped.
 var ErrEmptyFolder = errors.New("pkpass: no files given to be zipped")
 
-// Extension alias for pkpass extension.
-const Extension = ".pkpass"
+// NewFile returns a new instance of `File`.
+func NewFile(name string, data []byte) File {
+	return File{name, data}
+}
 
 // File holds name and content of pkpass' file.
 type File struct {

@@ -28,6 +28,9 @@ type ProjectStore interface {
 	// SetIconImage ...
 	SetIconImage(ctx context.Context, key string, project *Project) error
 
+	// SetLogoImage ...
+	SetLogoImage(ctx context.Context, key string, project *Project) error
+
 	// SetStripImage ...
 	SetStripImage(ctx context.Context, key string, project *Project) error
 }
@@ -66,4 +69,5 @@ type PassCardStore interface {
 type Logic interface {
 	ProjectStore
 	UploadStore
+	PassCardStore
 }

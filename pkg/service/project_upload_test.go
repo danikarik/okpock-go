@@ -36,6 +36,11 @@ func TestUploadProjectImage(t *testing.T) {
 			Path:    "testdata/gopher.jpg",
 		},
 		{
+			Name:    "Logo",
+			Request: &UploadImageRequest{Type: logoImage},
+			Path:    "testdata/gopher.jpg",
+		},
+		{
 			Name:    "Strip",
 			Request: &UploadImageRequest{Type: stripImage},
 			Path:    "testdata/gopher.jpg",
@@ -124,6 +129,9 @@ func TestUploadProjectImage(t *testing.T) {
 				break
 			case iconImage:
 				assert.Equal(tc.Request.UUID, data.IconImage)
+				break
+			case logoImage:
+				assert.Equal(tc.Request.UUID, data.LogoImage)
 				break
 			case stripImage:
 				assert.Equal(tc.Request.UUID, data.StripImage)

@@ -8,12 +8,13 @@ import (
 	"testing"
 
 	"github.com/danikarik/okpock/pkg/filestore"
+	"github.com/danikarik/okpock/pkg/pkpass"
+	"github.com/danikarik/okpock/pkg/secure"
 	"github.com/stretchr/testify/assert"
 )
 
-func TestLatestPass(t *testing.T) {
+func TestDownloadPkpass(t *testing.T) {
 	ctx := context.Background()
-
 	assert := assert.New(t)
 
 	testCase := struct {
@@ -22,8 +23,8 @@ func TestLatestPass(t *testing.T) {
 		PassTypeID   string
 	}{
 		SerialNumber: "9973af9d-9cfa-4d9f-8c6c-32255de8d96b",
-		AuthToken:    "secret",
-		PassTypeID:   "com.example.pass",
+		AuthToken:    secure.Token(),
+		PassTypeID:   fakeString(),
 	}
 
 	srv, err := initService(t)
@@ -60,9 +61,9 @@ func TestLatestPass(t *testing.T) {
 
 	req := newRequest(
 		"GET",
-		fmt.Sprintf("/v1/passes/%s/%s", testCase.PassTypeID, testCase.SerialNumber),
+		fmt.Sprintf("/downloads/%s%s", testCase.SerialNumber, pkpass.Extension),
 		nil,
-		map[string]string{"Authorization": "ApplePass " + testCase.AuthToken},
+		nil,
 		nil,
 	)
 	rec := httptest.NewRecorder()

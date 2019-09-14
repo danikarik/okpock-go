@@ -261,6 +261,29 @@ func (m *MySQL) SetIconImage(ctx context.Context, key string, project *api.Proje
 	return nil
 }
 
+// SetLogoImage ...
+func (m *MySQL) SetLogoImage(ctx context.Context, key string, project *api.Project) error {
+	err := checkProject(project, checkNilStruct|checkZeroID)
+	if err != nil {
+		return err
+	}
+
+	project.LogoImage = key
+	project.UpdatedAt = time.Now()
+
+	query := m.builder.Update("projects").
+		Set("logo_image", project.LogoImage).
+		Set("updated_at", project.UpdatedAt).
+		Where(sq.Eq{"id": project.ID})
+
+	_, err = m.updateQuery(ctx, query)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
 // SetStripImage ...
 func (m *MySQL) SetStripImage(ctx context.Context, key string, project *api.Project) error {
 	err := checkProject(project, checkNilStruct|checkZeroID)

@@ -52,6 +52,7 @@ func (s *Service) withRouter() *Service {
 	{
 		public := api.NewRoute().Subrouter()
 		public.HandleFunc("/", s.okHandler).Methods("GET")
+		public.HandleFunc("/downloads/{serialNumber}.pkpass", s.downloadPkpass).Methods("GET") // TODO: Document
 
 		auth := public.NewRoute().Subrouter()
 		auth.HandleFunc("/login", s.loginHandler).Methods("POST")
@@ -91,13 +92,14 @@ func (s *Service) withRouter() *Service {
 		projects.HandleFunc("/{id:[0-9]+}/upload", s.uploadProjectImage).Methods("POST")
 
 		cards := projects.PathPrefix("/{id:[0-9]+}/cards").Subrouter()
-		cards.HandleFunc("", s.okHandler).Methods("POST")                   // TODO: SaveNewPassCard
+		cards.HandleFunc("", s.createPassCardHandler).Methods("POST")       // TODO: Document
 		cards.HandleFunc("", s.okHandler).Methods("GET")                    // TODO: LoadPassCards
 		cards.HandleFunc("/{serial}", s.okHandler).Methods("GET")           // TODO: LoadPassCard
 		cards.HandleFunc("/{serial}", s.okHandler).Methods("PUT")           // TODO: UpdatePassCard
 		cards.HandleFunc("/barcodes/{message}", s.okHandler).Methods("GET") // TODO: LoadPassCardsByBarcode
 
 		dictionary := protected.PathPrefix("/dictionary").Subrouter()
+		dictionary.HandleFunc("/passtypes", s.passTypesHandler).Methods("GET")
 		dictionary.HandleFunc("/detectortypes", s.detectorTypesHandler).Methods("GET")
 		dictionary.HandleFunc("/textalignment", s.textAlignmentHandler).Methods("GET")
 		dictionary.HandleFunc("/datestyle", s.dateStyleHandler).Methods("GET")

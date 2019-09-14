@@ -6,9 +6,6 @@ import (
 	"encoding/json"
 )
 
-// ManifestFilename is an alias for `manifest.json`.
-const ManifestFilename = "manifest.json"
-
 // Manifest holds file name and SHA1 hash as a map.
 type Manifest map[string]string
 

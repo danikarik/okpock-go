@@ -17,6 +17,17 @@ func TestDictionaryHandlers(t *testing.T) {
 		Expected []string
 	}{
 		{
+			Name:  "PassTypes",
+			Route: "passtypes",
+			Expected: []string{
+				string(api.BoardingPass),
+				string(api.Coupon),
+				string(api.EventTicket),
+				string(api.Generic),
+				string(api.StoreCard),
+			},
+		},
+		{
 			Name:  "DetectorTypes",
 			Route: "detectortypes",
 			Expected: []string{

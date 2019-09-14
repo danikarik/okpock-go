@@ -68,6 +68,21 @@ func (m *MySQL) FindRegistration(ctx context.Context, deviceID, serialNumber str
 	return cnt > 0, nil
 }
 
+// FindRegistrationBySerialNumber ...
+func (m *MySQL) FindRegistrationBySerialNumber(ctx context.Context, serialNumber string) (bool, error) {
+	query := m.builder.Select("count(1)").From("registrations").
+		Where(sq.Eq{
+			"serial_number": serialNumber,
+		})
+
+	cnt, err := m.countQuery(ctx, query)
+	if err != nil {
+		return false, err
+	}
+
+	return cnt > 0, nil
+}
+
 // FindSerialNumbers ...
 func (m *MySQL) FindSerialNumbers(ctx context.Context, deviceID, passTypeID, tag string) ([]string, error) {
 	var sns []string

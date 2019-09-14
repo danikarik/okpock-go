@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS `logs` (
     `id` INT(10) unsigned NOT NULL AUTO_INCREMENT,
     `remote_address` VARCHAR(191) COLLATE utf8mb4_unicode_ci NULL,
     `request_id` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
-    `message` VARCHAR(191) COLLATE utf8mb4_unicode_ci NOT NULL,
+    `message` TEXT NOT NULL,
     `updated_at` TIMESTAMP NOT NULL DEFAULT NOW(),
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -63,6 +63,7 @@ CREATE TABLE IF NOT EXISTS `projects` (
     `background_image` VARCHAR(191) COLLATE utf8mb4_unicode_ci DEFAULT "",
     `footer_image` VARCHAR(191) COLLATE utf8mb4_unicode_ci DEFAULT "",
     `icon_image` VARCHAR(191) COLLATE utf8mb4_unicode_ci DEFAULT "",
+    `logo_image` VARCHAR(191) COLLATE utf8mb4_unicode_ci DEFAULT "",
     `strip_image` VARCHAR(191) COLLATE utf8mb4_unicode_ci DEFAULT "",
     `created_at` TIMESTAMP NULL DEFAULT NOW(),
     `updated_at` TIMESTAMP NULL DEFAULT NOW(),

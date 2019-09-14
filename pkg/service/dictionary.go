@@ -6,6 +6,18 @@ import (
 	"github.com/danikarik/okpock/pkg/api"
 )
 
+func (s *Service) passTypesHandler(w http.ResponseWriter, r *http.Request) error {
+	return sendJSON(w, http.StatusOK, M{
+		"data": []api.PassType{
+			api.BoardingPass,
+			api.Coupon,
+			api.EventTicket,
+			api.Generic,
+			api.StoreCard,
+		},
+	})
+}
+
 func (s *Service) detectorTypesHandler(w http.ResponseWriter, r *http.Request) error {
 	return sendJSON(w, http.StatusOK, M{
 		"data": []string{

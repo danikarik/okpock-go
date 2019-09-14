@@ -794,6 +794,7 @@ Available types
 - `background`
 - `footer`
 - `icon`
+- `logo`
 - `strip`
 
 Response Codes
@@ -824,6 +825,30 @@ Response Body
   "stripImage": "",
   "createdAt": "2019-08-29T22:37:57+06:00",
   "updatedAt": "2019-08-29T23:43:24+06:00"
+}
+```
+
+### GET `/dictionary/passtypes`
+
+Response Codes
+
+- `200`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "data": [
+    "boardingPass",
+    "coupon",
+    "eventTicket",
+    "generic"
+    "storeCard"
+  ]
 }
 ```
 

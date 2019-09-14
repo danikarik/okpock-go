@@ -154,12 +154,12 @@ type Field struct {
 
 // PassStructure refers to `Pass Structure Dictionary Keys`.
 type PassStructure struct {
-	AuxiliaryFields []Field `json:"auxiliaryFields,omitempty"`
-	BackFields      []Field `json:"backFields,omitempty"`
-	HeaderFields    []Field `json:"headerFields,omitempty"`
-	PrimaryFields   []Field `json:"primaryFields,omitempty"`
-	SecondaryFields []Field `json:"secondaryFields,omitempty"`
-	TransitType     string  `json:"transitType,omitempty"`
+	AuxiliaryFields []*Field `json:"auxiliaryFields,omitempty"`
+	BackFields      []*Field `json:"backFields,omitempty"`
+	HeaderFields    []*Field `json:"headerFields,omitempty"`
+	PrimaryFields   []*Field `json:"primaryFields,omitempty"`
+	SecondaryFields []*Field `json:"secondaryFields,omitempty"`
+	TransitType     string   `json:"transitType,omitempty"`
 }
 
 // NewPassCardInfo returns a new instance of `PassCardInfo`.
@@ -433,7 +433,7 @@ func hasValidFields(styles ...*PassStructure) error {
 	return nil
 }
 
-func validField(prefix string, field Field) error {
+func validField(prefix string, field *Field) error {
 	if field.Key == "" {
 		return fmt.Errorf("%s: key is empty", prefix)
 	}

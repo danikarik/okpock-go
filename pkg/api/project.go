@@ -46,6 +46,7 @@ type Project struct {
 	BackgroundImage string `json:"backgroundImage" db:"background_image"`
 	FooterImage     string `json:"footerImage" db:"footer_image"`
 	IconImage       string `json:"iconImage" db:"icon_image"`
+	LogoImage       string `json:"logoImage" db:"logo_image"`
 	StripImage      string `json:"stripImage" db:"strip_image"`
 
 	CreatedAt time.Time `json:"createdAt" db:"created_at"`

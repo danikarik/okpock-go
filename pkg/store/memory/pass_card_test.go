@@ -27,8 +27,8 @@ func TestSaveNewPassCard(t *testing.T) {
 				SerialNumber:  fakeString(),
 				TeamID:        fakeString(),
 				Coupon: &api.PassStructure{
-					AuxiliaryFields: []api.Field{
-						api.Field{
+					AuxiliaryFields: []*api.Field{
+						&api.Field{
 							Key:        "expires",
 							Label:      "EXPIRES",
 							Value:      "2020-04-24T10:00-05:00",
@@ -36,8 +36,8 @@ func TestSaveNewPassCard(t *testing.T) {
 							DateStyle:  api.PKDateStyleShort,
 						},
 					},
-					BackFields: []api.Field{
-						api.Field{
+					BackFields: []*api.Field{
+						&api.Field{
 							Key:   "offer",
 							Label: "Any premium dog food",
 							Value: "20% off",
@@ -63,8 +63,8 @@ func TestSaveNewPassCard(t *testing.T) {
 				SerialNumber:  fakeString(),
 				TeamID:        fakeString(),
 				Coupon: &api.PassStructure{
-					AuxiliaryFields: []api.Field{
-						api.Field{
+					AuxiliaryFields: []*api.Field{
+						&api.Field{
 							Key:        "expires",
 							Label:      "EXPIRES",
 							Value:      "2020-04-24T10:00-05:00",
@@ -72,8 +72,8 @@ func TestSaveNewPassCard(t *testing.T) {
 							DateStyle:  api.PKDateStyleShort,
 						},
 					},
-					BackFields: []api.Field{
-						api.Field{
+					BackFields: []*api.Field{
+						&api.Field{
 							Key:   "offer",
 							Label: "Any premium dog food",
 							Value: "20% off",
@@ -100,8 +100,8 @@ func TestSaveNewPassCard(t *testing.T) {
 				SerialNumber:  fakeString(),
 				TeamID:        fakeString(),
 				Coupon: &api.PassStructure{
-					AuxiliaryFields: []api.Field{
-						api.Field{
+					AuxiliaryFields: []*api.Field{
+						&api.Field{
 							Key:        "expires",
 							Label:      "EXPIRES",
 							Value:      "2020-04-24T10:00-05:00",
@@ -109,8 +109,8 @@ func TestSaveNewPassCard(t *testing.T) {
 							DateStyle:  api.PKDateStyleShort,
 						},
 					},
-					BackFields: []api.Field{
-						api.Field{
+					BackFields: []*api.Field{
+						&api.Field{
 							Key:   "offer",
 							Label: "Any premium dog food",
 							Value: "20% off",
@@ -223,8 +223,8 @@ func TestUpdatePassCard(t *testing.T) {
 				SerialNumber:  fakeString(),
 				TeamID:        fakeString(),
 				Coupon: &api.PassStructure{
-					AuxiliaryFields: []api.Field{
-						api.Field{
+					AuxiliaryFields: []*api.Field{
+						&api.Field{
 							Key:        "expires",
 							Label:      "EXPIRES",
 							Value:      "2020-04-24T10:00-05:00",
@@ -232,8 +232,8 @@ func TestUpdatePassCard(t *testing.T) {
 							DateStyle:  api.PKDateStyleShort,
 						},
 					},
-					BackFields: []api.Field{
-						api.Field{
+					BackFields: []*api.Field{
+						&api.Field{
 							Key:   "offer",
 							Label: "Any premium dog food",
 							Value: "20% off",

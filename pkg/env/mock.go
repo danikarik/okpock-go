@@ -4,6 +4,8 @@ import (
 	"io/ioutil"
 	"os"
 
+	uuid "github.com/satori/go.uuid"
+
 	fsmock "github.com/danikarik/okpock/pkg/filestore/memory"
 	mlmock "github.com/danikarik/okpock/pkg/mail/memory"
 	"github.com/danikarik/okpock/pkg/pkpass"
@@ -13,13 +15,14 @@ import (
 // NewMock returns a new mock `Env`.
 func NewMock() (*Env, error) {
 	cfg := Config{
-		Stage:        "test",
+		Stage:        "development",
 		Port:         "5000",
 		DatabaseURL:  os.Getenv("TEST_DATABASE_URL"),
 		UploadBucket: os.Getenv("TEST_UPLOAD_BUCKET"),
 		PassesBucket: os.Getenv("TEST_PASSES_BUCKET"),
 		ServerSecret: os.Getenv("TEST_SERVER_SECRET"),
 		MailerRegion: os.Getenv("TEST_MAILER_REGION"),
+		Certificates: CertificateConfig{Team: uuid.NewV4().String()},
 	}
 
 	db := dbmock.New()

@@ -118,6 +118,19 @@ func (m *Memory) SetIconImage(ctx context.Context, key string, project *api.Proj
 	return nil
 }
 
+// SetLogoImage ...
+func (m *Memory) SetLogoImage(ctx context.Context, key string, project *api.Project) error {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+
+	project.LogoImage = key
+	project.UpdatedAt = time.Now()
+
+	m.projects[project.ID] = project
+
+	return nil
+}
+
 // SetStripImage ...
 func (m *Memory) SetStripImage(ctx context.Context, key string, project *api.Project) error {
 	m.mu.Lock()

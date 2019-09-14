@@ -26,6 +26,7 @@ type Config struct {
 
 // CertificateConfig holds environment variables related to certificates.
 type CertificateConfig struct {
+	Team     string      `envconfig:"team" required:"true" desc:"Apple Team Identifier"`
 	Bucket   string      `envconfig:"bucket" required:"true" desc:"Apple Certificates Bucket Name"`
 	RootCert string      `envconfig:"root_cert" required:"true" desc:"Apple WWDR Certificate"`
 	Coupon   Certificate `envconfig:"coupon" required:"true" desc:"Coupon Certificate"`

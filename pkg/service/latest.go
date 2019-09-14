@@ -28,7 +28,7 @@ func (s *Service) latestPass(w http.ResponseWriter, r *http.Request) error {
 		return nil
 	}
 
-	obj, err := s.env.Storage.GetFile(ctx, s.env.Config.PassesBucket, serialNumber+".pkpass")
+	obj, err := s.env.Storage.GetFile(ctx, s.env.Config.PassesBucket, serialNumber)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "File", err)
 	}

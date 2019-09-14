@@ -9,9 +9,6 @@ import (
 	"golang.org/x/crypto/pkcs12"
 )
 
-// SignatureFilename is an alias for `signature`.
-const SignatureFilename = "signature"
-
 // ErrInvalidRootCert returned when pem block is nil.
 var ErrInvalidRootCert = errors.New("pkpass: invalid root certificate")
 
