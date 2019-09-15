@@ -92,11 +92,12 @@ func (s *Service) withRouter() *Service {
 		projects.HandleFunc("/{id:[0-9]+}/upload", s.uploadProjectImage).Methods("POST")
 
 		cards := projects.PathPrefix("/{id:[0-9]+}/cards").Subrouter()
-		cards.HandleFunc("", s.createPassCardHandler).Methods("POST")       // TODO: Document
-		cards.HandleFunc("", s.okHandler).Methods("GET")                    // TODO: LoadPassCards
-		cards.HandleFunc("/{serial}", s.okHandler).Methods("GET")           // TODO: LoadPassCard
-		cards.HandleFunc("/{serial}", s.okHandler).Methods("PUT")           // TODO: UpdatePassCard
-		cards.HandleFunc("/barcodes/{message}", s.okHandler).Methods("GET") // TODO: LoadPassCardsByBarcode
+		cards.HandleFunc("", s.createPassCardHandler).Methods("POST")
+		cards.HandleFunc("", s.projectPassCardsHandler).Methods("GET")
+		cards.HandleFunc("/{cardID:[0-9]+}", s.projectPassCardHandler).Methods("GET")
+		cards.HandleFunc("/{serialNumber}", s.projectPassCardBySerialNumberHandler).Methods("GET")
+		cards.HandleFunc("/{cardID:[0-9]+}", s.updatePassCardHandler).Methods("PUT")              // TODO: APNS
+		cards.HandleFunc("/{serialNumber}", s.updatePassCardBySerialNumberHandler).Methods("PUT") // TODO: APNS
 
 		dictionary := protected.PathPrefix("/dictionary").Subrouter()
 		dictionary.HandleFunc("/passtypes", s.passTypesHandler).Methods("GET")

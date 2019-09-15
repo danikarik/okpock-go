@@ -10,6 +10,7 @@ import (
 	"net/url"
 	"os"
 	"testing"
+	"time"
 
 	"github.com/danikarik/okpock/pkg/api"
 	"github.com/danikarik/okpock/pkg/env"
@@ -50,6 +51,26 @@ func fakeFile(path string) ([]byte, error) {
 	}
 	defer file.Close()
 	return ioutil.ReadAll(file)
+}
+
+func fakePassCard(project *api.Project) *api.PassCardInfo {
+	now := time.Now()
+	data := &api.PassCard{
+		Description:         project.Description,
+		FormatVersion:       1,
+		OrganizationName:    project.OrganizationName,
+		PassTypeID:          "pass.com.okpock.test",
+		SerialNumber:        uuid.NewV4().String(),
+		TeamID:              fakeString(),
+		WebServiceURL:       "http://localhost:5000",
+		AuthenticationToken: secure.Token(),
+	}
+	return &api.PassCardInfo{
+		ID:        fakeID(),
+		Data:      data,
+		CreatedAt: now,
+		UpdatedAt: now,
+	}
 }
 
 func initService(t *testing.T) (*Service, error) {
