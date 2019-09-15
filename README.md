@@ -99,6 +99,20 @@ Response Body
 }
 ```
 
+### GET `/downloads/{serialNumber}.pkpass`
+
+Response Codes
+
+- `200`
+
+Response Headers
+
+- `Content-Type - application/vnd.apple.pkpass`
+
+Response Body
+
+- `binary` stream
+
 ### POST `/login`
 
 Request Body

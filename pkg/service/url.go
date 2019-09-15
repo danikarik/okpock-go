@@ -4,6 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"net/url"
+	"os"
 	"strconv"
 
 	"github.com/danikarik/mux"
@@ -29,6 +30,9 @@ func checkQueryParams(r *http.Request, params ...string) (map[string]string, err
 
 func (s *Service) hostURL() string {
 	if s.env.Config.Debug {
+		if host, ok := os.LookupEnv("HOST_URL"); ok {
+			return host
+		}
 		return "http://localhost:" + s.env.Config.Port
 	}
 	if s.env.Config.IsDevelopment() {

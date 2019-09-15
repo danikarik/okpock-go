@@ -52,7 +52,7 @@ func (s *Service) withRouter() *Service {
 	{
 		public := api.NewRoute().Subrouter()
 		public.HandleFunc("/", s.okHandler).Methods("GET")
-		public.HandleFunc("/downloads/{serialNumber}.pkpass", s.downloadPkpass).Methods("GET") // TODO: Document
+		public.HandleFunc("/downloads/{serialNumber}.pkpass", s.downloadPkpass).Methods("GET")
 
 		auth := public.NewRoute().Subrouter()
 		auth.HandleFunc("/login", s.loginHandler).Methods("POST")
