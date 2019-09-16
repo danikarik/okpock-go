@@ -108,6 +108,9 @@ func TestFindRegistrationBySerialNumber(t *testing.T) {
 	res, err := mock.FindRegistrationBySerialNumber(ctx, serialNumber)
 	assert.NoError(err)
 	assert.True(res)
+	token, err := mock.FindPushToken(ctx, serialNumber)
+	assert.NoError(err)
+	assert.Equal(pushToken, token)
 }
 
 func TestFindSerialNumbers(t *testing.T) {

@@ -6,6 +6,7 @@ import (
 
 	uuid "github.com/satori/go.uuid"
 
+	"github.com/danikarik/okpock/pkg/apns"
 	fsmock "github.com/danikarik/okpock/pkg/filestore/memory"
 	mlmock "github.com/danikarik/okpock/pkg/mail/memory"
 	"github.com/danikarik/okpock/pkg/pkpass"
@@ -50,5 +51,5 @@ func NewMock() (*Env, error) {
 		return nil, err
 	}
 
-	return New(cfg, db, db, db, fs, ml, couponSigner), nil
+	return New(cfg, db, db, db, fs, ml, couponSigner, apns.NewMock()), nil
 }

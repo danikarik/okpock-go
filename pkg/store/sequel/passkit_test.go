@@ -152,18 +152,21 @@ func TestFindRegistrationBySerialNumber(t *testing.T) {
 		SerialNumber string
 		PassTypeID   string
 		DeviceID     string
+		PushToken    string
 		Expected     bool
 	}{
 		{
 			SerialNumber: "2c91cb65-29ad-465a-bbbc-968f0ca224e9",
 			PassTypeID:   "com.example.pass",
 			DeviceID:     "52a26307-aef2-45de-af72-4e5acfa55b8d",
+			PushToken:    uuid.NewV4().String(),
 			Expected:     true,
 		},
 		{
 			SerialNumber: "1967bce8-fb9c-4be7-8946-c1a3a7607a88",
 			PassTypeID:   "com.example.pass",
 			DeviceID:     "52a26307-aef2-45de-af72-4e5acfa55b8d",
+			PushToken:    uuid.NewV4().String(),
 			Expected:     false,
 		},
 	}
@@ -176,7 +179,7 @@ func TestFindRegistrationBySerialNumber(t *testing.T) {
 
 	db := sequel.New(conn)
 
-	err = db.InsertRegistration(ctx, testCases[0].DeviceID, uuid.NewV4().String(),
+	err = db.InsertRegistration(ctx, testCases[0].DeviceID, testCases[0].PushToken,
 		testCases[0].SerialNumber, testCases[0].PassTypeID)
 	assert.NoError(err)
 
@@ -184,6 +187,12 @@ func TestFindRegistrationBySerialNumber(t *testing.T) {
 		ok, err := db.FindRegistrationBySerialNumber(ctx, c.SerialNumber)
 		assert.NoError(err)
 		assert.Equal(c.Expected, ok)
+
+		if ok {
+			token, err := db.FindPushToken(ctx, c.SerialNumber)
+			assert.NoError(err)
+			assert.Equal(c.PushToken, token)
+		}
 	}
 }
 

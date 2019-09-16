@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/danikarik/okpock/pkg/apns"
 	"github.com/danikarik/okpock/pkg/env"
 	"github.com/danikarik/okpock/pkg/filestore"
 	"github.com/danikarik/okpock/pkg/filestore/awsstore"
@@ -101,10 +102,23 @@ func main() {
 		}
 	}
 
+	var notificator apns.Notificator
+	{
+		cert, err := s3.GetFile(ctx, cfg.Certificates.Bucket, cfg.Certificates.APS.Path)
+		if err != nil {
+			errorExit("get aps certificate: %v", err)
+		}
+
+		notificator, err = apns.New(cert.Body, cfg.Certificates.APS.Pass, cfg.IsProduction())
+		if err != nil {
+			errorExit("new notificator: %v", err)
+		}
+	}
+
 	var srv *service.Service
 	{
 		db := sequel.New(conn)
-		env := env.New(cfg, db, db, db, s3, mailer, couponSigner)
+		env := env.New(cfg, db, db, db, s3, mailer, couponSigner, notificator)
 
 		srv = service.New(Version, env, logger)
 	}

@@ -86,6 +86,15 @@ func TestUpdatePassCardHandler(t *testing.T) {
 				return
 			}
 
+			err = srv.env.PassKit.InsertRegistration(ctx,
+				fakeString(),
+				fakeString(),
+				passcard.Data.SerialNumber,
+				srv.passTypeToString(project.PassType))
+			if !assert.NoError(err) {
+				return
+			}
+
 			body, err := json.Marshal(tc.Request)
 			if !assert.NoError(err) {
 				return

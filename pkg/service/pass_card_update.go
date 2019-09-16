@@ -43,6 +43,14 @@ func (s *Service) updatePassCardHandler(w http.ResponseWriter, r *http.Request) 
 		return s.httpError(w, r, http.StatusInternalServerError, "LoadPassCard", err)
 	}
 
+	pushToken, err := s.env.PassKit.FindPushToken(ctx, passcard.Data.SerialNumber)
+	if err == store.ErrNotFound {
+		return s.httpError(w, r, http.StatusNotFound, "FindPushToken", err)
+	}
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "FindPushToken", err)
+	}
+
 	var req CreatePassCardRequest
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -68,6 +76,11 @@ func (s *Service) updatePassCardHandler(w http.ResponseWriter, r *http.Request) 
 	err = s.env.Logic.UpdatePassCard(ctx, newPasscard.Data, passcard)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "UpdatePassCard", err)
+	}
+
+	err = s.env.Notificator.Push(ctx, pushToken)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "Push", err)
 	}
 
 	return sendJSON(w, http.StatusOK, passcard)
@@ -103,6 +116,14 @@ func (s *Service) updatePassCardBySerialNumberHandler(w http.ResponseWriter, r *
 		return s.httpError(w, r, http.StatusInternalServerError, "LoadPassCard", err)
 	}
 
+	pushToken, err := s.env.PassKit.FindPushToken(ctx, vars["serialNumber"])
+	if err == store.ErrNotFound {
+		return s.httpError(w, r, http.StatusNotFound, "FindPushToken", err)
+	}
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "FindPushToken", err)
+	}
+
 	var req CreatePassCardRequest
 	data, err := ioutil.ReadAll(r.Body)
 	if err != nil {
@@ -128,6 +149,11 @@ func (s *Service) updatePassCardBySerialNumberHandler(w http.ResponseWriter, r *
 	err = s.env.Logic.UpdatePassCard(ctx, newPasscard.Data, passcard)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "UpdatePassCard", err)
+	}
+
+	err = s.env.Notificator.Push(ctx, pushToken)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "Push", err)
 	}
 
 	return sendJSON(w, http.StatusOK, passcard)

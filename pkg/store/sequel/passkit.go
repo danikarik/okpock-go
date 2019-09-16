@@ -2,9 +2,11 @@ package sequel
 
 import (
 	"context"
+	"database/sql"
 	"time"
 
 	sq "github.com/Masterminds/squirrel"
+	"github.com/danikarik/okpock/pkg/store"
 )
 
 // InsertPass ...
@@ -81,6 +83,30 @@ func (m *MySQL) FindRegistrationBySerialNumber(ctx context.Context, serialNumber
 	}
 
 	return cnt > 0, nil
+}
+
+// FindPushToken ...
+func (m *MySQL) FindPushToken(ctx context.Context, serialNumber string) (string, error) {
+	query := m.builder.Select("push_token").From("registrations").
+		Where(sq.Eq{
+			"serial_number": serialNumber,
+		})
+
+	row, err := m.selectRowQuery(ctx, query)
+	if err != nil {
+		return "", err
+	}
+
+	var pushToken string
+	err = row.Scan(&pushToken)
+	if err == sql.ErrNoRows {
+		return "", store.ErrNotFound
+	}
+	if err != nil {
+		return "", err
+	}
+
+	return pushToken, nil
 }
 
 // FindSerialNumbers ...

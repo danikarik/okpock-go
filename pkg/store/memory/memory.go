@@ -117,6 +117,18 @@ func (m *Memory) FindRegistrationBySerialNumber(ctx context.Context, serialNumbe
 	return false, nil
 }
 
+// FindPushToken ...
+func (m *Memory) FindPushToken(ctx context.Context, serialNumber string) (string, error) {
+	m.mu.Lock()
+	defer m.mu.Unlock()
+	for _, reg := range m.regs {
+		if reg.serial == serialNumber {
+			return reg.push, nil
+		}
+	}
+	return "", store.ErrNotFound
+}
+
 // FindSerialNumbers ...
 func (m *Memory) FindSerialNumbers(ctx context.Context, deviceID, passTypeIdentifier, tag string) ([]string, error) {
 	m.mu.Lock()
