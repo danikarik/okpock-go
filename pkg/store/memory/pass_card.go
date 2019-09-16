@@ -87,6 +87,7 @@ func (m *Memory) UpdatePassCard(ctx context.Context, data *api.PassCard, passcar
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
+	data.CopyFrom(passcard.Data)
 	passcard.Data = data
 	passcard.UpdatedAt = time.Now()
 	m.passCards[passcard.ID] = passcard

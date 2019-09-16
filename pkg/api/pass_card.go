@@ -390,6 +390,14 @@ func (p *PassCard) Scan(src interface{}) error {
 	return json.Unmarshal(source, &p)
 }
 
+// CopyFrom copies required fields.
+func (p *PassCard) CopyFrom(src *PassCard) {
+	p.SerialNumber = src.SerialNumber
+	p.PassTypeID = src.PassTypeID
+	p.TeamID = src.TeamID
+	p.AuthenticationToken = src.AuthenticationToken
+}
+
 func hasOneStyle(styles ...*PassStructure) bool {
 	styleCnt := 0
 	for _, style := range styles {

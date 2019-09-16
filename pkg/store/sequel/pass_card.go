@@ -212,6 +212,7 @@ func (m *MySQL) UpdatePassCard(ctx context.Context, data *api.PassCard, passcard
 		return err
 	}
 
+	data.CopyFrom(passcard.Data)
 	passcard.Data = data
 	passcard.UpdatedAt = time.Now()
 
