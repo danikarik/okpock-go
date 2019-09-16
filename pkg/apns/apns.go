@@ -9,17 +9,15 @@ import (
 	"github.com/sideshow/apns2/certificate"
 )
 
+const bundleID = "com.okpock.notification"
+
 // New creates a new instance of `Notificator`.
 func New(data []byte, pass string, production bool) (Notificator, error) {
 	cert, err := certificate.FromP12Bytes(data, pass)
 	if err != nil {
 		return nil, err
 	}
-	client := apns2.NewClient(cert)
-	client.Host = "https://api.development.push.apple.com"
-	if production {
-		client = client.Production()
-	}
+	client := apns2.NewClient(cert).Production()
 	return &notificator{client}, nil
 }
 
@@ -34,6 +32,7 @@ type notificator struct {
 
 func (n *notificator) Push(ctx context.Context, token string) error {
 	result, err := n.client.PushWithContext(ctx, &apns2.Notification{
+		Topic:       bundleID,
 		DeviceToken: token,
 		Payload:     []byte(`{}`),
 		Priority:    apns2.PriorityHigh,
