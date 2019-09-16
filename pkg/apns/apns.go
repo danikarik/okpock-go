@@ -16,6 +16,7 @@ func New(data []byte, pass string, production bool) (Notificator, error) {
 		return nil, err
 	}
 	client := apns2.NewClient(cert)
+	client.Host = "https://api.development.push.apple.com"
 	if production {
 		client = client.Production()
 	}
