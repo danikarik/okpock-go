@@ -78,7 +78,17 @@ func (s *Service) updatePassCardHandler(w http.ResponseWriter, r *http.Request) 
 		return s.httpError(w, r, http.StatusInternalServerError, "UpdatePassCard", err)
 	}
 
-	err = s.env.Notificator.Push(ctx, pushToken)
+	err = s.env.PassKit.UpdatePass(ctx, passcard.Data.SerialNumber)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "UpdatePass", err)
+	}
+
+	notificator, err := s.getNotificator(project.PassType)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "GetNotificator", err)
+	}
+
+	err = notificator.Push(ctx, pushToken)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "Push", err)
 	}
@@ -151,7 +161,17 @@ func (s *Service) updatePassCardBySerialNumberHandler(w http.ResponseWriter, r *
 		return s.httpError(w, r, http.StatusInternalServerError, "UpdatePassCard", err)
 	}
 
-	err = s.env.Notificator.Push(ctx, pushToken)
+	err = s.env.PassKit.UpdatePass(ctx, passcard.Data.SerialNumber)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "UpdatePass", err)
+	}
+
+	notificator, err := s.getNotificator(project.PassType)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "GetNotificator", err)
+	}
+
+	err = notificator.Push(ctx, pushToken)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "Push", err)
 	}

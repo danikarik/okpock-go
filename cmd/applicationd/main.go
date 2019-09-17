@@ -89,27 +89,25 @@ func main() {
 		}
 	}
 
-	var couponSigner pkpass.Signer
+	var couponCert *filestore.Object
 	{
-		cert, err := s3.GetFile(ctx, cfg.Certificates.Bucket, cfg.Certificates.Coupon.Path)
+		couponCert, err = s3.GetFile(ctx, cfg.Certificates.Bucket, cfg.Certificates.Coupon.Path)
 		if err != nil {
 			errorExit("get coupon certificate: %v", err)
 		}
+	}
 
-		couponSigner, err = pkpass.NewSigner(rootCert.Body, cert.Body, cfg.Certificates.Coupon.Pass)
+	var couponSigner pkpass.Signer
+	{
+		couponSigner, err = pkpass.NewSigner(rootCert.Body, couponCert.Body, cfg.Certificates.Coupon.Pass)
 		if err != nil {
 			errorExit("coupon signer: %v", err)
 		}
 	}
 
-	var notificator apns.Notificator
+	var couponNotificator apns.Notificator
 	{
-		cert, err := s3.GetFile(ctx, cfg.Certificates.Bucket, cfg.Certificates.APS.Path)
-		if err != nil {
-			errorExit("get aps certificate: %v", err)
-		}
-
-		notificator, err = apns.New(cert.Body, cfg.Certificates.APS.Pass, cfg.IsProduction())
+		couponNotificator, err = apns.New(couponCert.Body, cfg.Certificates.Coupon.Pass, cfg.IsProduction())
 		if err != nil {
 			errorExit("new notificator: %v", err)
 		}
@@ -118,7 +116,7 @@ func main() {
 	var srv *service.Service
 	{
 		db := sequel.New(conn)
-		env := env.New(cfg, db, db, db, s3, mailer, couponSigner, notificator)
+		env := env.New(cfg, db, db, db, s3, mailer, couponSigner, couponNotificator)
 
 		srv = service.New(Version, env, logger)
 	}

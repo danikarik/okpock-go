@@ -89,6 +89,7 @@ func loggerMiddleware(logger *zap.Logger) mux.MiddlewareFunc {
 		start := time.Now()
 		defer func() {
 			logger.Info("served",
+				zap.String("method", r.Method),
 				zap.String("proto", r.Proto),
 				zap.String("path", r.URL.Path),
 				zap.Duration("lat", time.Since(start)),

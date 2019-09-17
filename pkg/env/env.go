@@ -13,25 +13,25 @@ func New(cfg Config, passkit api.PassKit, auth api.Auth, logic api.Logic,
 	storage filestore.Storage, mailer mail.Mailer, coupon pkpass.Signer,
 	notificator apns.Notificator) *Env {
 	return &Env{
-		Config:       cfg,
-		PassKit:      passkit,
-		Auth:         auth,
-		Logic:        logic,
-		Storage:      storage,
-		Mailer:       mailer,
-		CouponSigner: coupon,
-		Notificator:  notificator,
+		Config:            cfg,
+		PassKit:           passkit,
+		Auth:              auth,
+		Logic:             logic,
+		Storage:           storage,
+		Mailer:            mailer,
+		CouponSigner:      coupon,
+		CouponNotificator: notificator,
 	}
 }
 
 // Env holds stores and config.
 type Env struct {
-	Config       Config
-	PassKit      api.PassKit
-	Auth         api.Auth
-	Logic        api.Logic
-	Storage      filestore.Storage
-	Mailer       mail.Mailer
-	CouponSigner pkpass.Signer
-	Notificator  apns.Notificator
+	Config            Config
+	PassKit           api.PassKit
+	Auth              api.Auth
+	Logic             api.Logic
+	Storage           filestore.Storage
+	Mailer            mail.Mailer
+	CouponSigner      pkpass.Signer
+	CouponNotificator apns.Notificator
 }
