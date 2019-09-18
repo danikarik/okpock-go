@@ -71,4 +71,5 @@ func TestLatestPass(t *testing.T) {
 	resp := rec.Result()
 
 	assert.Equal(http.StatusOK, resp.StatusCode)
+	assert.NotEmpty(resp.Header.Get("Last-Modified"))
 }

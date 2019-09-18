@@ -50,15 +50,8 @@ func TestSingleFile(t *testing.T) {
 	}
 
 	obj, err := store.GetFile(ctx, env.Get("TEST_PASSES_BUCKET"), env.Get("TEST_FILE"))
-	if !assert.NoError(err) {
-		assert.FailNow("could not read file")
-	}
-
-	if !assert.True(len(obj.Body) > 0) {
-		assert.FailNow("wrong content length")
-	}
-
-	t.Logf("key: %s, content-type: %s, content-length: %v\n", obj.Key, obj.ContentType, len(obj.Body))
+	assert.NoError(err)
+	assert.True(len(obj.Body) > 0)
 }
 
 func TestFolderFile(t *testing.T) {
@@ -74,19 +67,12 @@ func TestFolderFile(t *testing.T) {
 
 	store, err := awsstore.New()
 	if !assert.NoError(err) {
-		assert.FailNow("could not init handler")
+		return
 	}
 
 	obj, err := store.GetFile(ctx, env.Get("TEST_TEMPLATES_BUCKET"), env.Get("TEST_FILE_IN_FOLDER"))
-	if !assert.NoError(err) {
-		assert.FailNow("could not read file")
-	}
-
-	if !assert.True(len(obj.Body) > 0) {
-		assert.FailNow("wrong content length")
-	}
-
-	t.Logf("key: %s, content-type: %s, content-length: %v\n", obj.Key, obj.ContentType, len(obj.Body))
+	assert.NoError(err)
+	assert.True(len(obj.Body) > 0)
 }
 
 func TestBucket(t *testing.T) {
@@ -102,21 +88,12 @@ func TestBucket(t *testing.T) {
 
 	store, err := awsstore.New()
 	if !assert.NoError(err) {
-		assert.FailNow("could not init handler")
+		return
 	}
 
 	contents, err := store.GetBucketFiles(ctx, env.Get("TEST_TEMPLATES_BUCKET"), env.Get("TEST_PROJECT"))
-	if !assert.NoError(err) {
-		assert.FailNow("could not read file")
-	}
-
-	if !assert.Len(contents, 1) {
-		assert.FailNow("bucket cannot be empty")
-	}
-
-	for _, c := range contents {
-		t.Logf("key: %s, content-type: %s, content-length: %v\n", c.Key, c.ContentType, len(c.Body))
-	}
+	assert.NoError(err)
+	assert.Len(contents, 1)
 }
 
 func TestUploadSingleFile(t *testing.T) {
@@ -132,7 +109,33 @@ func TestUploadSingleFile(t *testing.T) {
 
 	store, err := awsstore.New()
 	if !assert.NoError(err) {
-		assert.FailNow("could not init handler")
+		return
+	}
+
+	obj := &filestore.Object{
+		Key:         uuid.NewV4().String() + ".txt",
+		Body:        []byte("Hello World\n"),
+		ContentType: "text/plain",
+	}
+
+	err = store.UploadFile(ctx, env.Get("TEST_PASSES_BUCKET"), obj)
+	assert.NoError(err)
+}
+
+func TestUploadExistingSingleFile(t *testing.T) {
+	skipTest(t)
+
+	env, err := env.NewLookup(requiredVars...)
+	if err != nil {
+		t.Skip(err)
+	}
+
+	ctx := context.Background()
+	assert := assert.New(t)
+
+	store, err := awsstore.New()
+	if !assert.NoError(err) {
+		return
 	}
 
 	obj := &filestore.Object{
@@ -143,16 +146,19 @@ func TestUploadSingleFile(t *testing.T) {
 
 	err = store.UploadFile(ctx, env.Get("TEST_PASSES_BUCKET"), obj)
 	if !assert.NoError(err) {
-		assert.FailNow("could not upload file")
+		return
 	}
 
-	t.Logf(
-		"bucket: %s, key: %s, content-type: %s, content-length: %v\n",
-		env.Get("TEST_PASSES_BUCKET"),
-		obj.Key,
-		obj.ContentType,
-		len(obj.Body),
-	)
+	obj.Body = []byte("Hello Okpock\n")
+
+	err = store.UploadFile(ctx, env.Get("TEST_PASSES_BUCKET"), obj)
+	if !assert.NoError(err) {
+		return
+	}
+
+	loaded, err := store.GetFile(ctx, env.Get("TEST_PASSES_BUCKET"), obj.Key)
+	assert.NoError(err)
+	assert.Equal(obj.Body, loaded.Body)
 }
 
 func TestUploadFolderFile(t *testing.T) {
@@ -168,7 +174,7 @@ func TestUploadFolderFile(t *testing.T) {
 
 	store, err := awsstore.New()
 	if !assert.NoError(err) {
-		assert.FailNow("could not init handler")
+		return
 	}
 
 	obj := &filestore.Object{
@@ -178,16 +184,5 @@ func TestUploadFolderFile(t *testing.T) {
 		ContentType: "text/plain",
 	}
 	err = store.UploadFile(ctx, env.Get("TEST_PASSES_BUCKET"), obj)
-	if !assert.NoError(err) {
-		assert.FailNow("could not upload file")
-	}
-
-	t.Logf(
-		"bucket: %s, prefix: %s, key: %s, content-type: %s, content-length: %v\n",
-		env.Get("TEST_PASSES_BUCKET"),
-		obj.Prefix,
-		obj.Key,
-		obj.ContentType,
-		len(obj.Body),
-	)
+	assert.NoError(err)
 }

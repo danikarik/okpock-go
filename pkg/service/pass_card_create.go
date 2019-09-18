@@ -107,7 +107,7 @@ func (s *Service) createPassCardHandler(w http.ResponseWriter, r *http.Request) 
 		return s.httpError(w, r, http.StatusInternalServerError, "InsertPass", err)
 	}
 
-	upload, err := s.newPassUpload(r.Context(), project, passcard)
+	upload, err := s.newPassUpload(ctx, project, passcard)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "NewPassUpload", err)
 	}

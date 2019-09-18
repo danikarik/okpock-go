@@ -23,7 +23,7 @@ func (s *Service) latestPass(w http.ResponseWriter, r *http.Request) error {
 		return s.httpError(w, r, http.StatusInternalServerError, "LatestPass", err)
 	}
 
-	if isModifiedSince(r, lastUpdate) {
+	if notModified(r, lastUpdate) {
 		w.WriteHeader(http.StatusNotModified)
 		return nil
 	}
@@ -33,6 +33,7 @@ func (s *Service) latestPass(w http.ResponseWriter, r *http.Request) error {
 		return s.httpError(w, r, http.StatusInternalServerError, "File", err)
 	}
 
+	w.Header().Set("Last-Modified", lastUpdate.Format(http.TimeFormat))
 	err = obj.Serve(w)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "Serve", err)
@@ -41,7 +42,7 @@ func (s *Service) latestPass(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
-func isModifiedSince(r *http.Request, lastUpdate time.Time) bool {
+func notModified(r *http.Request, lastUpdate time.Time) bool {
 	header := r.Header.Get("If-Modified-Since")
 	if header == "" {
 		return false
@@ -52,5 +53,12 @@ func isModifiedSince(r *http.Request, lastUpdate time.Time) bool {
 		return false
 	}
 
-	return lastUpdate.Before(t.Add(1 * time.Second))
+	hasDiff := (lastUpdate.Year() > t.Year()) ||
+		(lastUpdate.Month() > t.Month()) ||
+		(lastUpdate.Day() > t.Day()) ||
+		(lastUpdate.Hour() > t.Hour()) ||
+		(lastUpdate.Minute() > t.Minute()) ||
+		(lastUpdate.Second() > t.Second())
+
+	return !hasDiff
 }

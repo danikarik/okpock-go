@@ -96,8 +96,8 @@ func (s *Service) withRouter() *Service {
 		cards.HandleFunc("", s.projectPassCardsHandler).Methods("GET")
 		cards.HandleFunc("/{cardID:[0-9]+}", s.projectPassCardHandler).Methods("GET")
 		cards.HandleFunc("/{serialNumber}", s.projectPassCardBySerialNumberHandler).Methods("GET")
-		cards.HandleFunc("/{cardID:[0-9]+}", s.updatePassCardHandler).Methods("PUT")              // TODO: APNS
-		cards.HandleFunc("/{serialNumber}", s.updatePassCardBySerialNumberHandler).Methods("PUT") // TODO: APNS
+		cards.HandleFunc("/{cardID:[0-9]+}", s.updatePassCardHandler).Methods("PUT")
+		cards.HandleFunc("/{serialNumber}", s.updatePassCardBySerialNumberHandler).Methods("PUT")
 
 		dictionary := protected.PathPrefix("/dictionary").Subrouter()
 		dictionary.HandleFunc("/passtypes", s.passTypesHandler).Methods("GET")

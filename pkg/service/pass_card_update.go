@@ -88,6 +88,16 @@ func (s *Service) updatePassCardHandler(w http.ResponseWriter, r *http.Request) 
 		return s.httpError(w, r, http.StatusInternalServerError, "GetNotificator", err)
 	}
 
+	upload, err := s.newPassUpload(ctx, project, passcard)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "NewPassUpload", err)
+	}
+
+	err = s.env.Storage.UploadFile(ctx, s.env.Config.PassesBucket, upload)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "UploadFile", err)
+	}
+
 	err = notificator.Push(ctx, pushToken)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "Push", err)
@@ -164,6 +174,16 @@ func (s *Service) updatePassCardBySerialNumberHandler(w http.ResponseWriter, r *
 	err = s.env.PassKit.UpdatePass(ctx, passcard.Data.SerialNumber)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "UpdatePass", err)
+	}
+
+	upload, err := s.newPassUpload(ctx, project, passcard)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "NewPassUpload", err)
+	}
+
+	err = s.env.Storage.UploadFile(ctx, s.env.Config.PassesBucket, upload)
+	if err != nil {
+		return s.httpError(w, r, http.StatusInternalServerError, "UploadFile", err)
 	}
 
 	notificator, err := s.getNotificator(project.PassType)

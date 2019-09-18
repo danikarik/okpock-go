@@ -151,7 +151,15 @@ func (m *MySQL) LatestPass(ctx context.Context, serialNumber, authToken, passTyp
 			"pass_type_id":         passTypeID,
 		})
 
-	err := m.scanQuery(ctx, query, &t)
+	row, err := m.selectRowQuery(ctx, query)
+	if err == sql.ErrNoRows {
+		return time.Time{}, store.ErrNotFound
+	}
+	if err != nil {
+		return time.Time{}, err
+	}
+
+	err = row.Scan(&t)
 	if err != nil {
 		return time.Time{}, err
 	}

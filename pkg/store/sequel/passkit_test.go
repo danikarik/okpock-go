@@ -279,7 +279,8 @@ func TestLatestPass(t *testing.T) {
 
 	lastUpdate, err := db.LatestPass(ctx, testCase.SerialNumber, testCase.AuthToken, testCase.PassTypeID)
 	assert.NoError(err)
-	assert.False(lastUpdate.Sub(testCase.UpdatedAt) > 0)
+	assert.False(lastUpdate.IsZero())
+	assert.True(lastUpdate.After(testCase.UpdatedAt))
 }
 
 func TestInsertRegistration(t *testing.T) {
