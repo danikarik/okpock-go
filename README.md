@@ -842,6 +842,1290 @@ Response Body
 }
 ```
 
+### POST `/projects/{id}/cards`
+
+Request Body
+
+```json
+{
+  "appLaunchURL": "...",
+  "associatedStoreIdentifiers": [12345678],
+  "userInfo": {
+    "key1": "value1",
+    "key2": "value2",
+    "key3": "value3"
+  },
+  "expirationDate": "2020-04-24T10:00-05:00",
+  "voided": false,
+  "beacons": [
+    {
+      "major": 1,
+      "minor": 2,
+      "proximityUUID": "908C0ABF-A3C2-4EED-9D99-6E4A38BD913D",
+      "relevantText": "Some Text"
+    }
+  ],
+  "locations" : [
+    {
+      "altitude": 600.00,
+      "longitude": -122.3748889,
+      "latitude": 37.6189722,
+      "relevantText": "Welcoming message for location"
+    },
+    {
+      "altitude": 600.00,
+      "longitude": -122.03118,
+      "latitude": 37.33182,
+      "relevantText": "Welcoming message for location"
+    }
+  ],
+  "maxDistance": 600,
+  "relevantDate": "2019-10-26T10:00-05:00",
+  "structure": {
+    "auxiliaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "backFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "headerFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "primaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "secondaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "transitType": "PKTransitTypeAir|PKTransitTypeBoat|PKTransitTypeBus|PKTransitTypeGeneric|PKTransitTypeTrain"
+  },
+  "barcodes": [
+    {
+      "altText": "Message to display under barcode itself",
+      "message" : "87772514515",
+      "format" : "PKBarcodeFormatQR|PKBarcodeFormatPDF417|PKBarcodeFormatAztec|PKBarcodeFormatCode128",
+      "messageEncoding" : "iso-8859-1"
+    }
+  ],
+  "backgroundColor" : "rgb(206, 140, 53)",
+  "foregroundColor" : "rgb(255, 255, 255)",
+  "groupingIdentifier": "com.app.group",
+  "labelColor": "rgb(255, 255, 255)",
+  "logoText" : "Paw Planet",
+  "nfc": {
+    "message": "some message",
+    "encryptionPublicKey": "pubkey"
+  }
+}
+```
+
+Response Codes
+
+- `201`
+- `400`
+- `401`
+- `404`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "id": 1,
+  "serialNumber": "908c0abf-a3c2-4eed-9d99-6e4a38bd913d",
+  "url": "https://api.okpock.com/downloads/908c0abf-a3c2-4eed-9d99-6e4a38bd913d.pkpass"
+}
+```
+
+### GET `/projects/{id}/cards`
+
+Response Codes
+
+- `200`
+- `401`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+[
+  {
+    "description": "Free Coupon",
+    "formatVersion": 1,
+    "organizationName": "Okpock",
+    "passTypeIdentifier": "pass.com.okpock.coupon",
+    "serialNumber": "908c0abf-a3c2-4eed-9d99-6e4a38bd913d",
+    "teamIdentifier": "...",
+    "appLaunchURL": "...",
+    "associatedStoreIdentifiers": [12345678],
+    "userInfo": {
+      "key1": "value1",
+      "key2": "value2",
+      "key3": "value3"
+    },
+    "expirationDate": "2020-04-24T10:00-05:00",
+    "voided": false,
+    "beacons": [
+      {
+        "major": 1,
+        "minor": 2,
+        "proximityUUID": "908C0ABF-A3C2-4EED-9D99-6E4A38BD913D",
+        "relevantText": "Some Text"
+      }
+    ],
+    "locations" : [
+      {
+        "altitude": 600.00,
+        "longitude": -122.3748889,
+        "latitude": 37.6189722,
+        "relevantText": "Welcoming message for location"
+      },
+      {
+        "altitude": 600.00,
+        "longitude": -122.03118,
+        "latitude": 37.33182,
+        "relevantText": "Welcoming message for location"
+      }
+    ],
+    "maxDistance": 600,
+    "relevantDate": "2019-10-26T10:00-05:00",
+    "structure": {
+      "auxiliaryFields": [
+        {
+          "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+          "changeMessage": "Gate changed to %@.",
+          "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+          "key": "discount",
+          "label": "Your discount rate",
+          "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+          "value": "25%",
+          "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+          "ignoresTimeZone": false,
+          "isRelative": false,
+          "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+          "currencyCode": "USD",
+          "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+        }
+      ],
+      "backFields": [
+        {
+          "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+          "changeMessage": "Gate changed to %@.",
+          "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+          "key": "discount",
+          "label": "Your discount rate",
+          "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+          "value": "25%",
+          "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+          "ignoresTimeZone": false,
+          "isRelative": false,
+          "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+          "currencyCode": "USD",
+          "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+        }
+      ],
+      "headerFields": [
+        {
+          "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+          "changeMessage": "Gate changed to %@.",
+          "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+          "key": "discount",
+          "label": "Your discount rate",
+          "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+          "value": "25%",
+          "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+          "ignoresTimeZone": false,
+          "isRelative": false,
+          "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+          "currencyCode": "USD",
+          "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+        }
+      ],
+      "primaryFields": [
+        {
+          "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+          "changeMessage": "Gate changed to %@.",
+          "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+          "key": "discount",
+          "label": "Your discount rate",
+          "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+          "value": "25%",
+          "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+          "ignoresTimeZone": false,
+          "isRelative": false,
+          "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+          "currencyCode": "USD",
+          "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+        }
+      ],
+      "secondaryFields": [
+        {
+          "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+          "changeMessage": "Gate changed to %@.",
+          "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+          "key": "discount",
+          "label": "Your discount rate",
+          "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+          "value": "25%",
+          "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+          "ignoresTimeZone": false,
+          "isRelative": false,
+          "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+          "currencyCode": "USD",
+          "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+        }
+      ],
+      "transitType": "PKTransitTypeAir|PKTransitTypeBoat|PKTransitTypeBus|PKTransitTypeGeneric|PKTransitTypeTrain"
+    },
+    "barcodes": [
+      {
+        "altText": "Message to display under barcode itself",
+        "message" : "87772514515",
+        "format" : "PKBarcodeFormatQR|PKBarcodeFormatPDF417|PKBarcodeFormatAztec|PKBarcodeFormatCode128",
+        "messageEncoding" : "iso-8859-1"
+      }
+    ],
+    "backgroundColor" : "rgb(206, 140, 53)",
+    "foregroundColor" : "rgb(255, 255, 255)",
+    "groupingIdentifier": "com.app.group",
+    "labelColor": "rgb(255, 255, 255)",
+    "logoText" : "Paw Planet",
+    "nfc": {
+      "message": "some message",
+      "encryptionPublicKey": "pubkey"
+    }
+  }
+]
+```
+
+### GET `/projects/{id}/cards/{cardID}`
+
+Response Codes
+
+- `200`
+- `400`
+- `401`
+- `404`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "description": "Free Coupon",
+  "formatVersion": 1,
+  "organizationName": "Okpock",
+  "passTypeIdentifier": "pass.com.okpock.coupon",
+  "serialNumber": "908c0abf-a3c2-4eed-9d99-6e4a38bd913d",
+  "teamIdentifier": "...",
+  "appLaunchURL": "...",
+  "associatedStoreIdentifiers": [12345678],
+  "userInfo": {
+    "key1": "value1",
+    "key2": "value2",
+    "key3": "value3"
+  },
+  "expirationDate": "2020-04-24T10:00-05:00",
+  "voided": false,
+  "beacons": [
+    {
+      "major": 1,
+      "minor": 2,
+      "proximityUUID": "908C0ABF-A3C2-4EED-9D99-6E4A38BD913D",
+      "relevantText": "Some Text"
+    }
+  ],
+  "locations" : [
+    {
+      "altitude": 600.00,
+      "longitude": -122.3748889,
+      "latitude": 37.6189722,
+      "relevantText": "Welcoming message for location"
+    },
+    {
+      "altitude": 600.00,
+      "longitude": -122.03118,
+      "latitude": 37.33182,
+      "relevantText": "Welcoming message for location"
+    }
+  ],
+  "maxDistance": 600,
+  "relevantDate": "2019-10-26T10:00-05:00",
+  "structure": {
+    "auxiliaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "backFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "headerFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "primaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "secondaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "transitType": "PKTransitTypeAir|PKTransitTypeBoat|PKTransitTypeBus|PKTransitTypeGeneric|PKTransitTypeTrain"
+  },
+  "barcodes": [
+    {
+      "altText": "Message to display under barcode itself",
+      "message" : "87772514515",
+      "format" : "PKBarcodeFormatQR|PKBarcodeFormatPDF417|PKBarcodeFormatAztec|PKBarcodeFormatCode128",
+      "messageEncoding" : "iso-8859-1"
+    }
+  ],
+  "backgroundColor" : "rgb(206, 140, 53)",
+  "foregroundColor" : "rgb(255, 255, 255)",
+  "groupingIdentifier": "com.app.group",
+  "labelColor": "rgb(255, 255, 255)",
+  "logoText" : "Paw Planet",
+  "nfc": {
+    "message": "some message",
+    "encryptionPublicKey": "pubkey"
+  }
+}
+```
+
+### GET `/projects/{id}/cards/{serialNumber}`
+
+Response Codes
+
+- `200`
+- `400`
+- `401`
+- `404`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "description": "Free Coupon",
+  "formatVersion": 1,
+  "organizationName": "Okpock",
+  "passTypeIdentifier": "pass.com.okpock.coupon",
+  "serialNumber": "908c0abf-a3c2-4eed-9d99-6e4a38bd913d",
+  "teamIdentifier": "...",
+  "appLaunchURL": "...",
+  "associatedStoreIdentifiers": [12345678],
+  "userInfo": {
+    "key1": "value1",
+    "key2": "value2",
+    "key3": "value3"
+  },
+  "expirationDate": "2020-04-24T10:00-05:00",
+  "voided": false,
+  "beacons": [
+    {
+      "major": 1,
+      "minor": 2,
+      "proximityUUID": "908C0ABF-A3C2-4EED-9D99-6E4A38BD913D",
+      "relevantText": "Some Text"
+    }
+  ],
+  "locations" : [
+    {
+      "altitude": 600.00,
+      "longitude": -122.3748889,
+      "latitude": 37.6189722,
+      "relevantText": "Welcoming message for location"
+    },
+    {
+      "altitude": 600.00,
+      "longitude": -122.03118,
+      "latitude": 37.33182,
+      "relevantText": "Welcoming message for location"
+    }
+  ],
+  "maxDistance": 600,
+  "relevantDate": "2019-10-26T10:00-05:00",
+  "structure": {
+    "auxiliaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "backFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "headerFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "primaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "secondaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "transitType": "PKTransitTypeAir|PKTransitTypeBoat|PKTransitTypeBus|PKTransitTypeGeneric|PKTransitTypeTrain"
+  },
+  "barcodes": [
+    {
+      "altText": "Message to display under barcode itself",
+      "message" : "87772514515",
+      "format" : "PKBarcodeFormatQR|PKBarcodeFormatPDF417|PKBarcodeFormatAztec|PKBarcodeFormatCode128",
+      "messageEncoding" : "iso-8859-1"
+    }
+  ],
+  "backgroundColor" : "rgb(206, 140, 53)",
+  "foregroundColor" : "rgb(255, 255, 255)",
+  "groupingIdentifier": "com.app.group",
+  "labelColor": "rgb(255, 255, 255)",
+  "logoText" : "Paw Planet",
+  "nfc": {
+    "message": "some message",
+    "encryptionPublicKey": "pubkey"
+  }
+}
+```
+
+### PUT `/projects/{id}/cards/{cardID}`
+
+Request Body
+
+```json
+{
+  "appLaunchURL": "...",
+  "associatedStoreIdentifiers": [12345678],
+  "userInfo": {
+    "key1": "value1",
+    "key2": "value2",
+    "key3": "value3"
+  },
+  "expirationDate": "2020-04-24T10:00-05:00",
+  "voided": false,
+  "beacons": [
+    {
+      "major": 1,
+      "minor": 2,
+      "proximityUUID": "908C0ABF-A3C2-4EED-9D99-6E4A38BD913D",
+      "relevantText": "Some Text"
+    }
+  ],
+  "locations" : [
+    {
+      "altitude": 600.00,
+      "longitude": -122.3748889,
+      "latitude": 37.6189722,
+      "relevantText": "Welcoming message for location"
+    },
+    {
+      "altitude": 600.00,
+      "longitude": -122.03118,
+      "latitude": 37.33182,
+      "relevantText": "Welcoming message for location"
+    }
+  ],
+  "maxDistance": 600,
+  "relevantDate": "2019-10-26T10:00-05:00",
+  "structure": {
+    "auxiliaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "backFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "headerFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "primaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "secondaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "transitType": "PKTransitTypeAir|PKTransitTypeBoat|PKTransitTypeBus|PKTransitTypeGeneric|PKTransitTypeTrain"
+  },
+  "barcodes": [
+    {
+      "altText": "Message to display under barcode itself",
+      "message" : "87772514515",
+      "format" : "PKBarcodeFormatQR|PKBarcodeFormatPDF417|PKBarcodeFormatAztec|PKBarcodeFormatCode128",
+      "messageEncoding" : "iso-8859-1"
+    }
+  ],
+  "backgroundColor" : "rgb(206, 140, 53)",
+  "foregroundColor" : "rgb(255, 255, 255)",
+  "groupingIdentifier": "com.app.group",
+  "labelColor": "rgb(255, 255, 255)",
+  "logoText" : "Paw Planet",
+  "nfc": {
+    "message": "some message",
+    "encryptionPublicKey": "pubkey"
+  }
+}
+```
+
+Response Codes
+
+- `200`
+- `400`
+- `401`
+- `404`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "description": "Free Coupon",
+  "formatVersion": 1,
+  "organizationName": "Okpock",
+  "passTypeIdentifier": "pass.com.okpock.coupon",
+  "serialNumber": "908c0abf-a3c2-4eed-9d99-6e4a38bd913d",
+  "teamIdentifier": "...",
+  "appLaunchURL": "...",
+  "associatedStoreIdentifiers": [12345678],
+  "userInfo": {
+    "key1": "value1",
+    "key2": "value2",
+    "key3": "value3"
+  },
+  "expirationDate": "2020-04-24T10:00-05:00",
+  "voided": false,
+  "beacons": [
+    {
+      "major": 1,
+      "minor": 2,
+      "proximityUUID": "908C0ABF-A3C2-4EED-9D99-6E4A38BD913D",
+      "relevantText": "Some Text"
+    }
+  ],
+  "locations" : [
+    {
+      "altitude": 600.00,
+      "longitude": -122.3748889,
+      "latitude": 37.6189722,
+      "relevantText": "Welcoming message for location"
+    },
+    {
+      "altitude": 600.00,
+      "longitude": -122.03118,
+      "latitude": 37.33182,
+      "relevantText": "Welcoming message for location"
+    }
+  ],
+  "maxDistance": 600,
+  "relevantDate": "2019-10-26T10:00-05:00",
+  "structure": {
+    "auxiliaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "backFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "headerFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "primaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "secondaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "transitType": "PKTransitTypeAir|PKTransitTypeBoat|PKTransitTypeBus|PKTransitTypeGeneric|PKTransitTypeTrain"
+  },
+  "barcodes": [
+    {
+      "altText": "Message to display under barcode itself",
+      "message" : "87772514515",
+      "format" : "PKBarcodeFormatQR|PKBarcodeFormatPDF417|PKBarcodeFormatAztec|PKBarcodeFormatCode128",
+      "messageEncoding" : "iso-8859-1"
+    }
+  ],
+  "backgroundColor" : "rgb(206, 140, 53)",
+  "foregroundColor" : "rgb(255, 255, 255)",
+  "groupingIdentifier": "com.app.group",
+  "labelColor": "rgb(255, 255, 255)",
+  "logoText" : "Paw Planet",
+  "nfc": {
+    "message": "some message",
+    "encryptionPublicKey": "pubkey"
+  }
+}
+```
+
+### PUT `/projects/{id}/cards/{serialNumber}`
+
+Request Body
+
+```json
+{
+  "appLaunchURL": "...",
+  "associatedStoreIdentifiers": [12345678],
+  "userInfo": {
+    "key1": "value1",
+    "key2": "value2",
+    "key3": "value3"
+  },
+  "expirationDate": "2020-04-24T10:00-05:00",
+  "voided": false,
+  "beacons": [
+    {
+      "major": 1,
+      "minor": 2,
+      "proximityUUID": "908C0ABF-A3C2-4EED-9D99-6E4A38BD913D",
+      "relevantText": "Some Text"
+    }
+  ],
+  "locations" : [
+    {
+      "altitude": 600.00,
+      "longitude": -122.3748889,
+      "latitude": 37.6189722,
+      "relevantText": "Welcoming message for location"
+    },
+    {
+      "altitude": 600.00,
+      "longitude": -122.03118,
+      "latitude": 37.33182,
+      "relevantText": "Welcoming message for location"
+    }
+  ],
+  "maxDistance": 600,
+  "relevantDate": "2019-10-26T10:00-05:00",
+  "structure": {
+    "auxiliaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "backFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "headerFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "primaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "secondaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "transitType": "PKTransitTypeAir|PKTransitTypeBoat|PKTransitTypeBus|PKTransitTypeGeneric|PKTransitTypeTrain"
+  },
+  "barcodes": [
+    {
+      "altText": "Message to display under barcode itself",
+      "message" : "87772514515",
+      "format" : "PKBarcodeFormatQR|PKBarcodeFormatPDF417|PKBarcodeFormatAztec|PKBarcodeFormatCode128",
+      "messageEncoding" : "iso-8859-1"
+    }
+  ],
+  "backgroundColor" : "rgb(206, 140, 53)",
+  "foregroundColor" : "rgb(255, 255, 255)",
+  "groupingIdentifier": "com.app.group",
+  "labelColor": "rgb(255, 255, 255)",
+  "logoText" : "Paw Planet",
+  "nfc": {
+    "message": "some message",
+    "encryptionPublicKey": "pubkey"
+  }
+}
+```
+
+Response Codes
+
+- `200`
+- `400`
+- `401`
+- `404`
+- `500`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "description": "Free Coupon",
+  "formatVersion": 1,
+  "organizationName": "Okpock",
+  "passTypeIdentifier": "pass.com.okpock.coupon",
+  "serialNumber": "908c0abf-a3c2-4eed-9d99-6e4a38bd913d",
+  "teamIdentifier": "...",
+  "appLaunchURL": "...",
+  "associatedStoreIdentifiers": [12345678],
+  "userInfo": {
+    "key1": "value1",
+    "key2": "value2",
+    "key3": "value3"
+  },
+  "expirationDate": "2020-04-24T10:00-05:00",
+  "voided": false,
+  "beacons": [
+    {
+      "major": 1,
+      "minor": 2,
+      "proximityUUID": "908C0ABF-A3C2-4EED-9D99-6E4A38BD913D",
+      "relevantText": "Some Text"
+    }
+  ],
+  "locations" : [
+    {
+      "altitude": 600.00,
+      "longitude": -122.3748889,
+      "latitude": 37.6189722,
+      "relevantText": "Welcoming message for location"
+    },
+    {
+      "altitude": 600.00,
+      "longitude": -122.03118,
+      "latitude": 37.33182,
+      "relevantText": "Welcoming message for location"
+    }
+  ],
+  "maxDistance": 600,
+  "relevantDate": "2019-10-26T10:00-05:00",
+  "structure": {
+    "auxiliaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "backFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "headerFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "primaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "secondaryFields": [
+      {
+        "attributedValue": "<a href='http://example.com/customers/123'>Edit my profile</a>",
+        "changeMessage": "Gate changed to %@.",
+        "dataDetectorTypes": "PKDataDetectorTypePhoneNumber|PKDataDetectorTypeLink|PKDataDetectorTypeAddress|PKDataDetectorTypeCalendarEvent",
+        "key": "discount",
+        "label": "Your discount rate",
+        "textAlignment": "PKTextAlignmentLeft|PKTextAlignmentCenter|PKTextAlignmentRight|PKTextAlignmentNatural",
+        "value": "25%",
+        "dateStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "ignoresTimeZone": false,
+        "isRelative": false,
+        "timeStyle": "PKDateStyleNone|PKDateStyleShort|PKDateStyleMedium|PKDateStyleLong|PKDateStyleFull",
+        "currencyCode": "USD",
+        "numberStyle": "PKNumberStyleDecimal|PKNumberStylePercent|PKNumberStyleScientific|PKNumberStyleSpellOut"
+      }
+    ],
+    "transitType": "PKTransitTypeAir|PKTransitTypeBoat|PKTransitTypeBus|PKTransitTypeGeneric|PKTransitTypeTrain"
+  },
+  "barcodes": [
+    {
+      "altText": "Message to display under barcode itself",
+      "message" : "87772514515",
+      "format" : "PKBarcodeFormatQR|PKBarcodeFormatPDF417|PKBarcodeFormatAztec|PKBarcodeFormatCode128",
+      "messageEncoding" : "iso-8859-1"
+    }
+  ],
+  "backgroundColor" : "rgb(206, 140, 53)",
+  "foregroundColor" : "rgb(255, 255, 255)",
+  "groupingIdentifier": "com.app.group",
+  "labelColor": "rgb(255, 255, 255)",
+  "logoText" : "Paw Planet",
+  "nfc": {
+    "message": "some message",
+    "encryptionPublicKey": "pubkey"
+  }
+}
+```
+
 ### GET `/dictionary/passtypes`
 
 Response Codes
