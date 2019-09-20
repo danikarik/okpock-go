@@ -193,19 +193,29 @@ func (m *MySQL) UpdateProject(ctx context.Context, title, organizationName, desc
 }
 
 // SetBackgroundImage ...
-func (m *MySQL) SetBackgroundImage(ctx context.Context, key string, project *api.Project) error {
+func (m *MySQL) SetBackgroundImage(ctx context.Context, size api.ImageSize, key string, project *api.Project) error {
 	err := checkProject(project, checkNilStruct|checkZeroID)
 	if err != nil {
 		return err
 	}
 
-	project.BackgroundImage = key
 	project.UpdatedAt = time.Now()
 
 	query := m.builder.Update("projects").
-		Set("background_image", project.BackgroundImage).
 		Set("updated_at", project.UpdatedAt).
 		Where(sq.Eq{"id": project.ID})
+
+	switch size {
+	case api.ImageSize3x:
+		project.BackgroundImage3x = key
+		query = query.Set("background_image_3x", project.BackgroundImage3x)
+	case api.ImageSize2x:
+		project.BackgroundImage2x = key
+		query = query.Set("background_image_2x", project.BackgroundImage2x)
+	default:
+		project.BackgroundImage = key
+		query = query.Set("background_image", project.BackgroundImage)
+	}
 
 	_, err = m.updateQuery(ctx, query)
 	if err != nil {
@@ -216,19 +226,29 @@ func (m *MySQL) SetBackgroundImage(ctx context.Context, key string, project *api
 }
 
 // SetFooterImage ...
-func (m *MySQL) SetFooterImage(ctx context.Context, key string, project *api.Project) error {
+func (m *MySQL) SetFooterImage(ctx context.Context, size api.ImageSize, key string, project *api.Project) error {
 	err := checkProject(project, checkNilStruct|checkZeroID)
 	if err != nil {
 		return err
 	}
 
-	project.FooterImage = key
 	project.UpdatedAt = time.Now()
 
 	query := m.builder.Update("projects").
-		Set("footer_image", project.FooterImage).
 		Set("updated_at", project.UpdatedAt).
 		Where(sq.Eq{"id": project.ID})
+
+	switch size {
+	case api.ImageSize3x:
+		project.FooterImage3x = key
+		query = query.Set("footer_image_3x", project.FooterImage3x)
+	case api.ImageSize2x:
+		project.FooterImage2x = key
+		query = query.Set("footer_image_2x", project.FooterImage2x)
+	default:
+		project.FooterImage = key
+		query = query.Set("footer_image", project.FooterImage)
+	}
 
 	_, err = m.updateQuery(ctx, query)
 	if err != nil {
@@ -239,19 +259,29 @@ func (m *MySQL) SetFooterImage(ctx context.Context, key string, project *api.Pro
 }
 
 // SetIconImage ...
-func (m *MySQL) SetIconImage(ctx context.Context, key string, project *api.Project) error {
+func (m *MySQL) SetIconImage(ctx context.Context, size api.ImageSize, key string, project *api.Project) error {
 	err := checkProject(project, checkNilStruct|checkZeroID)
 	if err != nil {
 		return err
 	}
 
-	project.IconImage = key
 	project.UpdatedAt = time.Now()
 
 	query := m.builder.Update("projects").
-		Set("icon_image", project.IconImage).
 		Set("updated_at", project.UpdatedAt).
 		Where(sq.Eq{"id": project.ID})
+
+	switch size {
+	case api.ImageSize3x:
+		project.IconImage3x = key
+		query = query.Set("icon_image_3x", project.IconImage3x)
+	case api.ImageSize2x:
+		project.IconImage2x = key
+		query = query.Set("icon_image_2x", project.IconImage2x)
+	default:
+		project.IconImage = key
+		query = query.Set("icon_image", project.IconImage)
+	}
 
 	_, err = m.updateQuery(ctx, query)
 	if err != nil {
@@ -262,19 +292,29 @@ func (m *MySQL) SetIconImage(ctx context.Context, key string, project *api.Proje
 }
 
 // SetLogoImage ...
-func (m *MySQL) SetLogoImage(ctx context.Context, key string, project *api.Project) error {
+func (m *MySQL) SetLogoImage(ctx context.Context, size api.ImageSize, key string, project *api.Project) error {
 	err := checkProject(project, checkNilStruct|checkZeroID)
 	if err != nil {
 		return err
 	}
 
-	project.LogoImage = key
 	project.UpdatedAt = time.Now()
 
 	query := m.builder.Update("projects").
-		Set("logo_image", project.LogoImage).
 		Set("updated_at", project.UpdatedAt).
 		Where(sq.Eq{"id": project.ID})
+
+	switch size {
+	case api.ImageSize3x:
+		project.LogoImage3x = key
+		query = query.Set("logo_image_3x", project.LogoImage3x)
+	case api.ImageSize2x:
+		project.LogoImage2x = key
+		query = query.Set("logo_image_2x", project.LogoImage2x)
+	default:
+		project.LogoImage = key
+		query = query.Set("logo_image", project.LogoImage)
+	}
 
 	_, err = m.updateQuery(ctx, query)
 	if err != nil {
@@ -285,19 +325,29 @@ func (m *MySQL) SetLogoImage(ctx context.Context, key string, project *api.Proje
 }
 
 // SetStripImage ...
-func (m *MySQL) SetStripImage(ctx context.Context, key string, project *api.Project) error {
+func (m *MySQL) SetStripImage(ctx context.Context, size api.ImageSize, key string, project *api.Project) error {
 	err := checkProject(project, checkNilStruct|checkZeroID)
 	if err != nil {
 		return err
 	}
 
-	project.StripImage = key
 	project.UpdatedAt = time.Now()
 
 	query := m.builder.Update("projects").
-		Set("strip_image", project.StripImage).
 		Set("updated_at", project.UpdatedAt).
 		Where(sq.Eq{"id": project.ID})
+
+	switch size {
+	case api.ImageSize3x:
+		project.StripImage3x = key
+		query = query.Set("strip_image_3x", project.StripImage3x)
+	case api.ImageSize2x:
+		project.StripImage2x = key
+		query = query.Set("strip_image_2x", project.StripImage2x)
+	default:
+		project.StripImage = key
+		query = query.Set("strip_image", project.StripImage)
+	}
 
 	_, err = m.updateQuery(ctx, query)
 	if err != nil {

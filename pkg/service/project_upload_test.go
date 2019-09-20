@@ -21,28 +21,78 @@ func TestUploadProjectImage(t *testing.T) {
 		Path    string
 	}{
 		{
-			Name:    "Background",
-			Request: &UploadImageRequest{Type: backgroundImage},
+			Name:    "Background1x",
+			Request: &UploadImageRequest{Type: backgroundImage, Size: api.ImageSize1x},
 			Path:    "testdata/gopher.jpg",
 		},
 		{
-			Name:    "Footer",
-			Request: &UploadImageRequest{Type: footerImage},
+			Name:    "Background2x",
+			Request: &UploadImageRequest{Type: backgroundImage, Size: api.ImageSize2x},
 			Path:    "testdata/gopher.jpg",
 		},
 		{
-			Name:    "Icon",
-			Request: &UploadImageRequest{Type: iconImage},
+			Name:    "Background3x",
+			Request: &UploadImageRequest{Type: backgroundImage, Size: api.ImageSize3x},
 			Path:    "testdata/gopher.jpg",
 		},
 		{
-			Name:    "Logo",
-			Request: &UploadImageRequest{Type: logoImage},
+			Name:    "Footer1x",
+			Request: &UploadImageRequest{Type: footerImage, Size: api.ImageSize1x},
 			Path:    "testdata/gopher.jpg",
 		},
 		{
-			Name:    "Strip",
-			Request: &UploadImageRequest{Type: stripImage},
+			Name:    "Footer2x",
+			Request: &UploadImageRequest{Type: footerImage, Size: api.ImageSize2x},
+			Path:    "testdata/gopher.jpg",
+		},
+		{
+			Name:    "Footer3x",
+			Request: &UploadImageRequest{Type: footerImage, Size: api.ImageSize3x},
+			Path:    "testdata/gopher.jpg",
+		},
+		{
+			Name:    "Icon1x",
+			Request: &UploadImageRequest{Type: iconImage, Size: api.ImageSize1x},
+			Path:    "testdata/gopher.jpg",
+		},
+		{
+			Name:    "Icon2x",
+			Request: &UploadImageRequest{Type: iconImage, Size: api.ImageSize2x},
+			Path:    "testdata/gopher.jpg",
+		},
+		{
+			Name:    "Icon3x",
+			Request: &UploadImageRequest{Type: iconImage, Size: api.ImageSize3x},
+			Path:    "testdata/gopher.jpg",
+		},
+		{
+			Name:    "Logo1x",
+			Request: &UploadImageRequest{Type: logoImage, Size: api.ImageSize1x},
+			Path:    "testdata/gopher.jpg",
+		},
+		{
+			Name:    "Logo2x",
+			Request: &UploadImageRequest{Type: logoImage, Size: api.ImageSize2x},
+			Path:    "testdata/gopher.jpg",
+		},
+		{
+			Name:    "Logo3x",
+			Request: &UploadImageRequest{Type: logoImage, Size: api.ImageSize3x},
+			Path:    "testdata/gopher.jpg",
+		},
+		{
+			Name:    "Strip1x",
+			Request: &UploadImageRequest{Type: stripImage, Size: api.ImageSize1x},
+			Path:    "testdata/gopher.jpg",
+		},
+		{
+			Name:    "Strip2x",
+			Request: &UploadImageRequest{Type: stripImage, Size: api.ImageSize2x},
+			Path:    "testdata/gopher.jpg",
+		},
+		{
+			Name:    "Strip3x",
+			Request: &UploadImageRequest{Type: stripImage, Size: api.ImageSize3x},
 			Path:    "testdata/gopher.jpg",
 		},
 	}
@@ -122,20 +172,50 @@ func TestUploadProjectImage(t *testing.T) {
 
 			switch tc.Request.Type {
 			case backgroundImage:
-				assert.Equal(tc.Request.UUID, data.BackgroundImage)
-				break
+				switch tc.Request.Size {
+				case api.ImageSize1x:
+					assert.Equal(tc.Request.UUID, data.BackgroundImage)
+				case api.ImageSize2x:
+					assert.Equal(tc.Request.UUID, data.BackgroundImage2x)
+				case api.ImageSize3x:
+					assert.Equal(tc.Request.UUID, data.BackgroundImage3x)
+				}
 			case footerImage:
-				assert.Equal(tc.Request.UUID, data.FooterImage)
-				break
+				switch tc.Request.Size {
+				case api.ImageSize1x:
+					assert.Equal(tc.Request.UUID, data.FooterImage)
+				case api.ImageSize2x:
+					assert.Equal(tc.Request.UUID, data.FooterImage2x)
+				case api.ImageSize3x:
+					assert.Equal(tc.Request.UUID, data.FooterImage3x)
+				}
 			case iconImage:
-				assert.Equal(tc.Request.UUID, data.IconImage)
-				break
+				switch tc.Request.Size {
+				case api.ImageSize1x:
+					assert.Equal(tc.Request.UUID, data.IconImage)
+				case api.ImageSize2x:
+					assert.Equal(tc.Request.UUID, data.IconImage2x)
+				case api.ImageSize3x:
+					assert.Equal(tc.Request.UUID, data.IconImage3x)
+				}
 			case logoImage:
-				assert.Equal(tc.Request.UUID, data.LogoImage)
-				break
+				switch tc.Request.Size {
+				case api.ImageSize1x:
+					assert.Equal(tc.Request.UUID, data.LogoImage)
+				case api.ImageSize2x:
+					assert.Equal(tc.Request.UUID, data.LogoImage2x)
+				case api.ImageSize3x:
+					assert.Equal(tc.Request.UUID, data.LogoImage3x)
+				}
 			case stripImage:
-				assert.Equal(tc.Request.UUID, data.StripImage)
-				break
+				switch tc.Request.Size {
+				case api.ImageSize1x:
+					assert.Equal(tc.Request.UUID, data.StripImage)
+				case api.ImageSize2x:
+					assert.Equal(tc.Request.UUID, data.StripImage2x)
+				case api.ImageSize3x:
+					assert.Equal(tc.Request.UUID, data.StripImage3x)
+				}
 			}
 		})
 	}

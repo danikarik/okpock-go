@@ -262,11 +262,31 @@ func TestSetImage(t *testing.T) {
 
 	testCases := []struct {
 		Name    string
+		Size    api.ImageSize
 		Project project
 		NewKey  string
 	}{
 		{
-			Name: "Coupon",
+			Name: "Coupon1x",
+			Size: api.ImageSize1x,
+			Project: project{
+				Desc: "Free Coupon",
+				Type: api.Coupon,
+			},
+			NewKey: uuid.NewV4().String(),
+		},
+		{
+			Name: "Coupon2x",
+			Size: api.ImageSize2x,
+			Project: project{
+				Desc: "Free Coupon",
+				Type: api.Coupon,
+			},
+			NewKey: uuid.NewV4().String(),
+		},
+		{
+			Name: "Coupon3x",
+			Size: api.ImageSize3x,
 			Project: project{
 				Desc: "Free Coupon",
 				Type: api.Coupon,
@@ -296,27 +316,27 @@ func TestSetImage(t *testing.T) {
 				return
 			}
 
-			err = db.SetBackgroundImage(ctx, tc.NewKey, p)
+			err = db.SetBackgroundImage(ctx, tc.Size, tc.NewKey, p)
 			if !assert.NoError(err) {
 				return
 			}
 
-			err = db.SetFooterImage(ctx, tc.NewKey, p)
+			err = db.SetFooterImage(ctx, tc.Size, tc.NewKey, p)
 			if !assert.NoError(err) {
 				return
 			}
 
-			err = db.SetIconImage(ctx, tc.NewKey, p)
+			err = db.SetIconImage(ctx, tc.Size, tc.NewKey, p)
 			if !assert.NoError(err) {
 				return
 			}
 
-			err = db.SetLogoImage(ctx, tc.NewKey, p)
+			err = db.SetLogoImage(ctx, tc.Size, tc.NewKey, p)
 			if !assert.NoError(err) {
 				return
 			}
 
-			err = db.SetStripImage(ctx, tc.NewKey, p)
+			err = db.SetStripImage(ctx, tc.Size, tc.NewKey, p)
 			if !assert.NoError(err) {
 				return
 			}
@@ -327,11 +347,27 @@ func TestSetImage(t *testing.T) {
 			}
 
 			assert.Equal(p.ID, loaded.ID)
-			assert.Equal(tc.NewKey, loaded.BackgroundImage)
-			assert.Equal(tc.NewKey, loaded.FooterImage)
-			assert.Equal(tc.NewKey, loaded.IconImage)
-			assert.Equal(tc.NewKey, loaded.LogoImage)
-			assert.Equal(tc.NewKey, loaded.StripImage)
+
+			switch tc.Size {
+			case api.ImageSize3x:
+				assert.Equal(tc.NewKey, loaded.BackgroundImage3x)
+				assert.Equal(tc.NewKey, loaded.FooterImage3x)
+				assert.Equal(tc.NewKey, loaded.IconImage3x)
+				assert.Equal(tc.NewKey, loaded.LogoImage3x)
+				assert.Equal(tc.NewKey, loaded.StripImage3x)
+			case api.ImageSize2x:
+				assert.Equal(tc.NewKey, loaded.BackgroundImage2x)
+				assert.Equal(tc.NewKey, loaded.FooterImage2x)
+				assert.Equal(tc.NewKey, loaded.IconImage2x)
+				assert.Equal(tc.NewKey, loaded.LogoImage2x)
+				assert.Equal(tc.NewKey, loaded.StripImage2x)
+			default:
+				assert.Equal(tc.NewKey, loaded.BackgroundImage)
+				assert.Equal(tc.NewKey, loaded.FooterImage)
+				assert.Equal(tc.NewKey, loaded.IconImage)
+				assert.Equal(tc.NewKey, loaded.LogoImage)
+				assert.Equal(tc.NewKey, loaded.StripImage)
+			}
 		})
 	}
 }

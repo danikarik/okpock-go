@@ -20,19 +20,19 @@ type ProjectStore interface {
 	UpdateProject(ctx context.Context, title, organizationName, desc string, project *Project) error
 
 	// SetBackgroundImage ...
-	SetBackgroundImage(ctx context.Context, key string, project *Project) error
+	SetBackgroundImage(ctx context.Context, size ImageSize, key string, project *Project) error
 
 	// SetFooterImage ...
-	SetFooterImage(ctx context.Context, key string, project *Project) error
+	SetFooterImage(ctx context.Context, size ImageSize, key string, project *Project) error
 
 	// SetIconImage ...
-	SetIconImage(ctx context.Context, key string, project *Project) error
+	SetIconImage(ctx context.Context, size ImageSize, key string, project *Project) error
 
 	// SetLogoImage ...
-	SetLogoImage(ctx context.Context, key string, project *Project) error
+	SetLogoImage(ctx context.Context, size ImageSize, key string, project *Project) error
 
 	// SetStripImage ...
-	SetStripImage(ctx context.Context, key string, project *Project) error
+	SetStripImage(ctx context.Context, size ImageSize, key string, project *Project) error
 }
 
 // UploadStore implements user upload related methods.

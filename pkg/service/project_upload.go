@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/danikarik/okpock/pkg/api"
 	"github.com/danikarik/okpock/pkg/store"
 )
 
@@ -18,8 +19,9 @@ const (
 
 // UploadImageRequest holds image type and uuid from uploads.
 type UploadImageRequest struct {
-	UUID string `json:"uuid"`
-	Type string `json:"type"`
+	UUID string        `json:"uuid"`
+	Type string        `json:"type"`
+	Size api.ImageSize `json:"size"`
 }
 
 // IsValid checks whether input is valid or not.
@@ -35,15 +37,23 @@ func (r *UploadImageRequest) IsValid() error {
 		return errors.New("image type is invalid")
 	}
 
+	switch r.Size {
+	case api.ImageSize1x, api.ImageSize2x, api.ImageSize3x:
+		break
+	default:
+		return errors.New("image size is invalid")
+	}
+
 	return nil
 }
 
 // String returns string representation of struct.
 func (r *UploadImageRequest) String() string {
 	return fmt.Sprintf(
-		`{"uuid":"%s","type":"%s"}`,
+		`{"uuid":"%s","type":"%s","size":"%s"}`,
 		r.UUID,
 		r.Type,
+		r.Size,
 	)
 }
 
@@ -81,31 +91,31 @@ func (s *Service) uploadProjectImage(w http.ResponseWriter, r *http.Request) err
 
 	switch req.Type {
 	case backgroundImage:
-		err = s.env.Logic.SetBackgroundImage(ctx, req.UUID, project)
+		err = s.env.Logic.SetBackgroundImage(ctx, req.Size, req.UUID, project)
 		if err != nil {
 			return s.httpError(w, r, http.StatusInternalServerError, "SetBackgroundImage", err)
 		}
 		break
 	case footerImage:
-		err = s.env.Logic.SetFooterImage(ctx, req.UUID, project)
+		err = s.env.Logic.SetFooterImage(ctx, req.Size, req.UUID, project)
 		if err != nil {
 			return s.httpError(w, r, http.StatusInternalServerError, "SetFooterImage", err)
 		}
 		break
 	case iconImage:
-		err = s.env.Logic.SetIconImage(ctx, req.UUID, project)
+		err = s.env.Logic.SetIconImage(ctx, req.Size, req.UUID, project)
 		if err != nil {
 			return s.httpError(w, r, http.StatusInternalServerError, "SetIconImage", err)
 		}
 		break
 	case logoImage:
-		err = s.env.Logic.SetLogoImage(ctx, req.UUID, project)
+		err = s.env.Logic.SetLogoImage(ctx, req.Size, req.UUID, project)
 		if err != nil {
 			return s.httpError(w, r, http.StatusInternalServerError, "SetLogoImage", err)
 		}
 		break
 	case stripImage:
-		err = s.env.Logic.SetStripImage(ctx, req.UUID, project)
+		err = s.env.Logic.SetStripImage(ctx, req.Size, req.UUID, project)
 		if err != nil {
 			return s.httpError(w, r, http.StatusInternalServerError, "SetStripImage", err)
 		}
