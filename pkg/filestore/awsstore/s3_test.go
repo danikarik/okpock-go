@@ -2,6 +2,8 @@ package awsstore_test
 
 import (
 	"context"
+	"io/ioutil"
+	"net/http"
 	"os"
 	"strconv"
 	"testing"
@@ -33,6 +35,30 @@ func skipTest(t *testing.T) {
 	}
 }
 
+func readFile(path string) (*filestore.Object, error) {
+	file, err := os.Open(path)
+	if err != nil {
+		return nil, err
+	}
+	defer file.Close()
+
+	fi, err := file.Stat()
+	if err != nil {
+		return nil, err
+	}
+
+	body, err := ioutil.ReadAll(file)
+	if err != nil {
+		return nil, err
+	}
+
+	return &filestore.Object{
+		Key:         fi.Name(),
+		Body:        body,
+		ContentType: http.DetectContentType(body),
+	}, nil
+}
+
 func TestSingleFile(t *testing.T) {
 	skipTest(t)
 
@@ -41,17 +67,45 @@ func TestSingleFile(t *testing.T) {
 		t.Skip(err)
 	}
 
-	ctx := context.Background()
-	assert := assert.New(t)
-
-	store, err := awsstore.New()
-	if !assert.NoError(err) {
-		assert.FailNow("could not init handler")
+	testCases := []struct {
+		Name string
+		Path string
+	}{
+		{
+			Name: "Pkpass",
+			Path: "testdata/9973af9d-9cfa-4d9f-8c6c-32255de8d96b.pkpass",
+		},
 	}
 
-	obj, err := store.GetFile(ctx, env.Get("TEST_PASSES_BUCKET"), env.Get("TEST_FILE"))
-	assert.NoError(err)
-	assert.True(len(obj.Body) > 0)
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			ctx := context.Background()
+			assert := assert.New(t)
+			bucket := env.Get("TEST_PASSES_BUCKET")
+
+			store, err := awsstore.New()
+			if !assert.NoError(err) {
+				return
+			}
+
+			obj, err := readFile(tc.Path)
+			if !assert.NoError(err) {
+				return
+			}
+
+			err = store.UploadFile(ctx, bucket, obj)
+			if !assert.NoError(err) {
+				return
+			}
+
+			loaded, err := store.GetFile(ctx, bucket, obj.Key)
+			if !assert.NoError(err) {
+				return
+			}
+
+			assert.Equal(obj.Body, loaded.Body)
+		})
+	}
 }
 
 func TestFolderFile(t *testing.T) {
@@ -62,17 +116,48 @@ func TestFolderFile(t *testing.T) {
 		t.Skip(err)
 	}
 
-	ctx := context.Background()
-	assert := assert.New(t)
-
-	store, err := awsstore.New()
-	if !assert.NoError(err) {
-		return
+	testCases := []struct {
+		Name   string
+		Folder string
+		Path   string
+	}{
+		{
+			Name:   "Text",
+			Folder: "demo",
+			Path:   "testdata/hello.txt",
+		},
 	}
 
-	obj, err := store.GetFile(ctx, env.Get("TEST_TEMPLATES_BUCKET"), env.Get("TEST_FILE_IN_FOLDER"))
-	assert.NoError(err)
-	assert.True(len(obj.Body) > 0)
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			ctx := context.Background()
+			assert := assert.New(t)
+			bucket := env.Get("TEST_PASSES_BUCKET")
+
+			store, err := awsstore.New()
+			if !assert.NoError(err) {
+				return
+			}
+
+			obj, err := readFile(tc.Path)
+			if !assert.NoError(err) {
+				return
+			}
+			obj.Prefix = tc.Folder
+
+			err = store.UploadFile(ctx, bucket, obj)
+			if !assert.NoError(err) {
+				return
+			}
+
+			loaded, err := store.GetFile(ctx, bucket, obj.Path())
+			if !assert.NoError(err) {
+				return
+			}
+
+			assert.Equal(obj.Body, loaded.Body)
+		})
+	}
 }
 
 func TestBucket(t *testing.T) {
@@ -83,17 +168,48 @@ func TestBucket(t *testing.T) {
 		t.Skip(err)
 	}
 
-	ctx := context.Background()
-	assert := assert.New(t)
-
-	store, err := awsstore.New()
-	if !assert.NoError(err) {
-		return
+	testCases := []struct {
+		Name   string
+		Folder string
+		Path   string
+	}{
+		{
+			Name:   "Text",
+			Folder: "demo",
+			Path:   "testdata/hello.txt",
+		},
 	}
 
-	contents, err := store.GetBucketFiles(ctx, env.Get("TEST_TEMPLATES_BUCKET"), env.Get("TEST_PROJECT"))
-	assert.NoError(err)
-	assert.Len(contents, 1)
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			ctx := context.Background()
+			assert := assert.New(t)
+			bucket := env.Get("TEST_TEMPLATES_BUCKET")
+
+			store, err := awsstore.New()
+			if !assert.NoError(err) {
+				return
+			}
+
+			obj, err := readFile(tc.Path)
+			if !assert.NoError(err) {
+				return
+			}
+			obj.Prefix = tc.Folder
+
+			err = store.UploadFile(ctx, bucket, obj)
+			if !assert.NoError(err) {
+				return
+			}
+
+			contents, err := store.GetBucketFiles(ctx, bucket, tc.Folder)
+			if !assert.NoError(err) {
+				return
+			}
+
+			assert.Len(contents, 1)
+		})
+	}
 }
 
 func TestUploadSingleFile(t *testing.T) {

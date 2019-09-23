@@ -30,7 +30,7 @@ func checkQueryParams(r *http.Request, params ...string) (map[string]string, err
 
 func (s *Service) hostURL() string {
 	if s.env.Config.Debug {
-		if host, ok := os.LookupEnv("HOST_URL"); ok {
+		if host, ok := os.LookupEnv("HOST_URL"); host != "" && ok {
 			return host
 		}
 		return "http://localhost:" + s.env.Config.Port
