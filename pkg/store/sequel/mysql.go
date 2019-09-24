@@ -82,13 +82,38 @@ func (m *MySQL) scanQuery(ctx context.Context, query sq.SelectBuilder, v interfa
 	return nil
 }
 
-func (m *MySQL) insertQuery(ctx context.Context, query sq.InsertBuilder) (int64, error) {
-	res, err := query.RunWith(m.cacher).ExecContext(ctx)
+func (m *MySQL) finishTx(tx *sqlx.Tx, err error) error {
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if commitErr := tx.Commit(); commitErr != nil {
+		err = commitErr
+	}
+
+	return err
+}
+
+func (m *MySQL) insertQuery(ctx context.Context, query sq.InsertBuilder) (id int64, err error) {
+	tx, err := m.db.BeginTxx(ctx, nil)
 	if err != nil {
 		return -1, err
 	}
 
-	id, err := res.LastInsertId()
+	defer func() { err = m.finishTx(tx, err) }()
+
+	rawsql, args, err := query.ToSql()
+	if err != nil {
+		return -1, err
+	}
+
+	res, err := tx.ExecContext(ctx, rawsql, args...)
+	if err != nil {
+		return -1, err
+	}
+
+	id, err = res.LastInsertId()
 	if err != nil {
 		return -1, err
 	}
@@ -100,13 +125,25 @@ func (m *MySQL) insertQuery(ctx context.Context, query sq.InsertBuilder) (int64,
 	return id, nil
 }
 
-func (m *MySQL) updateQuery(ctx context.Context, query sq.UpdateBuilder) (int64, error) {
-	res, err := query.RunWith(m.cacher).ExecContext(ctx)
+func (m *MySQL) updateQuery(ctx context.Context, query sq.UpdateBuilder) (rows int64, err error) {
+	tx, err := m.db.BeginTxx(ctx, nil)
 	if err != nil {
 		return -1, err
 	}
 
-	rows, err := res.RowsAffected()
+	defer func() { err = m.finishTx(tx, err) }()
+
+	rawsql, args, err := query.ToSql()
+	if err != nil {
+		return -1, err
+	}
+
+	res, err := tx.ExecContext(ctx, rawsql, args...)
+	if err != nil {
+		return -1, err
+	}
+
+	rows, err = res.RowsAffected()
 	if err != nil {
 		return -1, err
 	}
@@ -118,13 +155,25 @@ func (m *MySQL) updateQuery(ctx context.Context, query sq.UpdateBuilder) (int64,
 	return rows, nil
 }
 
-func (m *MySQL) deleteQuery(ctx context.Context, query sq.DeleteBuilder) (int64, error) {
-	res, err := query.RunWith(m.cacher).ExecContext(ctx)
+func (m *MySQL) deleteQuery(ctx context.Context, query sq.DeleteBuilder) (rows int64, err error) {
+	tx, err := m.db.BeginTxx(ctx, nil)
 	if err != nil {
 		return -1, err
 	}
 
-	rows, err := res.RowsAffected()
+	defer func() { err = m.finishTx(tx, err) }()
+
+	rawsql, args, err := query.ToSql()
+	if err != nil {
+		return -1, err
+	}
+
+	res, err := tx.ExecContext(ctx, rawsql, args...)
+	if err != nil {
+		return -1, err
+	}
+
+	rows, err = res.RowsAffected()
 	if err != nil {
 		return -1, err
 	}
