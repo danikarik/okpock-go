@@ -14,7 +14,7 @@ type ProjectStore interface {
 	LoadProject(ctx context.Context, user *User, id int64) (*Project, error)
 
 	// LoadProjects ...
-	LoadProjects(ctx context.Context, user *User) ([]*Project, error)
+	LoadProjects(ctx context.Context, user *User, opts *PagingOptions) (*Projects, error)
 
 	// UpdateProject ...
 	UpdateProject(ctx context.Context, title, organizationName, desc string, project *Project) error
@@ -46,7 +46,7 @@ type UploadStore interface {
 	// LoadUploadByUUID ...
 	LoadUploadByUUID(ctx context.Context, user *User, uuid string) (*Upload, error)
 	// LoadUploads ...
-	LoadUploads(ctx context.Context, user *User) ([]*Upload, error)
+	LoadUploads(ctx context.Context, user *User, opts *PagingOptions) (*Uploads, error)
 }
 
 // PassCardStore implements pass card related methods.
@@ -58,9 +58,9 @@ type PassCardStore interface {
 	// LoadPassCardBySerialNumber ...
 	LoadPassCardBySerialNumber(ctx context.Context, project *Project, serialNumber string) (*PassCardInfo, error)
 	// LoadPassCards ...
-	LoadPassCards(ctx context.Context, project *Project) ([]*PassCardInfo, error)
+	LoadPassCards(ctx context.Context, project *Project, opts *PagingOptions) (*PassCardInfoList, error)
 	// LoadPassCardsByBarcodeMessage ...
-	LoadPassCardsByBarcodeMessage(ctx context.Context, project *Project, message string) ([]*PassCardInfo, error)
+	LoadPassCardsByBarcodeMessage(ctx context.Context, project *Project, message string, opts *PagingOptions) (*PassCardInfoList, error)
 	// UpdatePassCard ...
 	UpdatePassCard(ctx context.Context, data *PassCard, passcard *PassCardInfo) error
 }

@@ -28,16 +28,16 @@ func (s *Service) projectPassCardsHandler(w http.ResponseWriter, r *http.Request
 		return s.httpError(w, r, http.StatusInternalServerError, "LoadProject", err)
 	}
 
-	passcards := []*api.PassCardInfo{}
+	passcards := &api.PassCardInfoList{}
 	searchTerm := r.URL.Query().Get("barcode_message")
 
 	if searchTerm != "" {
-		passcards, err = s.env.Logic.LoadPassCardsByBarcodeMessage(ctx, project, searchTerm)
+		passcards, err = s.env.Logic.LoadPassCardsByBarcodeMessage(ctx, project, searchTerm, nil)
 		if err != nil {
 			return s.httpError(w, r, http.StatusInternalServerError, "LoadPassCardsByBarcodeMessage", err)
 		}
 	} else {
-		passcards, err = s.env.Logic.LoadPassCards(ctx, project)
+		passcards, err = s.env.Logic.LoadPassCards(ctx, project, nil)
 		if err != nil {
 			return s.httpError(w, r, http.StatusInternalServerError, "LoadPassCards", err)
 		}

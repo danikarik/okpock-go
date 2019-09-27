@@ -126,19 +126,28 @@ func (m *MySQL) LoadProject(ctx context.Context, user *api.User, id int64) (*api
 }
 
 // LoadProjects ...
-func (m *MySQL) LoadProjects(ctx context.Context, user *api.User) ([]*api.Project, error) {
+func (m *MySQL) LoadProjects(ctx context.Context, user *api.User, opts *api.PagingOptions) (*api.Projects, error) {
 	err := checkUser(user, checkNilStruct|checkZeroID)
 	if err != nil {
 		return nil, err
 	}
 
-	var projects = []*api.Project{}
+	if opts == nil {
+		opts = api.NewPagingOptions(0, 0)
+	}
+
+	var projects = &api.Projects{
+		Opts: opts,
+		Data: []*api.Project{},
+	}
 
 	query := m.builder.Select("p.*").
 		From("projects p").
 		LeftJoin("user_projects up on up.project_id = p.id").
 		Where(sq.Eq{"up.user_id": user.ID}).
-		OrderBy("created_at desc")
+		Where(sq.GtOrEq{"p.id": opts.Cursor}).
+		OrderBy("created_at desc").
+		Limit(opts.Limit + 1)
 
 	rows, err := m.selectQuery(ctx, query)
 	if err == store.ErrNotFound {
@@ -148,6 +157,7 @@ func (m *MySQL) LoadProjects(ctx context.Context, user *api.User) ([]*api.Projec
 		return nil, err
 	}
 
+	var cnt uint64
 	for rows.Next() {
 		var project = &api.Project{}
 
@@ -159,7 +169,11 @@ func (m *MySQL) LoadProjects(ctx context.Context, user *api.User) ([]*api.Projec
 			return nil, err
 		}
 
-		projects = append(projects, project)
+		if cnt++; cnt > opts.Limit {
+			opts.Next = project.ID
+		} else {
+			projects.Data = append(projects.Data, project)
+		}
 	}
 
 	return projects, nil

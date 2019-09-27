@@ -104,3 +104,9 @@ func (p *Project) String() string {
 	}
 	return string(data)
 }
+
+// Projects holds next page token and items.
+type Projects struct {
+	Opts *PagingOptions
+	Data []*Project
+}

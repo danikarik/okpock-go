@@ -49,37 +49,37 @@ func (m *Memory) LoadPassCardBySerialNumber(ctx context.Context, project *api.Pr
 }
 
 // LoadPassCards ...
-func (m *Memory) LoadPassCards(ctx context.Context, project *api.Project) ([]*api.PassCardInfo, error) {
+func (m *Memory) LoadPassCards(ctx context.Context, project *api.Project, opts *api.PagingOptions) (*api.PassCardInfoList, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	passCards := []*api.PassCardInfo{}
+	data := []*api.PassCardInfo{}
 	for passCardID, projectID := range m.projectPassCards {
 		if projectID == project.ID {
-			passCards = append(passCards, m.passCards[passCardID])
+			data = append(data, m.passCards[passCardID])
 		}
 	}
 
-	return passCards, nil
+	return &api.PassCardInfoList{Data: data}, nil
 }
 
 // LoadPassCardsByBarcodeMessage ...
-func (m *Memory) LoadPassCardsByBarcodeMessage(ctx context.Context, project *api.Project, message string) ([]*api.PassCardInfo, error) {
+func (m *Memory) LoadPassCardsByBarcodeMessage(ctx context.Context, project *api.Project, message string, opts *api.PagingOptions) (*api.PassCardInfoList, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	passCards := []*api.PassCardInfo{}
+	data := []*api.PassCardInfo{}
 	for _, p := range m.passCards {
 		if p.Data != nil {
 			for _, barcode := range p.Data.Barcodes {
 				if barcode.Message == message {
-					passCards = append(passCards, p)
+					data = append(data, p)
 				}
 			}
 		}
 	}
 
-	return passCards, nil
+	return &api.PassCardInfoList{Data: data}, nil
 }
 
 // UpdatePassCard ...

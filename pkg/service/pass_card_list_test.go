@@ -69,13 +69,13 @@ func TestProjectPassCardsHandler(t *testing.T) {
 				return
 			}
 
-			data := []*api.PassCardInfo{}
-			err = unmarshalJSON(resp, &data)
+			list := &api.PassCardInfoList{}
+			err = unmarshalJSON(resp, &list)
 			if !assert.NoError(err) {
 				return
 			}
 
-			assert.Len(data, tc.PassCardNumber)
+			assert.Len(list.Data, tc.PassCardNumber)
 		})
 	}
 }
@@ -132,14 +132,14 @@ func TestProjectPassCardsWithBarcodeMessageHandler(t *testing.T) {
 		return
 	}
 
-	data := []*api.PassCardInfo{}
-	err = unmarshalJSON(resp, &data)
+	list := &api.PassCardInfoList{}
+	err = unmarshalJSON(resp, &list)
 	if !assert.NoError(err) {
 		return
 	}
 
-	if assert.Len(data, 1) {
-		loaded := data[0]
+	if assert.Len(list.Data, 1) {
+		loaded := list.Data[0]
 		assert.Equal(passcard.ID, loaded.ID)
 		assert.Equal(passcard.Data, loaded.Data)
 	}

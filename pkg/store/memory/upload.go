@@ -60,16 +60,16 @@ func (m *Memory) LoadUploadByUUID(ctx context.Context, user *api.User, uuid stri
 }
 
 // LoadUploads ...
-func (m *Memory) LoadUploads(ctx context.Context, user *api.User) ([]*api.Upload, error) {
+func (m *Memory) LoadUploads(ctx context.Context, user *api.User, opts *api.PagingOptions) (*api.Uploads, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	uploads := []*api.Upload{}
+	data := []*api.Upload{}
 	for uploadID, userID := range m.userUploads {
 		if userID == user.ID {
-			uploads = append(uploads, m.uploads[uploadID])
+			data = append(data, m.uploads[uploadID])
 		}
 	}
 
-	return uploads, nil
+	return &api.Uploads{Data: data}, nil
 }

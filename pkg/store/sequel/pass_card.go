@@ -125,19 +125,28 @@ func (m *MySQL) LoadPassCardBySerialNumber(ctx context.Context, project *api.Pro
 }
 
 // LoadPassCards ...
-func (m *MySQL) LoadPassCards(ctx context.Context, project *api.Project) ([]*api.PassCardInfo, error) {
+func (m *MySQL) LoadPassCards(ctx context.Context, project *api.Project, opts *api.PagingOptions) (*api.PassCardInfoList, error) {
 	err := checkProject(project, checkNilStruct|checkZeroID)
 	if err != nil {
 		return nil, err
 	}
 
-	var passcards = []*api.PassCardInfo{}
+	if opts == nil {
+		opts = api.NewPagingOptions(0, 0)
+	}
+
+	var passcards = &api.PassCardInfoList{
+		Opts: opts,
+		Data: []*api.PassCardInfo{},
+	}
 
 	query := m.builder.Select("pc.*").
 		From("pass_cards pc").
 		LeftJoin("project_pass_cards ppc on ppc.pass_card_id = pc.id").
 		Where(sq.Eq{"ppc.project_id": project.ID}).
-		OrderBy("created_at desc")
+		Where(sq.GtOrEq{"pc.id": opts.Cursor}).
+		OrderBy("created_at desc").
+		Limit(opts.Limit + 1)
 
 	rows, err := m.selectQuery(ctx, query)
 	if err == store.ErrNotFound {
@@ -147,6 +156,7 @@ func (m *MySQL) LoadPassCards(ctx context.Context, project *api.Project) ([]*api
 		return nil, err
 	}
 
+	var cnt uint64
 	for rows.Next() {
 		var passcard = &api.PassCardInfo{}
 
@@ -158,27 +168,40 @@ func (m *MySQL) LoadPassCards(ctx context.Context, project *api.Project) ([]*api
 			return nil, err
 		}
 
-		passcards = append(passcards, passcard)
+		if cnt++; cnt > opts.Limit {
+			opts.Next = passcard.ID
+		} else {
+			passcards.Data = append(passcards.Data, passcard)
+		}
 	}
 
 	return passcards, nil
 }
 
 // LoadPassCardsByBarcodeMessage ...
-func (m *MySQL) LoadPassCardsByBarcodeMessage(ctx context.Context, project *api.Project, message string) ([]*api.PassCardInfo, error) {
+func (m *MySQL) LoadPassCardsByBarcodeMessage(ctx context.Context, project *api.Project, message string, opts *api.PagingOptions) (*api.PassCardInfoList, error) {
 	err := checkProject(project, checkNilStruct|checkZeroID)
 	if err != nil {
 		return nil, err
 	}
 
-	var passcards = []*api.PassCardInfo{}
+	if opts == nil {
+		opts = api.NewPagingOptions(0, 0)
+	}
+
+	var passcards = &api.PassCardInfoList{
+		Opts: opts,
+		Data: []*api.PassCardInfo{},
+	}
 
 	query := m.builder.Select("pc.*").
 		From("pass_cards pc").
 		LeftJoin("project_pass_cards ppc on ppc.pass_card_id = pc.id").
 		Where(sq.Eq{"ppc.project_id": project.ID}).
+		Where(sq.GtOrEq{"pc.id": opts.Cursor}).
 		Where("JSON_CONTAINS(pc.raw_data->>'$.barcodes[*].message', JSON_ARRAY('" + message + "'))").
-		OrderBy("created_at desc")
+		OrderBy("created_at desc").
+		Limit(opts.Limit + 1)
 
 	rows, err := m.selectQuery(ctx, query)
 	if err == store.ErrNotFound {
@@ -188,6 +211,7 @@ func (m *MySQL) LoadPassCardsByBarcodeMessage(ctx context.Context, project *api.
 		return nil, err
 	}
 
+	var cnt uint64
 	for rows.Next() {
 		var passcard = &api.PassCardInfo{}
 
@@ -199,7 +223,11 @@ func (m *MySQL) LoadPassCardsByBarcodeMessage(ctx context.Context, project *api.
 			return nil, err
 		}
 
-		passcards = append(passcards, passcard)
+		if cnt++; cnt > opts.Limit {
+			opts.Next = passcard.ID
+		} else {
+			passcards.Data = append(passcards.Data, passcard)
+		}
 	}
 
 	return passcards, nil

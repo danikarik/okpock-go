@@ -173,12 +173,12 @@ func TestSaveNewProject(t *testing.T) {
 			assert.Equal(p.Description, loaded.Description)
 			assert.Equal(p.PassType, loaded.PassType)
 
-			loadedProjects, err := db.LoadProjects(ctx, u)
+			loadedProjects, err := db.LoadProjects(ctx, u, nil)
 			if !assert.NoError(err) {
 				return
 			}
 
-			assert.Len(loadedProjects, len(tc.SavedProjects)+1)
+			assert.Len(loadedProjects.Data, len(tc.SavedProjects)+1)
 		})
 	}
 }

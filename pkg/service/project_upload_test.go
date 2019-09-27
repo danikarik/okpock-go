@@ -11,6 +11,7 @@ import (
 	"testing"
 
 	"github.com/danikarik/okpock/pkg/api"
+	"github.com/danikarik/okpock/pkg/secure"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -135,7 +136,7 @@ func TestUploadProjectImage(t *testing.T) {
 				return
 			}
 
-			hash, err := api.Hash(content)
+			hash, err := secure.Hash(content)
 			if !assert.NoError(err) {
 				return
 			}

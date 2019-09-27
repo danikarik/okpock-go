@@ -60,13 +60,13 @@ func TestUserProjectsHandler(t *testing.T) {
 				return
 			}
 
-			data := []*api.Project{}
-			err = unmarshalJSON(resp, &data)
+			list := &api.Projects{}
+			err = unmarshalJSON(resp, &list)
 			if !assert.NoError(err) {
 				return
 			}
 
-			assert.Len(data, tc.ProjectNumber)
+			assert.Len(list.Data, tc.ProjectNumber)
 		})
 	}
 }

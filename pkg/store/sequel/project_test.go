@@ -179,12 +179,12 @@ func TestSaveNewProject(t *testing.T) {
 			assert.Equal(p.Description, loaded.Description)
 			assert.Equal(p.PassType, loaded.PassType)
 
-			loadedProjects, err := db.LoadProjects(ctx, u)
+			loadedProjects, err := db.LoadProjects(ctx, u, nil)
 			if !assert.NoError(err) {
 				return
 			}
 
-			assert.Len(loadedProjects, len(tc.SavedProjects)+1)
+			assert.Len(loadedProjects.Data, len(tc.SavedProjects)+1)
 		})
 	}
 }
@@ -386,6 +386,112 @@ func TestSetImage(t *testing.T) {
 				assert.Equal(tc.NewKey, loaded.LogoImage)
 				assert.Equal(tc.NewKey, loaded.StripImage)
 			}
+		})
+	}
+}
+
+func TestProjectsPagination(t *testing.T) {
+	testCases := []struct {
+		Name     string
+		Iters    int
+		Projects int
+		Limit    uint64
+		HasNext  bool
+		Expected int
+	}{
+		{
+			Name:     "QueryFirstPage",
+			Iters:    1,
+			Projects: 20,
+			Limit:    10,
+			HasNext:  true,
+			Expected: 10,
+		},
+		{
+			Name:     "QueryFirstPageFull",
+			Iters:    1,
+			Projects: 7,
+			Limit:    10,
+			HasNext:  false,
+			Expected: 7,
+		},
+		{
+			Name:     "QuerySecondPage",
+			Iters:    2,
+			Projects: 20,
+			Limit:    7,
+			HasNext:  true,
+			Expected: 7,
+		},
+		{
+			Name:     "QuerySecondPageFull",
+			Iters:    2,
+			Projects: 20,
+			Limit:    10,
+			HasNext:  false,
+			Expected: 10,
+		},
+		{
+			Name:     "QueryAll",
+			Iters:    3,
+			Projects: 9,
+			Limit:    3,
+			HasNext:  false,
+			Expected: 3,
+		},
+	}
+
+	for _, tc := range testCases {
+		t.Run(tc.Name, func(t *testing.T) {
+			ctx := context.Background()
+			assert := assert.New(t)
+
+			conn, err := testConnection(ctx, t)
+			if !assert.NoError(err) {
+				return
+			}
+			defer conn.Close()
+
+			db := sequel.New(conn)
+
+			user := api.NewUser(fakeUsername(), fakeEmail(), fakeString(), nil)
+			err = db.SaveNewUser(ctx, user)
+			if !assert.NoError(err) {
+				return
+			}
+
+			for i := 0; i < tc.Projects; i++ {
+				project := api.NewProject(fakeString(), fakeString(), fakeString(), api.Coupon)
+				err = db.SaveNewProject(ctx, user, project)
+				if !assert.NoError(err) {
+					return
+				}
+			}
+
+			var (
+				opts        = api.NewPagingOptions(0, tc.Limit)
+				output      *api.Projects
+				hasNext     bool
+				lastFetched int
+			)
+
+			for i := 0; i < tc.Iters; i++ {
+				output, err = db.LoadProjects(ctx, user, opts)
+				if !assert.NoError(err) {
+					return
+				}
+
+				hasNext = output.Opts.HasNext()
+				if hasNext {
+					opts.Cursor = opts.Next
+					opts.Next = 0
+				}
+
+				lastFetched = len(output.Data)
+			}
+
+			assert.Equal(tc.Expected, lastFetched)
+			assert.Equal(tc.HasNext, hasNext)
 		})
 	}
 }

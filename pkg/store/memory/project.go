@@ -50,18 +50,18 @@ func (m *Memory) LoadProject(ctx context.Context, user *api.User, id int64) (*ap
 }
 
 // LoadProjects ...
-func (m *Memory) LoadProjects(ctx context.Context, user *api.User) ([]*api.Project, error) {
+func (m *Memory) LoadProjects(ctx context.Context, user *api.User, opts *api.PagingOptions) (*api.Projects, error) {
 	m.mu.Lock()
 	defer m.mu.Unlock()
 
-	projects := []*api.Project{}
+	data := []*api.Project{}
 	for projectID, userID := range m.userProjects {
 		if userID == user.ID {
-			projects = append(projects, m.projects[projectID])
+			data = append(data, m.projects[projectID])
 		}
 	}
 
-	return projects, nil
+	return &api.Projects{Data: data}, nil
 }
 
 // UpdateProject ...

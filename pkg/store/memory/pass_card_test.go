@@ -185,12 +185,12 @@ func TestSaveNewPassCard(t *testing.T) {
 				return
 			}
 
-			var loadedPassCards []*api.PassCardInfo
+			var loadedPassCards *api.PassCardInfoList
 			{
 				if tc.LoadByBarcodeMessage {
-					loadedPassCards, err = db.LoadPassCardsByBarcodeMessage(ctx, project, passcard.Data.Barcodes[0].Message)
+					loadedPassCards, err = db.LoadPassCardsByBarcodeMessage(ctx, project, passcard.Data.Barcodes[0].Message, nil)
 				} else {
-					loadedPassCards, err = db.LoadPassCards(ctx, project)
+					loadedPassCards, err = db.LoadPassCards(ctx, project, nil)
 				}
 			}
 			if !assert.NoError(err) {
@@ -200,8 +200,8 @@ func TestSaveNewPassCard(t *testing.T) {
 				return
 			}
 
-			if assert.Len(loadedPassCards, 1) {
-				loaded = loadedPassCards[0]
+			if assert.Len(loadedPassCards.Data, 1) {
+				loaded = loadedPassCards.Data[0]
 				assert.Equal(passcard, loaded)
 			}
 		})

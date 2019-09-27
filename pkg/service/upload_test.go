@@ -15,6 +15,7 @@ import (
 
 	"github.com/danikarik/okpock/pkg/api"
 	"github.com/danikarik/okpock/pkg/filestore"
+	"github.com/danikarik/okpock/pkg/secure"
 	uuid "github.com/satori/go.uuid"
 	"github.com/stretchr/testify/assert"
 )
@@ -72,7 +73,7 @@ func TestCreateUploadHandler(t *testing.T) {
 			}
 
 			if tc.SaveBefore {
-				hash, err := api.Hash(content)
+				hash, err := secure.Hash(content)
 				if !assert.NoError(err) {
 					return
 				}
@@ -171,7 +172,7 @@ func TestUploadsHandler(t *testing.T) {
 				return
 			}
 
-			hash, err := api.Hash(content)
+			hash, err := secure.Hash(content)
 			if !assert.NoError(err) {
 				return
 			}
@@ -192,14 +193,14 @@ func TestUploadsHandler(t *testing.T) {
 				return
 			}
 
-			var uploads []*api.Upload
+			var uploads *api.Uploads
 			err = unmarshalJSON(resp, &uploads)
 			if !assert.NoError(err) {
 				return
 			}
 
-			if assert.Len(uploads, 1) {
-				loaded := uploads[0]
+			if assert.Len(uploads.Data, 1) {
+				loaded := uploads.Data[0]
 				assert.Equal(upload.ID, loaded.ID)
 				assert.Equal(upload.Filename, loaded.Filename)
 				assert.Equal(upload.UUID, loaded.UUID)
@@ -256,7 +257,7 @@ func TestUploadHandler(t *testing.T) {
 				return
 			}
 
-			hash, err := api.Hash(content)
+			hash, err := secure.Hash(content)
 			if !assert.NoError(err) {
 				return
 			}
@@ -339,7 +340,7 @@ func TestUploadFileHandler(t *testing.T) {
 				return
 			}
 
-			hash, err := api.Hash(content)
+			hash, err := secure.Hash(content)
 			if !assert.NoError(err) {
 				return
 			}

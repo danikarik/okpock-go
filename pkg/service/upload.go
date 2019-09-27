@@ -8,6 +8,7 @@ import (
 
 	"github.com/danikarik/okpock/pkg/api"
 	"github.com/danikarik/okpock/pkg/filestore"
+	"github.com/danikarik/okpock/pkg/secure"
 	uuid "github.com/satori/go.uuid"
 )
 
@@ -31,7 +32,7 @@ func (s *Service) readImageUpload(r *http.Request) (*api.Upload, error) {
 		return nil, err
 	}
 
-	hash, err := api.Hash(data)
+	hash, err := secure.Hash(data)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +98,7 @@ func (s *Service) uploadsHandler(w http.ResponseWriter, r *http.Request) error {
 		return s.httpError(w, r, http.StatusUnauthorized, "UserFromContext", err)
 	}
 
-	uploads, err := s.env.Logic.LoadUploads(ctx, user)
+	uploads, err := s.env.Logic.LoadUploads(ctx, user, nil)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "LoadUploads", err)
 	}

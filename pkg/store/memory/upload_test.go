@@ -117,11 +117,11 @@ func TestSaveNewUpload(t *testing.T) {
 				return
 			}
 
-			uploads, err := db.LoadUploads(ctx, user)
+			uploads, err := db.LoadUploads(ctx, user, nil)
 			if !assert.NoError(err) {
 				return
 			}
-			if !assert.Len(uploads, tc.UploadNumber+1) {
+			if !assert.Len(uploads.Data, tc.UploadNumber+1) {
 				return
 			}
 

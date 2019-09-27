@@ -193,6 +193,12 @@ func (p *PassCardInfo) String() string {
 	return string(data)
 }
 
+// PassCardInfoList holds next page token and items.
+type PassCardInfoList struct {
+	Opts *PagingOptions
+	Data []*PassCardInfo
+}
+
 // DefaultDataDetectorTypes is a default list for data detector.
 func DefaultDataDetectorTypes() []string {
 	return []string{

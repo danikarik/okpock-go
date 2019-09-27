@@ -142,19 +142,28 @@ func (m *MySQL) LoadUploadByUUID(ctx context.Context, user *api.User, uuid strin
 }
 
 // LoadUploads ...
-func (m *MySQL) LoadUploads(ctx context.Context, user *api.User) ([]*api.Upload, error) {
+func (m *MySQL) LoadUploads(ctx context.Context, user *api.User, opts *api.PagingOptions) (*api.Uploads, error) {
 	err := checkUser(user, checkNilStruct|checkZeroID)
 	if err != nil {
 		return nil, err
 	}
 
-	var uploads = []*api.Upload{}
+	if opts == nil {
+		opts = api.NewPagingOptions(0, 0)
+	}
+
+	var uploads = &api.Uploads{
+		Opts: opts,
+		Data: []*api.Upload{},
+	}
 
 	query := m.builder.Select("u.*").
 		From("uploads u").
 		LeftJoin("user_uploads uu on uu.upload_id = u.id").
 		Where(sq.Eq{"uu.user_id": user.ID}).
-		OrderBy("created_at desc")
+		Where(sq.GtOrEq{"u.id": opts.Cursor}).
+		OrderBy("created_at desc").
+		Limit(opts.Limit + 1)
 
 	rows, err := m.selectQuery(ctx, query)
 	if err == store.ErrNotFound {
@@ -164,6 +173,7 @@ func (m *MySQL) LoadUploads(ctx context.Context, user *api.User) ([]*api.Upload,
 		return nil, err
 	}
 
+	var cnt uint64
 	for rows.Next() {
 		var upload = &api.Upload{}
 
@@ -175,7 +185,11 @@ func (m *MySQL) LoadUploads(ctx context.Context, user *api.User) ([]*api.Upload,
 			return nil, err
 		}
 
-		uploads = append(uploads, upload)
+		if cnt++; cnt > opts.Limit {
+			opts.Next = upload.ID
+		} else {
+			uploads.Data = append(uploads.Data, upload)
+		}
 	}
 
 	return uploads, nil

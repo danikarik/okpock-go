@@ -1,8 +1,6 @@
 package api
 
 import (
-	"crypto/sha256"
-	"encoding/base64"
 	"encoding/json"
 	"errors"
 	"time"
@@ -55,15 +53,8 @@ func (u *Upload) String() string {
 	return string(data)
 }
 
-// Hash creates SHA256 hash.
-func Hash(data []byte) (string, error) {
-	h := sha256.New()
-
-	_, err := h.Write(data)
-	if err != nil {
-		return "", err
-	}
-
-	sum := h.Sum(nil)
-	return base64.URLEncoding.EncodeToString(sum), nil
+// Uploads holds next page token and items.
+type Uploads struct {
+	Opts *PagingOptions
+	Data []*Upload
 }
