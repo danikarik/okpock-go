@@ -10,6 +10,11 @@ import (
 func (s *Service) projectPassCardsHandler(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 
+	opts, err := readPagingOptions(r)
+	if err != nil {
+		return s.httpError(w, r, http.StatusBadRequest, "ReadPagingOptions", err)
+	}
+
 	user, err := userFromContext(ctx)
 	if err != nil {
 		return s.httpError(w, r, http.StatusUnauthorized, "UserFromContext", err)
@@ -32,16 +37,16 @@ func (s *Service) projectPassCardsHandler(w http.ResponseWriter, r *http.Request
 	searchTerm := r.URL.Query().Get("barcode_message")
 
 	if searchTerm != "" {
-		passcards, err = s.env.Logic.LoadPassCardsByBarcodeMessage(ctx, project, searchTerm, nil)
+		passcards, err = s.env.Logic.LoadPassCardsByBarcodeMessage(ctx, project, searchTerm, opts)
 		if err != nil {
 			return s.httpError(w, r, http.StatusInternalServerError, "LoadPassCardsByBarcodeMessage", err)
 		}
 	} else {
-		passcards, err = s.env.Logic.LoadPassCards(ctx, project, nil)
+		passcards, err = s.env.Logic.LoadPassCards(ctx, project, opts)
 		if err != nil {
 			return s.httpError(w, r, http.StatusInternalServerError, "LoadPassCards", err)
 		}
 	}
 
-	return sendJSON(w, http.StatusOK, passcards)
+	return sendPaginatedJSON(w, http.StatusOK, passcards.Opts, passcards.Data)
 }

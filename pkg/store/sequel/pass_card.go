@@ -144,9 +144,12 @@ func (m *MySQL) LoadPassCards(ctx context.Context, project *api.Project, opts *a
 		From("pass_cards pc").
 		LeftJoin("project_pass_cards ppc on ppc.pass_card_id = pc.id").
 		Where(sq.Eq{"ppc.project_id": project.ID}).
-		Where(sq.GtOrEq{"pc.id": opts.Cursor}).
-		OrderBy("created_at desc").
+		OrderBy("pc.created_at desc", "pc.id desc").
 		Limit(opts.Limit + 1)
+
+	if opts.Cursor > 0 {
+		query = query.Where(sq.LtOrEq{"pc.id": opts.Cursor})
+	}
 
 	rows, err := m.selectQuery(ctx, query)
 	if err == store.ErrNotFound {
@@ -198,10 +201,13 @@ func (m *MySQL) LoadPassCardsByBarcodeMessage(ctx context.Context, project *api.
 		From("pass_cards pc").
 		LeftJoin("project_pass_cards ppc on ppc.pass_card_id = pc.id").
 		Where(sq.Eq{"ppc.project_id": project.ID}).
-		Where(sq.GtOrEq{"pc.id": opts.Cursor}).
-		Where("JSON_CONTAINS(pc.raw_data->>'$.barcodes[*].message', JSON_ARRAY('" + message + "'))").
-		OrderBy("created_at desc").
+		Where("JSON_CONTAINS(pc.raw_data->>'$.barcodes[*].message', JSON_ARRAY('"+message+"'))").
+		OrderBy("pc.created_at desc", "pc.id desc").
 		Limit(opts.Limit + 1)
+
+	if opts.Cursor > 0 {
+		query = query.Where(sq.LtOrEq{"pc.id": opts.Cursor})
+	}
 
 	rows, err := m.selectQuery(ctx, query)
 	if err == store.ErrNotFound {

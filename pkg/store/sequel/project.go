@@ -145,9 +145,12 @@ func (m *MySQL) LoadProjects(ctx context.Context, user *api.User, opts *api.Pagi
 		From("projects p").
 		LeftJoin("user_projects up on up.project_id = p.id").
 		Where(sq.Eq{"up.user_id": user.ID}).
-		Where(sq.GtOrEq{"p.id": opts.Cursor}).
-		OrderBy("created_at desc").
+		OrderBy("p.created_at desc", "p.id desc").
 		Limit(opts.Limit + 1)
+
+	if opts.Cursor > 0 {
+		query = query.Where(sq.LtOrEq{"p.id": opts.Cursor})
+	}
 
 	rows, err := m.selectQuery(ctx, query)
 	if err == store.ErrNotFound {

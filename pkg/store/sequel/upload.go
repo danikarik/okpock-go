@@ -161,9 +161,12 @@ func (m *MySQL) LoadUploads(ctx context.Context, user *api.User, opts *api.Pagin
 		From("uploads u").
 		LeftJoin("user_uploads uu on uu.upload_id = u.id").
 		Where(sq.Eq{"uu.user_id": user.ID}).
-		Where(sq.GtOrEq{"u.id": opts.Cursor}).
-		OrderBy("created_at desc").
+		OrderBy("u.created_at desc", "u.id desc").
 		Limit(opts.Limit + 1)
+
+	if opts.Cursor > 0 {
+		query = query.Where(sq.LtOrEq{"u.id": opts.Cursor})
+	}
 
 	rows, err := m.selectQuery(ctx, query)
 	if err == store.ErrNotFound {

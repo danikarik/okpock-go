@@ -93,17 +93,22 @@ func (s *Service) createUploadHandler(w http.ResponseWriter, r *http.Request) er
 func (s *Service) uploadsHandler(w http.ResponseWriter, r *http.Request) error {
 	ctx := r.Context()
 
+	opts, err := readPagingOptions(r)
+	if err != nil {
+		return s.httpError(w, r, http.StatusBadRequest, "ReadPagingOptions", err)
+	}
+
 	user, err := userFromContext(ctx)
 	if err != nil {
 		return s.httpError(w, r, http.StatusUnauthorized, "UserFromContext", err)
 	}
 
-	uploads, err := s.env.Logic.LoadUploads(ctx, user, nil)
+	uploads, err := s.env.Logic.LoadUploads(ctx, user, opts)
 	if err != nil {
 		return s.httpError(w, r, http.StatusInternalServerError, "LoadUploads", err)
 	}
 
-	return sendJSON(w, http.StatusOK, uploads)
+	return sendPaginatedJSON(w, http.StatusOK, uploads.Opts, uploads.Data)
 }
 
 func (s *Service) uploadHandler(w http.ResponseWriter, r *http.Request) error {
