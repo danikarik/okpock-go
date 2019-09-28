@@ -60,7 +60,7 @@ func (m *Memory) LoadPassCards(ctx context.Context, project *api.Project, opts *
 		}
 	}
 
-	return &api.PassCardInfoList{Data: data}, nil
+	return &api.PassCardInfoList{Opts: opts, Data: data}, nil
 }
 
 // LoadPassCardsByBarcodeMessage ...
@@ -79,7 +79,7 @@ func (m *Memory) LoadPassCardsByBarcodeMessage(ctx context.Context, project *api
 		}
 	}
 
-	return &api.PassCardInfoList{Data: data}, nil
+	return &api.PassCardInfoList{Opts: opts, Data: data}, nil
 }
 
 // UpdatePassCard ...

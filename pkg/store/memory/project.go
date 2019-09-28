@@ -61,7 +61,7 @@ func (m *Memory) LoadProjects(ctx context.Context, user *api.User, opts *api.Pag
 		}
 	}
 
-	return &api.Projects{Data: data}, nil
+	return &api.Projects{Opts: opts, Data: data}, nil
 }
 
 // UpdateProject ...

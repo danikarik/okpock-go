@@ -71,5 +71,5 @@ func (m *Memory) LoadUploads(ctx context.Context, user *api.User, opts *api.Pagi
 		}
 	}
 
-	return &api.Uploads{Data: data}, nil
+	return &api.Uploads{Opts: opts, Data: data}, nil
 }
