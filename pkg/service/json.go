@@ -72,8 +72,8 @@ func sendJSON(w http.ResponseWriter, code int, v interface{}) error {
 		return fmt.Errorf("json: encoding json response: %v", err)
 	}
 
-	w.WriteHeader(code)
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
 
 	_, err = w.Write(data)
 	if err != nil {

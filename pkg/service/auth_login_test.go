@@ -7,9 +7,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/danikarik/okpock/pkg/secure"
-
 	"github.com/danikarik/okpock/pkg/api"
+	"github.com/danikarik/okpock/pkg/secure"
 	"github.com/stretchr/testify/assert"
 )
 
