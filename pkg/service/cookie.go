@@ -11,6 +11,8 @@ const (
 	CookieDomain string = ".okpock.com"
 	// TokenCookieName used for JWT token.
 	TokenCookieName string = "okpocktok"
+	// CSRFCookieName used for CSRF check.
+	CSRFCookieName string = "XSRF-TOKEN"
 )
 
 // ErrInvalidToken returns when cookie is missing or malformed.
@@ -39,7 +41,7 @@ func (s *Service) setClaimsCookie(w http.ResponseWriter, c Claims) error {
 	return nil
 }
 
-func (s *Service) tokenCookie(tokenString string) *http.Cookie {
+func (s *Service) tokenCookie(token string) *http.Cookie {
 	cookie := &http.Cookie{
 		Name:     TokenCookieName,
 		Domain:   CookieDomain,
@@ -47,7 +49,23 @@ func (s *Service) tokenCookie(tokenString string) *http.Cookie {
 		Expires:  time.Now().UTC().Add(ServerClaimsTTL),
 		Secure:   true,
 		HttpOnly: true,
-		Value:    tokenString,
+		Value:    token,
+	}
+	if s.env.Config.Debug {
+		cookie.Domain = ""
+		cookie.Secure = false
+	}
+	return cookie
+}
+
+func (s *Service) csrfCookie(token string) *http.Cookie {
+	cookie := &http.Cookie{
+		Name:    CSRFCookieName,
+		Domain:  CookieDomain,
+		Path:    "/",
+		Expires: time.Now().UTC().Add(ServerClaimsTTL),
+		Secure:  true,
+		Value:   token,
 	}
 	if s.env.Config.Debug {
 		cookie.Domain = ""

@@ -41,7 +41,7 @@ func (s *Service) withUserClaims(w http.ResponseWriter, u *api.User) error {
 	if err != nil {
 		return err
 	}
-	w.Header().Set(csrfHeader, ucl.CSRFToken)
+	http.SetCookie(w, s.csrfCookie(ucl.CSRFToken))
 	return nil
 }
 

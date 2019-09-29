@@ -134,6 +134,16 @@ func TestLoginHandler(t *testing.T) {
 			resp := rec.Result()
 
 			assert.Equal(tc.Expected, resp.StatusCode)
+
+			if resp.StatusCode == http.StatusOK {
+				var hasCSRF bool
+				for _, c := range resp.Cookies() {
+					if c.Name == CSRFCookieName {
+						hasCSRF = true
+					}
+				}
+				assert.True(hasCSRF)
+			}
 		})
 	}
 }
