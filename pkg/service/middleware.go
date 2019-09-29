@@ -247,6 +247,7 @@ func (s *Service) corsMiddleware(next http.Handler) http.Handler {
 	cors := cors.New(cors.Options{
 		AllowedMethods: []string{"HEAD", "GET", "POST", "PUT", "DELETE"},
 		AllowedHeaders: []string{"Accept", "Content-Type", "X-Requested-With", csrfHeader},
+		ExposedHeaders: []string{csrfHeader},
 		AllowOriginRequestFunc: func(r *http.Request, origin string) bool {
 			if s.env.Config.IsDevelopment() && strings.Contains(origin, "localhost") {
 				return true
