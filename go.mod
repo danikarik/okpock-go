@@ -5,7 +5,7 @@ go 1.12
 require (
 	github.com/Masterminds/squirrel v1.1.0
 	github.com/aws/aws-sdk-go v1.19.6
-	github.com/danikarik/mux v1.2.3
+	github.com/danikarik/mux v1.2.4
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/fullsailor/pkcs7 v0.0.0-20190404230743-d7302db945fa
 	github.com/go-sql-driver/mysql v1.4.1
