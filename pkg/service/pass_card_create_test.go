@@ -10,9 +10,8 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/danikarik/okpock/pkg/filestore"
-
 	"github.com/danikarik/okpock/pkg/api"
+	"github.com/danikarik/okpock/pkg/filestore"
 	"github.com/stretchr/testify/assert"
 )
 

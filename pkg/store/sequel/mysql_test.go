@@ -11,6 +11,8 @@ import (
 )
 
 var clean = []string{
+	"DELETE FROM `project_pass_cards`",
+	"DELETE FROM `pass_cards`",
 	"DELETE FROM `user_uploads`",
 	"DELETE FROM `uploads`",
 	"DELETE FROM `user_projects`",

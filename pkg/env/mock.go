@@ -4,13 +4,12 @@ import (
 	"io/ioutil"
 	"os"
 
-	uuid "github.com/satori/go.uuid"
-
 	"github.com/danikarik/okpock/pkg/apns"
 	fsmock "github.com/danikarik/okpock/pkg/filestore/memory"
 	mlmock "github.com/danikarik/okpock/pkg/mail/memory"
 	"github.com/danikarik/okpock/pkg/pkpass"
 	dbmock "github.com/danikarik/okpock/pkg/store/memory"
+	uuid "github.com/satori/go.uuid"
 )
 
 // NewMock returns a new mock `Env`.
