@@ -1,5 +1,7 @@
 # OKPOCK
 
+Backend service for `okpock`
+
 ## PassKit Endpoints
 
 ### GET `/v1/devices/{deviceID}/registrations/{passTypeID}`
