@@ -138,7 +138,6 @@ Response Codes
 Response Headers
 
 - `Content-Type - application/json`
-- `X-XSRF-Token - <token>`
 
 Response Body
 

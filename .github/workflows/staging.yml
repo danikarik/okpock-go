@@ -73,7 +73,7 @@ jobs:
           export TEST_CERTIFICATES_COUPON_PATH=${GITHUB_WORKSPACE}/coupon-dev.p12
           make test
 
-      - name: Build
+      - name: Build application binary
         run: make release
 
       - name: Packing zip
