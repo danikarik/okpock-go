@@ -55,6 +55,7 @@ func (s *Service) withRouter() *Service {
 		public.HandleFunc("/downloads/{serialNumber}.pkpass", s.downloadPkpass).Methods("GET")
 
 		auth := public.NewRoute().Subrouter()
+		auth.HandleFunc("/ping", s.authCheckHandler).Methods("GET")
 		auth.HandleFunc("/login", s.loginHandler).Methods("POST")
 		auth.HandleFunc("/logout", s.logoutHandler).Methods("DELETE")
 		auth.HandleFunc("/register", s.registerHandler).Methods("POST")

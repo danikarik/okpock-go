@@ -115,6 +115,25 @@ Response Body
 
 - `binary` stream
 
+### GET `/ping`
+
+Response Codes
+
+- `200`
+- `401`
+
+Response Headers
+
+- `Content-Type - application/json`
+
+Response Body
+
+```json
+{
+  "ping": "pong"
+}
+```
+
 ### POST `/login`
 
 Request Body
